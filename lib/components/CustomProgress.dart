@@ -17,7 +17,7 @@ class CustomProgress {
     progressDialog = await SimpleFontelicoProgressDialog(
         context: context, barrierDimisable: true);
     progressDialog.show(
-        message: message, type: type, indicatorColor: Colors.green[900]);
+        message: message, type: type, indicatorColor: Colors.blue);
   }
 
   // hide progress

@@ -25,7 +25,6 @@ class _LeadOwnerDropDownState extends State<LeadOwnerDropDown> {
     fetchLeadOwnerData();
   }
 
-  // Fetch the lead owner data from the API
   Future<void> fetchLeadOwnerData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString("token");
@@ -47,39 +46,62 @@ class _LeadOwnerDropDownState extends State<LeadOwnerDropDown> {
     }
   }
 
-  // Handle pipeline selection from the dropdown
   void _onPipelineSelected(dynamic selectedPipeline) {
     setState(() {
       _selectedPipelineName = selectedPipeline['name'];
       _selectedPipelineId = selectedPipeline['id'];
-      // Store the selected pipeline ID in the static variable
       Owner.ownerId = _selectedPipelineId;
     });
 
-    // Print the selected pipeline ID stored in the static variable
     print('Selected Owner ID (static): ${Owner.ownerId}');
   }
 
   @override
   Widget build(BuildContext context) {
     return _pipelineList.isNotEmpty
-        ? DropdownButtonFormField<dynamic>(
-            decoration: const InputDecoration(
-              labelText: 'Select Owner',
-              border: OutlineInputBorder(),
+        ? Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
             ),
-            items: _pipelineList.map((pipeline) {
-              return DropdownMenuItem<dynamic>(
-                value: pipeline,
-                child: Text(pipeline['name']),
-              );
-            }).toList(),
-            onChanged: _onPipelineSelected,
-            value: _selectedPipelineName != null
-                ? _pipelineList.firstWhere(
-                    (pipeline) => pipeline['name'] == _selectedPipelineName)
-                : null,
-            hint: const Text('Select Owner'),
+            child: DropdownButtonFormField<dynamic>(
+              menuMaxHeight: 5000,
+              isExpanded: true,
+              hint: Text(
+                "Select Owner",
+                style: TextStyle(color: Colors.grey[400]),
+              ),
+              icon: const Icon(Icons.keyboard_arrow_down_sharp,
+                  size: 30, color: Colors.blue),
+              borderRadius: BorderRadius.circular(8),
+              decoration: const InputDecoration(
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFF8F6F8)),
+                ),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+                fillColor: Color(0xFFF8F6F8),
+              ),
+              items: _pipelineList.map((pipeline) {
+                return DropdownMenuItem<dynamic>(
+                  value: pipeline,
+                  child: Text(pipeline['name']),
+                );
+              }).toList(),
+              onChanged: _onPipelineSelected,
+              value: _selectedPipelineName != null
+                  ? _pipelineList.firstWhere(
+                      (pipeline) => pipeline['name'] == _selectedPipelineName)
+                  : null,
+            ),
           )
         : R.appSpinKits.spinKitFadingCube;
   }

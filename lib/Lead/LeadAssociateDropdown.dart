@@ -26,7 +26,6 @@ class _LeadSourceDropDownState extends State<LeadAssociateDropDown> {
     fetchLeadAssociateData();
   }
 
-  // Fetch the lead associate data from the API
   Future<void> fetchLeadAssociateData() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString("token");
@@ -52,34 +51,59 @@ class _LeadSourceDropDownState extends State<LeadAssociateDropDown> {
     setState(() {
       _selectedPipelineName = selectedPipeline['name'];
       _selectedPipelineId = selectedPipeline['id'];
-      // Store the selected pipeline ID in the static variable
       Associate.associateId = _selectedPipelineId;
     });
 
-    // Print the selected pipeline ID stored in the static variable
     print('Selected associate ID (static): ${Associate.associateId}');
   }
 
   @override
   Widget build(BuildContext context) {
     return _pipelineList.isNotEmpty
-        ? DropdownButtonFormField<dynamic>(
-            decoration: InputDecoration(
-              labelText: 'Select Associate',
-              border: OutlineInputBorder(),
+        ? Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
             ),
-            items: _pipelineList.map((pipeline) {
-              return DropdownMenuItem<dynamic>(
-                value: pipeline,
-                child: Text(pipeline['name']),
-              );
-            }).toList(),
-            onChanged: _onPipelineSelected,
-            value: _selectedPipelineName != null
-                ? _pipelineList.firstWhere(
-                    (pipeline) => pipeline['name'] == _selectedPipelineName)
-                : null,
-            hint: Text('Select Associate'),
+            child: DropdownButtonFormField<dynamic>(
+              menuMaxHeight: 5000,
+              isExpanded: true,
+              hint: Text(
+                "Select Associate",
+                style: TextStyle(color: Colors.grey[400]),
+              ),
+              // dropdownColor: Color(0xFFF8F6F8),
+              icon: const Icon(Icons.keyboard_arrow_down_sharp,
+                  size: 30, color: Colors.blue),
+              borderRadius: BorderRadius.circular(8),
+              decoration: const InputDecoration(
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFF8F6F8)),
+                ),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+                fillColor: Color(0xFFF8F6F8),
+              ),
+              items: _pipelineList.map((pipeline) {
+                return DropdownMenuItem<dynamic>(
+                  value: pipeline,
+                  child: Text(pipeline['name']),
+                );
+              }).toList(),
+              onChanged: _onPipelineSelected,
+              value: _selectedPipelineName != null
+                  ? _pipelineList.firstWhere(
+                      (pipeline) => pipeline['name'] == _selectedPipelineName)
+                  : null,
+            ),
           )
         : R.appSpinKits.spinKitFadingCube;
   }

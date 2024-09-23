@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
+import 'package:untitled1/resourses/app_colors.dart';
 
 import '../Lead/LeadAssociateDropdown.dart';
 import '../Lead/LeadOwnerDropdown.dart';
@@ -161,245 +164,331 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Follow UP Create Form"),
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, size: 18),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-        body: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                formField(
-                    "Company Name", _companyName, 'Please enter company name'),
-                dropDownRow("Owner", LeadOwnerDropDown()),
-                dropDownRow("Associate", LeadAssociateDropDown()),
-                dropDownRow("Follow Up Type", const FollowUpTypeDropdown()),
-                formField("Subject", _subject, 'Please enter subject'),
-                dateField("Next Follow Up Date", dateTimeController),
-                phoneNumberField(),
-                formField(
-                    "Description", _description, 'Please enter description'),
-                const SizedBox(
-                  height: 7,
-                ),
-                buttonRow(),
-              ],
+          backgroundColor: backgroundColor,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            toolbarHeight: 112.62,
+            title: const Text(
+              "CREATE  FOLLOW  UP",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios, size: 18),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
           ),
-        ),
-      ),
+          body: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            height: 784.8.h,
+            width: 400.w,
+            child: Form(
+              key: _formKey,
+              child: RawScrollbar(
+                // thumbVisibility: true,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      formField(
+                          "Company Name", _companyName, 'Enter Company Name'),
+                      const SizedBox(height: 10),
+                      formField("Subject", _subject, 'Please enter subject'),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            flex: 1,
+                            child: dropDownRow("Owner", LeadOwnerDropDown()),
+                          ),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            flex: 1,
+                            child: dropDownRow(
+                                "Associate", LeadAssociateDropDown()),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      dropDownRow(
+                          "Follow Up Type", const FollowUpTypeDropdown()),
+                      const SizedBox(height: 12),
+                      dateField("Next Follow Up Date", dateTimeController),
+                      const SizedBox(height: 10),
+                      phoneNumberField(),
+                      const SizedBox(height: 10),
+                      descritionFormField("Description", _description,
+                          'Please enter description'),
+                      const SizedBox(height: 30),
+                      buttonRow(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )),
     );
   }
 
   Widget formField(
       String label, TextEditingController controller, String errorText,
       {String hintText = ''}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Text(label,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w500)),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: R.appColors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 0,
-                    offset: const Offset(0, 0),
-                  ),
-                ],
-              ),
-              child: TextFormField(
-                controller: controller,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return errorText;
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  hintText: hintText.isNotEmpty ? hintText : null,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
                 ),
+              ],
+            ),
+            child: TextFormField(
+              controller: controller,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return errorText;
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                fillColor: Color(0xFFF8F6F8),
               ),
             ),
-          ),
+          )
         ],
       ),
     );
   }
 
-  // followUpTypeDropdown
+// dropdown widget
+  // Widget dropDownRow(String label, Widget dropDown) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
+  //     child: Row(
+  //       children: [
+  //         Expanded(
+  //           flex: 1,
+  //           child: Text(label,
+  //               style:
+  //                   const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+  //         ),
+  //         // Wrapping the dropdown in Expanded to avoid overflow
+
+  //         Expanded(
+  //           flex: 3,
+  //           child: dropDown,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget dropDownRow(String label, Widget dropDown) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Text(label,
-                style:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
           ),
-          // Wrapping the dropdown in Expanded to avoid overflow
-
-          Expanded(
-            flex: 3,
-            child: dropDown,
-          ),
-        ],
-      ),
+        ),
+        dropDown,
+      ],
     );
   }
 
   Widget dateField(String label, TextEditingController dateTimeController) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Text(label,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w500)),
-            ),
-          ),
-          Expanded(
-            flex: 2,
-            child: InkWell(
-              onTap: () async {
-                DateTime? pickedDate = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2101),
-                );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(label,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        ),
+        // const SizedBox(height: 10),
+        InkWell(
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+            );
 
-                if (pickedDate != null) {
-                  setState(() {
-                    dateTimeController.text =
-                        "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-                  });
+            if (pickedDate != null) {
+              setState(() {
+                dateTimeController.text =
+                    "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+              });
+            }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
+            ),
+            // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: TextFormField(
+              readOnly: true,
+              controller: dateTimeController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Next Follow up date is required";
                 }
+                return null;
               },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: R.appColors.grey.withOpacity(0.5),
-                      spreadRadius: 1,
-                      blurRadius: 0,
-                      offset: const Offset(0, 0),
-                    ),
-                  ],
-                ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                child: TextFormField(
-                  controller: dateTimeController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return "Next Follow up date is required";
-                    }
-                    return null;
-                  },
-                  enabled: false,
-                  decoration: const InputDecoration(
-                    hintText: "Pick a date",
-                    border: InputBorder.none,
-                  ),
-                ),
+              enabled: false,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                fillColor: Color(0xFFF8F6F8),
+                hintText: 'Select Date',
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget phoneNumberField() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Expanded(
-            flex: 1,
-            child: Padding(
-              padding: EdgeInsets.only(right: 8.0),
-              child: Text('Contact Number*',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+          const Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              'Contact Number',
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 0,
-                    offset: const Offset(0, 0),
-                  ),
-                ],
-              ),
-              child: TextFormField(
-                controller: _contactNumber,
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter phone number';
-                  }
-                  if (!validatePhoneNumber(value)) {
-                    return 'Phone number must be 11 digits';
-                  }
-                  return null;
-                },
-                decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  hintText: '017***',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
-                  ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
+            ),
+            child: TextFormField(
+              controller: _contactNumber,
+              keyboardType: TextInputType.phone,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter phone number';
+                }
+                if (!validatePhoneNumber(value)) {
+                  return 'Phone number must be 11 digits';
+                }
+                return null;
+              },
+              decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                hintText: '+8801610-681903',
+                hintStyle: TextStyle(color: Colors.grey[400]),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
                 ),
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget descritionFormField(
+      String label, TextEditingController controller, String errorText,
+      {String hintText = ''}) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
+            ),
+            child: TextFormField(
+              keyboardType: TextInputType.multiline,
+              maxLines: 5,
+              controller: controller,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return errorText;
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                fillColor: Color(0xFFF8F6F8),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -407,32 +496,39 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
 
   Widget buttonRow() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         /// cancle button
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: AnimatedButton(
-            width: 100,
-            text: "Cancel",
-            color: R.appColors.grey,
-            pressEvent: () {
-              AwesomeDialog(
-                context: context,
-                dialogType: DialogType.warning,
-                animType: AnimType.topSlide,
-                showCloseIcon: true,
-                title: "Warning",
-                desc: "Please take a good look",
-                btnCancelOnPress: () {},
-                btnOkOnPress: () {
-                  Navigator.pop(context);
-                },
-              ).show();
-            },
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(164, 52),
+            maximumSize: const Size(181, 52),
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(color: Colors.blue, width: 2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          onPressed: () {
+            AwesomeDialog(
+              context: context,
+              dialogType: DialogType.warning,
+              animType: AnimType.topSlide,
+              showCloseIcon: true,
+              title: "Warning",
+              desc: "Please take a good look",
+              btnCancelOnPress: () {},
+              btnOkOnPress: () {
+                Navigator.pop(context);
+              },
+            ).show();
+          },
+          child: const Text(
+            "Cancel",
+            style: TextStyle(color: Colors.blue, fontSize: 16),
           ),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 12),
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState?.validate() == true) {
@@ -483,12 +579,17 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: R.appColors.buttonColor,
+            minimumSize: const Size(164, 52),
+            maximumSize: const Size(181, 52),
+            backgroundColor: buttonColor,
+
+            // backgroundColor: const Color(0xFF007AFF),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text("Save", style: TextStyle(color: Colors.white)),
+          child: const Text("Save",
+              style: TextStyle(color: Colors.white, fontSize: 16)),
         ),
       ],
     );

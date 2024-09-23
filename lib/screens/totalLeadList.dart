@@ -13,7 +13,6 @@ import 'package:http/http.dart' as http;
 import '../Dashboard/bottom_navigation_page.dart';
 import '../Lead/leadCreateform.dart';
 import '../Models/LeadListModel.dart';
-import '../resourses/resourses.dart';
 
 class LeadListScreen extends StatefulWidget {
   const LeadListScreen({Key? key}) : super(key: key);
