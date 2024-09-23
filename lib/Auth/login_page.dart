@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 import 'package:untitled1/Dashboard/bottom_navigation_page.dart';
 import 'package:untitled1/components/CustomProgress.dart';
+import 'package:untitled1/resourses/app_colors.dart';
 import '../API/api_url.dart';
 import '../resourses/resourses.dart';
 
@@ -44,49 +45,15 @@ class _loginPageState extends State<UserLoginScreen> {
       child: SafeArea(
           child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: const Color(0xfff2f3f7),
-        body: Stack(
+        backgroundColor: backgroundColor,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.65,
-              width: MediaQuery.of(context).size.width,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: R.appColors.buttonColor,
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(70),
-                    bottomRight: Radius.circular(70),
-                  ),
-                ),
-              ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _buildLogo(),
-                _buildContainer(),
-                _buildInventor(),
-              ],
-            )
+            _buildContainer(),
+            _buildInventor(),
           ],
         ),
       )),
-    );
-  }
-
-  Widget _buildLogo() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          'iCRM',
-          style: TextStyle(
-            fontSize: MediaQuery.of(context).size.height / 25,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        )
-      ],
     );
   }
 
@@ -101,8 +68,8 @@ class _loginPageState extends State<UserLoginScreen> {
           child: Container(
             height: MediaQuery.of(context).size.height * 0.55,
             width: MediaQuery.of(context).size.width * 0.8,
-            decoration: const BoxDecoration(
-              color: Colors.white,
+            decoration: BoxDecoration(
+              color: backgroundColor,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -115,14 +82,32 @@ class _loginPageState extends State<UserLoginScreen> {
                       "Login",
                       style: TextStyle(
                         fontSize: MediaQuery.of(context).size.height / 30,
-                        color: R.appColors.grey,
+                        color: const Color(0xFF232440),
                       ),
                     ),
                   ],
                 ),
                 _buildEmailRow(),
+                const SizedBox(height: 20),
                 _buildPasswordRow(),
-                _buildForgetPassword(),
+
+                // save password & forget password
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // save password
+                    _buildSavePassword(),
+
+                    // forget password
+                    _buildForgetPassword()
+                  ],
+                ),
+
+                const SizedBox(
+                  height: 20,
+                ),
+
                 _buildLoginButton(),
               ],
             ),
@@ -133,74 +118,148 @@ class _loginPageState extends State<UserLoginScreen> {
   }
 
   Widget _buildEmailRow() {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Form(
-        key: emailKey,
-        child: TextFormField(
-          keyboardType: TextInputType.emailAddress,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Email is required.';
-            }
-            return null;
-          },
-          onChanged: (value) {
-            setState(() {
-              email = value;
-            });
-          },
-          decoration: InputDecoration(
-              prefixIcon: Icon(
-                Icons.email,
-                color: R.appColors.buttonColor,
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Email",
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF6E6E82)),
+          ),
+
+          const SizedBox(
+            height: 5,
+          ),
+
+          // Email form
+          Form(
+            key: emailKey,
+            child: Container(
+              height: 55.78,
+              width: 380,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 0,
+                    blurRadius: 3,
+                    offset: const Offset(0, 1), // changes position of shadow
+                  ),
+                ],
               ),
-              labelText: 'E-mail'),
-        ),
+              child: TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email is required.';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  setState(() {
+                    email = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  hintText: 'Enter your email',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  border: InputBorder.none,
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+                  fillColor: const Color(0xFFF8F6F8),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildPasswordRow() {
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Form(
-        key: passwordKey,
-        child: TextFormField(
-          keyboardType: TextInputType.visiblePassword,
-          obscureText: _obscured,
-          focusNode: textFieldFocusNode,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Password is required.';
-            }
-            return null;
-          },
-          onChanged: (value) {
-            setState(() {
-              password = value;
-            });
-          },
-          decoration: InputDecoration(
-            prefixIcon: Icon(
-              Icons.lock,
-              color: R.appColors.buttonColor,
-            ),
-            labelText: 'Password',
-            suffixIcon: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
-              child: GestureDetector(
-                onTap: _toggleObscured,
-                child: Icon(
-                  _obscured
-                      ? Icons.visibility_off_rounded
-                      : Icons.visibility_rounded,
-                  size: 24,
+    return Container(
+      height: 88.32,
+      width: 380,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Password",
+            style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF6E6E82)),
+          ),
+
+          // password form
+          Form(
+            key: passwordKey,
+            child: Container(
+              height: 55.78,
+              width: 380,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 0,
+                    blurRadius: 3,
+                    offset: const Offset(0, 1), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: TextFormField(
+                keyboardType: TextInputType.visiblePassword,
+                obscureText: _obscured,
+                focusNode: textFieldFocusNode,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Password is required.';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  setState(() {
+                    password = value;
+                  });
+                },
+                decoration: InputDecoration(
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 2.0),
+                  ),
+                  hintText: 'At least 8 characters',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  border: InputBorder.none,
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+                  fillColor: const Color(0xFFF8F6F8),
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 4, 0),
+                    child: GestureDetector(
+                      onTap: _toggleObscured,
+                      child: Icon(
+                        _obscured
+                            ? Icons.visibility_off_rounded
+                            : Icons.visibility_rounded,
+                        size: 24,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -223,19 +282,47 @@ class _loginPageState extends State<UserLoginScreen> {
     );
   }
 
+  var _savePassword = false;
+  Widget _buildSavePassword() {
+    return Row(
+      children: [
+        Checkbox(
+          activeColor: Colors.blue,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          value: _savePassword,
+          onChanged: (value) {
+            setState(() {
+              _savePassword = value!;
+            });
+          },
+        ),
+        Text(
+          "Save Password",
+          style: TextStyle(
+            color: R.appColors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildLoginButton() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          height: 1.4 * (MediaQuery.of(context).size.height / 22),
-          width: 5 * (MediaQuery.of(context).size.width / 10),
+          height: 52,
+          width: 310,
           margin: const EdgeInsets.only(bottom: 20),
           child: ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-              R.appColors.buttonColor,
-            )),
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(164, 52),
+              maximumSize: const Size(181, 52),
+              backgroundColor: buttonColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+            ),
             onPressed: () {
               if (emailKey.currentState!.validate() &&
                   passwordKey.currentState!.validate()) {
@@ -243,7 +330,7 @@ class _loginPageState extends State<UserLoginScreen> {
               }
             },
             child: Text(
-              "Login",
+              "Log In",
               style: TextStyle(
                 color: Colors.white,
                 letterSpacing: 1.5,
@@ -353,7 +440,6 @@ class _loginPageState extends State<UserLoginScreen> {
               "id", data['data']['user']['id'].toString());
           sharedPreferences.setString(
               "user_role", data['data']['user']['designation'].toString());
-
 
           // Print email, password, and token
           print("Email: ${email}");
