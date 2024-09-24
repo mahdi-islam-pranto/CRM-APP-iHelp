@@ -7,6 +7,7 @@ import 'package:untitled1/resourses/resourses.dart';
 
 import 'Auth/login_page.dart';
 import 'Dashboard/bottom_navigation_page.dart';
+import 'resourses/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -40,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
         children: [
           Center(
             child: AnimatedSplashScreen(
-              splash: Image.asset("assets/images/ihelpbd.png"),
+              splash: Image.asset("assets/images/ihelp_splash.png"),
               splashTransition: SplashTransition.scaleTransition,
               duration: 1500,
               nextScreen:
@@ -52,6 +53,10 @@ class _SplashScreenState extends State<SplashScreen> {
                 0.38, // Position spinner slightly above the bottom edge
             child: R.appSpinKits.spinKitFadingCube, // Spinner animation
           ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: _buildInventor(),
+          )
         ],
       ),
     );
@@ -70,5 +75,41 @@ class _SplashScreenState extends State<SplashScreen> {
         loginStatus = false;
       });
     }
+  }
+
+  Widget _buildInventor() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(top: 40),
+          child: TextButton(
+            onPressed: () {
+              var url = Uri.parse("https://ihelpbd.com");
+            },
+            child: RichText(
+              text: TextSpan(children: [
+                const TextSpan(
+                  text: 'Design & development by ',
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                TextSpan(
+                  text: "iHelpBD",
+                  style: TextStyle(
+                    color: buttonColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              ]),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

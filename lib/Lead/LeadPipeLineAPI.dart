@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled1/resourses/app_colors.dart';
 
 import '../resourses/resourses.dart';
 
@@ -78,6 +79,8 @@ class _LeadPipelineScreenState extends State<LeadPipelineScreen> {
               ],
             ),
             child: DropdownButtonFormField<dynamic>(
+              dropdownColor: backgroundColor,
+
               menuMaxHeight: 5000,
               isExpanded: true,
               hint: Text(

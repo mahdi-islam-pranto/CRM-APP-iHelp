@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../FollowUP/FollowUPListScreen.dart';
+import '../Task/allTaskListScreen.dart';
 import '../resourses/resourses.dart';
 
-import '../screens/allTaskListScreen.dart';
 import '../screens/totalLeadList.dart';
 
 import '../screens/settings.dart';

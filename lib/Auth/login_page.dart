@@ -44,16 +44,32 @@ class _loginPageState extends State<UserLoginScreen> {
       onWillPop: onBackPressed,
       child: SafeArea(
           child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: backgroundColor,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            _buildContainer(),
-            _buildInventor(),
-          ],
-        ),
-      )),
+              resizeToAvoidBottomInset: true,
+              backgroundColor: backgroundColor,
+              body: Stack(
+                children: <Widget>[
+                  // background image
+
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: Image.asset(
+                      'assets/images/union.png', // Update with your image path
+                      width: MediaQuery.of(context).size.width / 2.5,
+
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+
+                  // forms and footer
+                  Align(alignment: Alignment.center, child: _buildContainer()),
+
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: _buildInventor(),
+                  )
+                ],
+              ))),
     );
   }
 
@@ -86,6 +102,10 @@ class _loginPageState extends State<UserLoginScreen> {
                       ),
                     ),
                   ],
+                ),
+
+                const SizedBox(
+                  height: 20,
                 ),
                 _buildEmailRow(),
                 const SizedBox(height: 20),
@@ -271,10 +291,10 @@ class _loginPageState extends State<UserLoginScreen> {
       children: <Widget>[
         TextButton(
           onPressed: () {},
-          child: Text(
+          child: const Text(
             "Forgot Password?",
             style: TextStyle(
-              color: R.appColors.grey,
+              color: Colors.blue,
             ),
           ),
         ),
@@ -355,19 +375,19 @@ class _loginPageState extends State<UserLoginScreen> {
             },
             child: RichText(
               text: TextSpan(children: [
-                TextSpan(
-                  text: 'Developed by ',
+                const TextSpan(
+                  text: 'Design & development by ',
                   style: TextStyle(
-                    color: const Color.fromRGBO(38, 35, 38, 0.4470588235294118),
-                    fontSize: MediaQuery.of(context).size.height / 40,
+                    color: Colors.black54,
+                    fontSize: 16,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
                 TextSpan(
                   text: "iHelpBD",
                   style: TextStyle(
-                    color: R.appColors.buttonColor,
-                    fontSize: MediaQuery.of(context).size.height / 40,
+                    color: buttonColor,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 )

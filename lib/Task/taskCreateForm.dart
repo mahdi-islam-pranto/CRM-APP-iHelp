@@ -6,23 +6,24 @@ import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
+import 'package:untitled1/components/Dropdowns/companyNameDropDown.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 
+import '../FollowUP/followUpType.dart';
 import '../Lead/LeadAssociateDropdown.dart';
 import '../Lead/LeadOwnerDropdown.dart';
 import '../components/CustomProgress.dart';
 
 import '../resourses/resourses.dart';
-import 'followUpType.dart';
 
-class FollowUpCreate extends StatefulWidget {
-  const FollowUpCreate({Key? key}) : super(key: key);
+class TaskCreateForm extends StatefulWidget {
+  const TaskCreateForm({Key? key}) : super(key: key);
 
   @override
-  State<FollowUpCreate> createState() => _FollowUpCreateState();
+  State<TaskCreateForm> createState() => _TaskCreateFormState();
 }
 
-class _FollowUpCreateState extends State<FollowUpCreate> {
+class _TaskCreateFormState extends State<TaskCreateForm> {
   final _formKey = GlobalKey<FormState>();
   final _companyName = TextEditingController();
   final _subject = TextEditingController();
@@ -164,12 +165,13 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+          resizeToAvoidBottomInset: true,
           backgroundColor: backgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.white,
             // toolbarHeight: 80,
             title: const Text(
-              "CREATE  FOLLOW  UP",
+              "CREATE NEW TASK",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             centerTitle: true,
@@ -192,35 +194,42 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      formField(
-                          "Company Name", _companyName, 'Enter Company Name'),
+                      //company
+                      dropDownRow("Company Name", const CompanyNameDropdown()),
                       const SizedBox(height: 10),
-                      formField("Subject", _subject, 'Please enter subject'),
+
+                      // task type
+                      dropDownRow("Task Type", const FollowUpTypeDropdown()),
+                      const SizedBox(height: 12),
+
+                      // task title
+                      formField("Task Title", _subject, 'Please enter subject'),
                       const SizedBox(height: 10),
+
+                      // assign to
+                      dropDownRow(
+                          "Assign Member", const FollowUpTypeDropdown()),
+                      const SizedBox(height: 12),
+
+                      // start date & end date
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Flexible(
                             flex: 1,
-                            child: dropDownRow("Owner", LeadOwnerDropDown()),
+                            child: dateField("Start Date", dateTimeController),
                           ),
                           const SizedBox(width: 10),
                           Flexible(
                             flex: 1,
-                            child: dropDownRow(
-                                "Associate", LeadAssociateDropDown()),
+                            child:
+                                dateField("Deadline Date", dateTimeController),
                           ),
                         ],
                       ),
                       const SizedBox(height: 12),
-                      dropDownRow(
-                          "Follow Up Type", const FollowUpTypeDropdown()),
-                      const SizedBox(height: 12),
-                      dateField("Next Follow Up Date", dateTimeController),
-                      const SizedBox(height: 10),
-                      phoneNumberField(),
-                      const SizedBox(height: 10),
+
                       descritionFormField("Description", _description,
                           'Please enter description'),
                       const SizedBox(height: 30),
