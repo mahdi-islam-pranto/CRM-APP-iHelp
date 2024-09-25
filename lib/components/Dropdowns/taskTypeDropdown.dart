@@ -66,23 +66,49 @@ class _TasktypedropdownState extends State<Tasktypedropdown> {
   @override
   Widget build(BuildContext context) {
     return _pipelineList.isNotEmpty
-        ? DropdownButtonFormField<dynamic>(
-            decoration: const InputDecoration(
-              // labelText: 'Select Pipeline',
-              border: OutlineInputBorder(),
+        ? Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
             ),
-            items: _pipelineList.map((pipeline) {
-              return DropdownMenuItem<dynamic>(
-                value: pipeline,
-                child: Text(pipeline['name']),
-              );
-            }).toList(),
-            onChanged: _onPipelineSelected,
-            value: _selectedPipelineName != null
-                ? _pipelineList.firstWhere(
-                    (pipeline) => pipeline['name'] == _selectedPipelineName)
-                : null,
-            hint: const Text('Select Task Type'),
+            child: DropdownButtonFormField<dynamic>(
+              hint: Text(
+                "Select task type",
+                style: TextStyle(color: Colors.grey[400]),
+              ),
+              icon: const Icon(Icons.keyboard_arrow_down_sharp,
+                  size: 30, color: Colors.blue),
+              borderRadius: BorderRadius.circular(8),
+              decoration: const InputDecoration(
+                // hintText: 'Select Follow Up Type',
+                // labelText: 'Select Follow Up Type',
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFFF8F6F8)),
+                ),
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+                fillColor: Color(0xFFF8F6F8),
+              ),
+              items: _pipelineList.map((pipeline) {
+                return DropdownMenuItem<dynamic>(
+                  value: pipeline,
+                  child: Text(pipeline['name']),
+                );
+              }).toList(),
+              onChanged: _onPipelineSelected,
+              value: _selectedPipelineName != null
+                  ? _pipelineList.firstWhere(
+                      (pipeline) => pipeline['name'] == _selectedPipelineName)
+                  : null,
+            ),
           )
         : R.appSpinKits.spinKitFadingCube;
   }

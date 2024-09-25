@@ -77,7 +77,7 @@ class _LeadSourceDropDownState extends State<LeadAssociateDropDown> {
               menuMaxHeight: 5000,
               isExpanded: true,
               hint: Text(
-                "Select Associate",
+                "Select Member",
                 style: TextStyle(color: Colors.grey[400]),
               ),
               // dropdownColor: Color(0xFFF8F6F8),

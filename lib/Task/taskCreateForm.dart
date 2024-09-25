@@ -2,18 +2,20 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
+import 'package:untitled1/Models/taskListModel.dart';
 import 'package:untitled1/components/Dropdowns/companyNameDropDown.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 
 import '../FollowUP/followUpType.dart';
-import '../Lead/LeadAssociateDropdown.dart';
+
 import '../Lead/LeadOwnerDropdown.dart';
 import '../components/CustomProgress.dart';
 
+import '../components/Dropdowns/taskTypeDropdown.dart';
 import '../resourses/resourses.dart';
 
 class TaskCreateForm extends StatefulWidget {
@@ -26,10 +28,13 @@ class TaskCreateForm extends StatefulWidget {
 class _TaskCreateFormState extends State<TaskCreateForm> {
   final _formKey = GlobalKey<FormState>();
   final _companyName = TextEditingController();
+  final _taskType = TextEditingController();
+  final _assignTo = TextEditingController();
   final _subject = TextEditingController();
   final _description = TextEditingController();
   final _contactNumber = TextEditingController();
-  TextEditingController dateTimeController = TextEditingController();
+  TextEditingController startDateTimeController = TextEditingController();
+  TextEditingController endDateTimeController = TextEditingController();
   late String dateTimePicker;
 
   bool validatePhoneNumber(String phoneNumber) {
@@ -41,16 +46,6 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
   Future sendDataToServer() async {
     CustomProgress customProgress = CustomProgress(context);
 
-    if (!validatePhoneNumber(_contactNumber.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Phone number must be 11 digits.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
     customProgress.showDialog(
         "Please wait", SimpleFontelicoProgressDialogType.spinner);
 
@@ -61,22 +56,23 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
     if (token == null || token.isEmpty) {
       customProgress.hideDialog();
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Token not found. Please log in again.'),
+        content: Text('Not found. Please log in again.'),
       ));
       return;
     }
     print("Token: $token");
 
-    String url = 'https://crm.ihelpbd.com/api/crm-create-follow-up';
+    String url = 'https://crm.ihelpbd.com/api/crm-create-task';
 
     Map body = {
       "lead_id": "1910",
-      "user_id": userId,
+      "user_id": Owner.ownerId.toString(),
       "creator_user_id": userId,
-      "followup_type_id": FollowupType.followUpType.toString(),
+      "task_type_id": SelectedPipeline.taskTypeId.toString(),
       "subject": _subject.text,
-      "phone_number": _contactNumber.text,
-      "next_followup_date": dateTimeController.text,
+      "start_time": startDateTimeController.text,
+      "end_time": endDateTimeController.text,
+      "reminder_time": "",
       "description": _description.text,
       "associate_user_id": "",
     };
@@ -102,7 +98,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       _subject.clear();
       _description.clear();
       _contactNumber.clear();
-      dateTimeController.clear();
+      startDateTimeController.clear();
 
       // Reset dropdowns to their initial state
       setState(() {
@@ -199,7 +195,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                       const SizedBox(height: 10),
 
                       // task type
-                      dropDownRow("Task Type", const FollowUpTypeDropdown()),
+                      dropDownRow("Task Type", Tasktypedropdown()),
                       const SizedBox(height: 12),
 
                       // task title
@@ -207,8 +203,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                       const SizedBox(height: 10),
 
                       // assign to
-                      dropDownRow(
-                          "Assign Member", const FollowUpTypeDropdown()),
+                      dropDownRow("Assign Member", LeadOwnerDropDown()),
                       const SizedBox(height: 12),
 
                       // start date & end date
@@ -218,13 +213,14 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                         children: [
                           Flexible(
                             flex: 1,
-                            child: dateField("Start Date", dateTimeController),
+                            child: startdateField(
+                                "Start Date", startDateTimeController),
                           ),
                           const SizedBox(width: 10),
                           Flexible(
                             flex: 1,
-                            child:
-                                dateField("Deadline Date", dateTimeController),
+                            child: enddateField(
+                                "Deadline Date", endDateTimeController),
                           ),
                         ],
                       ),
@@ -331,7 +327,84 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
     );
   }
 
-  Widget dateField(String label, TextEditingController dateTimeController) {
+  // start date field
+
+  Widget startdateField(
+      String label, TextEditingController dateTimeController) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(label,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        ),
+        // const SizedBox(height: 10),
+        InkWell(
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+            );
+
+            if (pickedDate != null) {
+              setState(() {
+                dateTimeController.text =
+                    "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+              });
+            }
+            if (pickedDate == null) {
+              setState(() {
+                dateTimeController.text =
+                    "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}"; // set current date
+              });
+            }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
+            ),
+            // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: TextFormField(
+              readOnly: true,
+              controller: dateTimeController,
+              // validator: (value) {
+              //   if (value == null || value.isEmpty) {
+              //     return "Next Follow up date is required";
+              //   }
+              //   return null;
+              // },
+              enabled: false,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                fillColor: Color(0xFFF8F6F8),
+                hintText: 'Select Date',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // End date field
+
+  Widget enddateField(String label, TextEditingController dateTimeController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -378,7 +451,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
               controller: dateTimeController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return "Next Follow up date is required";
+                  return "Deadline is required";
                 }
                 return null;
               },
@@ -538,6 +611,8 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
           ),
         ),
         const SizedBox(width: 12),
+
+        //
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState?.validate() == true) {

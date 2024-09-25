@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import '../../resourses/resourses.dart';
 
 class CompanyName {
-  static int? companyName;
+  static String? companyName;
 }
 
 class CompanyNameDropdown extends StatefulWidget {
@@ -76,10 +76,12 @@ class _CompanyNameDropdownState extends State<CompanyNameDropdown> {
   void _onCompanySelected(dynamic selectedCompany) {
     setState(() {
       _selectedCompanyName = selectedCompany['company_name'];
+      // Store the selected pipeline ID in the static variable
+      CompanyName.companyName = _selectedCompanyName;
     });
 
     // Print the selected pipeline ID stored in the static variable
-    print('Selected follow type ID (static): ${CompanyName.companyName}');
+    print('Selected company name (static): ${CompanyName.companyName}');
   }
 
   @override
@@ -100,7 +102,7 @@ class _CompanyNameDropdownState extends State<CompanyNameDropdown> {
             ),
             child: DropdownButtonFormField<dynamic>(
               hint: Text(
-                "Select Company Name",
+                "Select company name",
                 style: TextStyle(color: Colors.grey[400]),
               ),
               icon: const Icon(Icons.keyboard_arrow_down_sharp,

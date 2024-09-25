@@ -76,7 +76,7 @@ class _LeadOwnerDropDownState extends State<LeadOwnerDropDown> {
               menuMaxHeight: 5000,
               isExpanded: true,
               hint: Text(
-                "Select Owner",
+                "Select Member",
                 style: TextStyle(color: Colors.grey[400]),
               ),
               icon: const Icon(Icons.keyboard_arrow_down_sharp,

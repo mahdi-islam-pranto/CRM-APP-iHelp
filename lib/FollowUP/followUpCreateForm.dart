@@ -77,7 +77,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
       "phone_number": _contactNumber.text,
       "next_followup_date": dateTimeController.text,
       "description": _description.text,
-      "associate_user_id": "",
+      "associate_user_id": Associate.associateId.toString(),
     };
 
     print('Sending request with body: ${jsonEncode(body)}');

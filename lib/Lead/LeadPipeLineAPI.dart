@@ -84,7 +84,7 @@ class _LeadPipelineScreenState extends State<LeadPipelineScreen> {
               menuMaxHeight: 5000,
               isExpanded: true,
               hint: Text(
-                "Select Associate",
+                "Ex: Physical visit",
                 style: TextStyle(color: Colors.grey[400]),
               ),
               // dropdownColor: Color(0xFFF8F6F8),
