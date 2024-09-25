@@ -6,12 +6,14 @@ import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
+
 import 'package:untitled1/resourses/app_colors.dart';
 
 import '../Lead/LeadAssociateDropdown.dart';
 import '../Lead/LeadOwnerDropdown.dart';
 import '../components/CustomProgress.dart';
 
+import '../components/Dropdowns/companyNameDropDown.dart';
 import '../resourses/resourses.dart';
 import 'followUpType.dart';
 
@@ -69,8 +71,8 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
     String url = 'https://crm.ihelpbd.com/api/crm-create-follow-up';
 
     Map body = {
-      "lead_id": "1910",
-      "user_id": userId,
+      "lead_id": CompanyName.companyId.toString(),
+      "user_id": Owner.ownerId.toString(),
       "creator_user_id": userId,
       "followup_type_id": FollowupType.followUpType.toString(),
       "subject": _subject.text,
@@ -192,8 +194,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      formField(
-                          "Company Name", _companyName, 'Enter Company Name'),
+                      dropDownRow("Company Name", CompanyNameDropdown()),
                       const SizedBox(height: 10),
                       formField("Subject", _subject, 'Please enter subject'),
                       const SizedBox(height: 10),
@@ -417,15 +418,15 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
             child: TextFormField(
               controller: _contactNumber,
               keyboardType: TextInputType.phone,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter phone number';
-                }
-                if (!validatePhoneNumber(value)) {
-                  return 'Phone number must be 11 digits';
-                }
-                return null;
-              },
+              // validator: (value) {
+              //   if (value == null || value.isEmpty) {
+              //     return 'Please enter phone number';
+              //   }
+              //   if (!validatePhoneNumber(value)) {
+              //     return 'Phone number must be 11 digits';
+              //   }
+              //   return null;
+              // },
               decoration: InputDecoration(
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 10),

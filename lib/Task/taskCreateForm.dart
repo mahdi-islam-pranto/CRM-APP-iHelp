@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
-import 'package:untitled1/Models/taskListModel.dart';
+
 import 'package:untitled1/components/Dropdowns/companyNameDropDown.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 
@@ -65,7 +65,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
     String url = 'https://crm.ihelpbd.com/api/crm-create-task';
 
     Map body = {
-      "lead_id": "1910",
+      "lead_id": CompanyName.companyId.toString(),
       "user_id": Owner.ownerId.toString(),
       "creator_user_id": userId,
       "task_type_id": SelectedPipeline.taskTypeId.toString(),
@@ -115,7 +115,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
         animType: AnimType.topSlide,
         showCloseIcon: true,
         title: "Success",
-        desc: "Your info saved successfully",
+        desc: "Your task created successfully",
         customHeader: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -139,9 +139,9 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
         builder: (context) => AlertDialog(
           title: const Column(
             children: [
-              Text("Error", style: TextStyle(color: Colors.red)),
-              Text("Please select Owner and Follow Up Type",
-                  style: TextStyle(color: Colors.red, fontSize: 13)),
+              Text("Task Not Created", style: TextStyle(color: Colors.red)),
+              Text("Please Check All the Fields",
+                  style: TextStyle(color: Colors.blue, fontSize: 13)),
             ],
           ),
           actions: [
@@ -195,7 +195,10 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                       const SizedBox(height: 10),
 
                       // task type
-                      dropDownRow("Task Type", Tasktypedropdown()),
+                      dropDownRow(
+                        "Task Type",
+                        Tasktypedropdown(),
+                      ),
                       const SizedBox(height: 12),
 
                       // task title
@@ -381,12 +384,12 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
             child: TextFormField(
               readOnly: true,
               controller: dateTimeController,
-              // validator: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return "Next Follow up date is required";
-              //   }
-              //   return null;
-              // },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Start Date is required";
+                }
+                return null;
+              },
               enabled: false,
               decoration: const InputDecoration(
                 border: InputBorder.none,
@@ -597,8 +600,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
               dialogType: DialogType.warning,
               animType: AnimType.topSlide,
               showCloseIcon: true,
-              title: "Warning",
-              desc: "Please take a good look",
+              title: "Cancel task creation?",
               btnCancelOnPress: () {},
               btnOkOnPress: () {
                 Navigator.pop(context);
@@ -616,49 +618,49 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState?.validate() == true) {
-              if (Owner.ownerId == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    dismissDirection: DismissDirection.endToStart,
-                    elevation: 2,
-                    backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating, // Makes it floating
-                    shape: RoundedRectangleBorder(
-                      // Adds border radius
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    margin:
-                        const EdgeInsets.all(10), // Margin around the SnackBar
-                    content: const Text(
-                      'Please Select Owner',
-                      style:
-                          TextStyle(color: Colors.white), // Custom text style
-                    ),
-                  ),
-                );
-                return;
-              }
-              if (FollowupType.followUpType == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    elevation: 2,
-                    backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating, // Makes it floating
-                    shape: RoundedRectangleBorder(
-                      // Adds border radius
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    margin:
-                        const EdgeInsets.all(10), // Margin around the SnackBar
-                    content: const Text(
-                      'Please Select Follow Up Type',
-                      style:
-                          TextStyle(color: Colors.white), // Custom text style
-                    ),
-                  ),
-                );
-                return;
-              }
+              // if (Owner.ownerId == null) {
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //     SnackBar(
+              //       dismissDirection: DismissDirection.endToStart,
+              //       elevation: 2,
+              //       backgroundColor: Colors.red,
+              //       behavior: SnackBarBehavior.floating, // Makes it floating
+              //       shape: RoundedRectangleBorder(
+              //         // Adds border radius
+              //         borderRadius: BorderRadius.circular(12),
+              //       ),
+              //       margin:
+              //           const EdgeInsets.all(10), // Margin around the SnackBar
+              //       content: const Text(
+              //         'Please Select Owner',
+              //         style:
+              //             TextStyle(color: Colors.white), // Custom text style
+              //       ),
+              //     ),
+              //   );
+              //   return;
+              // }
+              // if (FollowupType.followUpType == null) {
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //     SnackBar(
+              //       elevation: 2,
+              //       backgroundColor: Colors.red,
+              //       behavior: SnackBarBehavior.floating, // Makes it floating
+              //       shape: RoundedRectangleBorder(
+              //         // Adds border radius
+              //         borderRadius: BorderRadius.circular(12),
+              //       ),
+              //       margin:
+              //           const EdgeInsets.all(10), // Margin around the SnackBar
+              //       content: const Text(
+              //         'Please Select Follow Up Type',
+              //         style:
+              //             TextStyle(color: Colors.white), // Custom text style
+              //       ),
+              //     ),
+              //   );
+              //   return;
+              // }
               sendDataToServer();
             }
           },

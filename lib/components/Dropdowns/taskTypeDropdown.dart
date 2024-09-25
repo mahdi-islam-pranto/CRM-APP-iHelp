@@ -80,6 +80,8 @@ class _TasktypedropdownState extends State<Tasktypedropdown> {
               ],
             ),
             child: DropdownButtonFormField<dynamic>(
+              validator: (value) =>
+                  value == null ? 'task type is required' : null,
               hint: Text(
                 "Select task type",
                 style: TextStyle(color: Colors.grey[400]),

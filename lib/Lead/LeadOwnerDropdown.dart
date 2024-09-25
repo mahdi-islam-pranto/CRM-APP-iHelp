@@ -73,6 +73,8 @@ class _LeadOwnerDropDownState extends State<LeadOwnerDropDown> {
               ],
             ),
             child: DropdownButtonFormField<dynamic>(
+              validator: (value) =>
+                  value == null ? 'Assign member is required' : null,
               menuMaxHeight: 5000,
               isExpanded: true,
               hint: Text(
