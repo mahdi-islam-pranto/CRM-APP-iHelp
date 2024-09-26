@@ -28,8 +28,7 @@ class TaskCreateForm extends StatefulWidget {
 class _TaskCreateFormState extends State<TaskCreateForm> {
   final _formKey = GlobalKey<FormState>();
   final _companyName = TextEditingController();
-  final _taskType = TextEditingController();
-  final _assignTo = TextEditingController();
+
   final _subject = TextEditingController();
   final _description = TextEditingController();
   final _contactNumber = TextEditingController();
