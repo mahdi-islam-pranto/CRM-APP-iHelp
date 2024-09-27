@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../Contacts/contact_services.dart';
 import '../FollowUP/FollowUPListScreen.dart';
 import '../Task/allTaskListScreen.dart';
 import '../resourses/resourses.dart';
@@ -21,7 +22,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   PageController _pageController = PageController(initialPage: 2);
 
   List<Widget> pages = [
-    const Settings(),
+    // const Settings(),
+    const ContactServices(),
     const FollowUpList(),
     const NewDashboard(),
     const LeadListScreen(),
