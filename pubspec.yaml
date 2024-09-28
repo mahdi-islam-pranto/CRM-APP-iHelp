@@ -37,7 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.6
   flutter_launcher_icons: ^0.13.1
   flutter_spinkit: 5.2.1
-  google_fonts: 6.2.1
+  google_fonts: ^6.2.1
   intl: 0.19.0
   flutter_screenutil: 5.9.3
   animated_floating_buttons: 0.0.2

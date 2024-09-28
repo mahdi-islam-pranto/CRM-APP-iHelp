@@ -7,6 +7,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled1/resourses/app_colors.dart';
 import 'package:untitled1/screens/leadDetailsTabs.dart';
 import 'package:http/http.dart' as http;
 
@@ -210,6 +211,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
     );
   }
 
+  Map<int, bool> state = {};
   // showing Lead List item
   Widget _buildListItem(LeadListModel lead) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -219,112 +221,136 @@ class _LeadListScreenState extends State<LeadListScreen> {
         screenWidth * 0.05; // Adjust icon size based on screen width
     double spacing = screenWidth * 0.02; // Adjust spacing based on screen width
 
-    return Card(
-      elevation: 0.5,
-      color: Colors.white,
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => AllLeadList(),
-              ));
-        },
-        child: ExpansionTile(
-          title: Text(
-            lead.companyName ?? 'Unknown',
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16.sp,
-                color: const Color.fromRGBO(73, 72, 72, 1.0)),
-          ),
-          subtitle: Text(
-            lead.assignName?.name ?? 'Unknown',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 14.sp,
-              color: const Color.fromRGBO(18, 22, 92, 100),
-            ),
-          ),
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Text(
-                    lead.phoneNumber ?? 'No Phone',
-                    style: const TextStyle(
-                      color: Color.fromRGBO(18, 22, 92, 100),
-                    ),
-                  ),
-                  const Spacer(),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CircleAvatar(
-                        radius: avatarRadius,
-                        backgroundColor: Colors.grey[200],
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.call,
-                            color: Colors.green,
-                            size: iconSize,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: spacing),
-                      CircleAvatar(
-                        radius: avatarRadius,
-                        backgroundColor: Colors.grey[200],
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.phone_disabled,
-                            color: Colors.red,
-                            size: iconSize,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: spacing),
-                      CircleAvatar(
-                        radius: avatarRadius,
-                        backgroundColor: Colors.grey[200],
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.mark_email_read,
-                            color: Colors.blue,
-                            size: iconSize,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+          child: ExpansionTile(
+            childrenPadding: const EdgeInsets.only(
+                left: 15.0, right: 15.0, top: 0.0, bottom: 0.0),
+            leading: const Padding(
+              padding: EdgeInsets.only(right: 10),
+              child: CircleAvatar(
+                backgroundColor: Color(0x300D6EFD),
+                radius: 26,
+                child: Icon(
+                  size: 26,
+                  Icons.person_2_rounded,
+                  color: Colors.blue,
+                ),
               ),
             ),
-            Row(
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Pipeline:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),
-                  ),
+                Icon(
+                  Icons.remove_red_eye_rounded,
+                  color: Colors.grey[400],
                 ),
-                Text(
-                  lead.leadPipelineName?.name ?? 'Unknown',
-                  style: const TextStyle(color: Colors.black54),
+                SizedBox(width: spacing),
+                Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Colors.grey[600],
                 ),
               ],
             ),
-          ],
+            title: Text(
+              lead.companyName ?? 'Unknown',
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 16.sp,
+              ),
+            ),
+            subtitle: Text(
+              lead.assignName?.name ?? 'Unknown',
+              style: TextStyle(
+                fontSize: 13.sp,
+                color: Colors.blue[400],
+              ),
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // phone no
+                        Text(
+                          lead.phoneNumber ?? 'No Phone',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Color(0xFF242424),
+                          ),
+                        ),
+
+                        // status
+
+                        Text(
+                          lead.leadPipelineName!.name ?? 'No Phone',
+                          style: TextStyle(
+                            color: Colors.blue[400],
+                          ),
+                        ),
+
+                        // assign to
+                        Text(
+                          lead.assignName?.name ?? 'No Phone',
+                          style: TextStyle(
+                            color: Colors.blue[400],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.green[100],
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.call,
+                              color: Colors.green,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: spacing),
+                        CircleAvatar(
+                          radius: avatarRadius,
+                          backgroundColor: Colors.blue[100],
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.dialer_sip_outlined,
+                              color: Colors.blue,
+                              size: iconSize,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+
+        // divider
+
+        const Divider(
+          height: 3,
+          thickness: 0.2,
+          indent: 20, // empty space to the leading edge of divider.
+          endIndent: 20,
+        ),
+      ],
     );
   }
 

@@ -78,7 +78,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             },
             items: const [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), label: "Setting"),
+                  icon: Icon(Icons.contacts), label: "Contacts"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.follow_the_signs), label: "Followup"),
               BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
