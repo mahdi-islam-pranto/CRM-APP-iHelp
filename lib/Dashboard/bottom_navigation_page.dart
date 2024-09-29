@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../Contacts/contact_services.dart';
 import '../FollowUP/FollowUPListScreen.dart';
 import '../Task/allTaskListScreen.dart';
+import '../resourses/app_colors.dart';
 import '../resourses/resourses.dart';
 
 import '../screens/totalLeadList.dart';
@@ -39,7 +40,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: R.appColors.white,
+      backgroundColor: backgroundColor,
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -67,7 +68,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           child: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
-            selectedItemColor: Colors.teal,
+            selectedItemColor: Colors.blue,
             unselectedItemColor: Colors.black,
             currentIndex: mycurrentIndex,
             onTap: (index) {

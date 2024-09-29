@@ -261,12 +261,23 @@ class _LeadListScreenState extends State<LeadListScreen> {
                 fontSize: 16.sp,
               ),
             ),
-            subtitle: Text(
-              lead.assignName?.name ?? 'Unknown',
-              style: TextStyle(
-                fontSize: 13.sp,
-                color: Colors.blue[400],
-              ),
+            subtitle: Row(
+              children: [
+                const Icon(
+                  Icons.phone,
+                  color: Colors.blue,
+                  size: 16,
+                ),
+                SizedBox(width: spacing),
+                Text(
+                  // lead.assignName?.name ?? 'Unknown',
+                  lead.phoneNumber ?? 'No Phone',
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    color: Colors.blue[400],
+                  ),
+                ),
+              ],
             ),
             children: [
               Padding(
@@ -277,30 +288,57 @@ class _LeadListScreenState extends State<LeadListScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // phone no
-                        Text(
-                          lead.phoneNumber ?? 'No Phone',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Color(0xFF242424),
-                          ),
+                        // Email
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.email_outlined,
+                              color: Colors.grey.shade700,
+                            ),
+                            SizedBox(width: spacing),
+                            Text(
+                              lead.email ?? 'No Email',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Color(0xFF242424),
+                              ),
+                            ),
+                          ],
                         ),
 
                         // status
 
-                        Text(
-                          lead.leadPipelineName!.name ?? 'No Phone',
-                          style: TextStyle(
-                            color: Colors.blue[400],
-                          ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.assignment_outlined,
+                              color: Colors.blue,
+                            ),
+                            SizedBox(width: spacing),
+                            Text(
+                              lead.leadPipelineName!.name ?? 'Type Unknown',
+                              style: TextStyle(
+                                color: Colors.blue[400],
+                              ),
+                            ),
+                          ],
                         ),
 
                         // assign to
-                        Text(
-                          lead.assignName?.name ?? 'No Phone',
-                          style: TextStyle(
-                            color: Colors.blue[400],
-                          ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.assignment_ind_outlined,
+                              color: Colors.blue,
+                            ),
+                            SizedBox(width: spacing),
+                            Text(
+                              lead.assignName?.name ?? 'No Assign',
+                              style: TextStyle(
+                                color: Colors.blue[400],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

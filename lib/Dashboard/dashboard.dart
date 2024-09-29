@@ -5,6 +5,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/Auth/login_page.dart';
+import 'package:untitled1/resourses/app_colors.dart';
 import 'package:untitled1/sip_account/SipAccountSetting.dart';
 
 import '../Auth/logout.dart';
@@ -230,7 +231,7 @@ class _NewDashboardState extends State<NewDashboard> {
     return WillPopScope(
       onWillPop: onBackPressed,
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: backgroundColor,
         body: SingleChildScrollView(
           child: SafeArea(
             child: Column(
@@ -242,7 +243,7 @@ class _NewDashboardState extends State<NewDashboard> {
                   child: Container(
                     width: 330.w,
                     height: 80.h,
-                    color: Colors.white,
+                    color: backgroundColor,
                     child: Column(
                       children: [
                         // User Name and user detail in APP top section
@@ -273,7 +274,7 @@ class _NewDashboardState extends State<NewDashboard> {
                                 "assets/images/person.png",
                                 color: Colors.blueGrey,
                                 fit: BoxFit.cover,
-                                width: 25.w,
+                                width: 33.w,
                               ),
                               itemBuilder: (context) => [
                                 ...MenuItems.itemsFirst.map(buildItem).toList(),

@@ -4,6 +4,7 @@ class LeadListModel {
   String? companyName;
   LeadPipeline? leadPipelineName;
   AssignName? assignName;
+  String? email;
 
   LeadListModel({
     required this.id,
@@ -11,6 +12,7 @@ class LeadListModel {
     this.companyName,
     this.leadPipelineName,
     this.assignName,
+    this.email,
   });
 
   factory LeadListModel.fromJson(Map<String, dynamic> json) {
@@ -18,6 +20,7 @@ class LeadListModel {
       id: json['id'],
       phoneNumber: json['phone_number'],
       companyName: json['company_name'],
+      email: json['email'],
       leadPipelineName: json['lead_pipeline_name'] != null
           ? LeadPipeline.fromJson(json['lead_pipeline_name'])
           : null,
