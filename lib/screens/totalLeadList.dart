@@ -150,7 +150,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
             color: Colors.white70,
             borderRadius: BorderRadius.circular(5),
           ),
-          child: const Text('Lead List'),
+          child: const Text('ALL LEADS'),
         ),
         automaticallyImplyLeading: true,
         actions: [
@@ -235,7 +235,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                 radius: 26,
                 child: Icon(
                   size: 26,
-                  Icons.person_2_rounded,
+                  Icons.person_2_outlined,
                   color: Colors.blue,
                 ),
               ),
@@ -293,14 +293,14 @@ class _LeadListScreenState extends State<LeadListScreen> {
                           children: [
                             Icon(
                               Icons.email_outlined,
-                              color: Colors.grey.shade700,
+                              color: Colors.grey[700],
                             ),
                             SizedBox(width: spacing),
                             Text(
                               lead.email ?? 'No Email',
                               style: const TextStyle(
                                 fontSize: 16,
-                                color: Color(0xFF242424),
+                                color: Colors.grey,
                               ),
                             ),
                           ],
@@ -311,7 +311,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                         Row(
                           children: [
                             const Icon(
-                              Icons.assignment_outlined,
+                              Icons.fork_left_rounded,
                               color: Colors.blue,
                             ),
                             SizedBox(width: spacing),
@@ -328,7 +328,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                         Row(
                           children: [
                             const Icon(
-                              Icons.assignment_ind_outlined,
+                              Icons.person_add_alt_1_outlined,
                               color: Colors.blue,
                             ),
                             SizedBox(width: spacing),
@@ -395,6 +395,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
   // FAB button for lead creation
   Widget _createLead() {
     return FloatingActionButton(
+      backgroundColor: Colors.blue[400],
       heroTag: "btn1",
       onPressed: () {
         Navigator.push(
@@ -411,6 +412,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
   // FAB button to view leads
   Widget _viewLeads() {
     return FloatingActionButton(
+      backgroundColor: Colors.grey[300],
       heroTag: "btn2",
       onPressed: () {},
       tooltip: 'View Leads',

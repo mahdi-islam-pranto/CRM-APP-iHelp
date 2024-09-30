@@ -41,7 +41,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: Colors.white,
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
@@ -52,7 +52,8 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         children: pages,
       ),
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        margin: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
+        height: 60,
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 
@@ -20,12 +21,20 @@ class _ContactServicesState extends State<ContactServices> {
   bool isLoading = true;
   // contact list
   List<Contact> contactList = [];
+  // search controller
+  TextEditingController searchController = TextEditingController();
+
+  // filter contacts
+  List<Contact> filterContactList = [];
 
   @override
   void initState() {
     super.initState();
 
     getContacts();
+    searchController.addListener(() {
+      filterContacts();
+    });
   }
 
   getContacts() async {
@@ -37,8 +46,7 @@ class _ContactServicesState extends State<ContactServices> {
       // loading contacts
 
       // get contacts
-      List<Contact> _contacts =
-          (await ContactsService.getContacts(withThumbnails: false)).toList();
+      List<Contact> _contacts = (await ContactsService.getContacts()).toList();
 
       setState(() {
         contactList = _contacts;
@@ -64,6 +72,24 @@ class _ContactServicesState extends State<ContactServices> {
     // ].request();
   }
 
+  // serch contacts
+
+  filterContacts() {
+    List<Contact> _contacts = [];
+    _contacts.addAll(contactList);
+    if (searchController.text.isNotEmpty) {
+      _contacts.retainWhere((contact) {
+        String searchTerm = searchController.text.toLowerCase();
+        String contactName = contact.displayName!.toLowerCase();
+
+        return contactName.contains(searchTerm);
+      });
+    }
+    setState(() {
+      filterContactList = _contacts;
+    });
+  }
+
   String sanitizeString(String? value) {
     if (value == null) {
       return "Unknown";
@@ -73,6 +99,7 @@ class _ContactServicesState extends State<ContactServices> {
 
   @override
   Widget build(BuildContext context) {
+    bool isSearching = searchController.text.isNotEmpty;
     return DefaultTabController(
       length: 2,
       initialIndex: 0,
@@ -125,16 +152,52 @@ class _ContactServicesState extends State<ContactServices> {
               color: Colors.white,
               padding: const EdgeInsets.all(8.0),
               child: isLoading
-                  ? Center(child: R.appSpinKits.spinKitFadingCube)
+                  ? Center(
+                      child: LoadingAnimationWidget.staggeredDotsWave(
+                      color: Colors.blue,
+                      size: 50,
+                    ))
                   : Column(
                       children: [
+                        // search bar
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 20,
+                            right: 20,
+                            bottom: 10,
+                          ),
+                          child: TextFormField(
+                            controller: searchController,
+                            cursorColor: Colors.blue,
+                            decoration: const InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.blue, width: 1.0),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 10),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(width: 0.2),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  )),
+                              labelText: "Search",
+                              floatingLabelStyle: TextStyle(color: Colors.grey),
+                              prefixIcon: Icon(Icons.search),
+                            ),
+                          ),
+                        ),
                         // contact list
                         Expanded(
                           child: ListView.builder(
                               shrinkWrap: true,
-                              itemCount: contactList.length,
+                              itemCount: isSearching == true
+                                  ? filterContactList.length
+                                  : contactList.length,
                               itemBuilder: (context, index) {
-                                Contact contact = contactList[index];
+                                Contact contact = isSearching == true
+                                    ? filterContactList[index]
+                                    : contactList[index];
 
                                 if (contactList.isNotEmpty) {
                                   return Column(

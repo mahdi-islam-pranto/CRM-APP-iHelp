@@ -62,7 +62,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white60,
+      backgroundColor: Colors.white,
       floatingActionButton: Stack(
         children: [
           Positioned(
@@ -124,7 +124,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
       // body
       body: Container(
-        color: Colors.white30,
+        color: Colors.white,
         child: Column(
           children: [
             Expanded(
@@ -161,14 +161,15 @@ class _TaskListScreenState extends State<TaskListScreen> {
                                       Row(
                                         children: [
                                           const Icon(
-                                              Icons.manage_accounts_rounded),
+                                              Icons.manage_accounts_rounded,
+                                              color: Colors.blue),
                                           const SizedBox(width: 5),
                                           Text(
                                             snapshot.data!.data![index]
                                                 .assignName!.name
                                                 .toString(),
-                                            style: const TextStyle(
-                                                color: Colors.grey),
+                                            style: TextStyle(
+                                                color: Colors.blue[400]),
                                           ),
                                         ],
                                       ),
@@ -184,7 +185,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                                           shape: const BeveledRectangleBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(5))),
-                                          color: Colors.white60,
+                                          color: Colors.blue[100],
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Text(snapshot
@@ -197,7 +198,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
                               ),
                               //
 
-                              const Divider(),
+                              const Divider(
+                                thickness: 0.5,
+                              ),
                             ],
                           ),
                         );
@@ -229,6 +232,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   Widget _createLead() {
     return FloatingActionButton(
+      backgroundColor: Colors.blue[400],
       heroTag: "btn1",
       onPressed: () {
         Navigator.push(
@@ -245,6 +249,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
   // FAB button to view leads
   Widget _viewLeads() {
     return FloatingActionButton(
+      backgroundColor: Colors.grey[300],
       heroTag: "btn2",
       onPressed: () {},
       tooltip: 'View Leads',

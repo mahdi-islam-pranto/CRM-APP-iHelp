@@ -146,7 +146,7 @@ class _FollowUpListState extends State<FollowUpList> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(5),
           ),
-          child: const Text('Follow Up List'),
+          child: const Text('ALL FOLLOW UPS'),
         ),
         automaticallyImplyLeading: true,
         actions: [
@@ -184,7 +184,7 @@ class _FollowUpListState extends State<FollowUpList> {
                               getFollowUpList();
                               return Center(
                                 child: LoadingAnimationWidget.staggeredDotsWave(
-                                  color: Colors.red,
+                                  color: Colors.blue,
                                   size: 50,
                                 ),
                               );
@@ -283,11 +283,11 @@ class _FollowUpListState extends State<FollowUpList> {
                                                   const SizedBox(width: 10),
 
                                                   // follow up type
-                                                  const Text(
+                                                  Text(
                                                     'Follow up type',
                                                     style: TextStyle(
                                                       fontSize: 16,
-                                                      color: Color(0xFF242424),
+                                                      color: Colors.grey[600],
                                                     ),
                                                   ),
                                                 ],
@@ -406,6 +406,7 @@ class _FollowUpListState extends State<FollowUpList> {
   Widget _createLead() {
     return Container(
       child: FloatingActionButton(
+        backgroundColor: Colors.blue[400],
         onPressed: () {
           Navigator.push(
             context,
@@ -422,6 +423,7 @@ class _FollowUpListState extends State<FollowUpList> {
   Widget _viewLeads() {
     return Container(
       child: FloatingActionButton(
+        backgroundColor: Colors.grey[300],
         onPressed: () {
           Navigator.pop(context);
         },
