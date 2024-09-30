@@ -7,6 +7,8 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled1/FollowUP/followUpCreateForm.dart';
+import 'package:untitled1/Models/followUpModel.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import 'package:untitled1/screens/leadDetailsTabs.dart';
 import 'package:http/http.dart' as http;
@@ -15,14 +17,14 @@ import '../Dashboard/bottom_navigation_page.dart';
 import '../Lead/leadCreateform.dart';
 import '../Models/LeadListModel.dart';
 
-class LeadListScreen extends StatefulWidget {
-  const LeadListScreen({Key? key}) : super(key: key);
+class FollowUpListPage extends StatefulWidget {
+  const FollowUpListPage({Key? key}) : super();
 
   @override
-  State<LeadListScreen> createState() => _LeadListScreenState();
+  State<FollowUpListPage> createState() => _FollowUpListPageState();
 }
 
-class _LeadListScreenState extends State<LeadListScreen> {
+class _FollowUpListPageState extends State<FollowUpListPage> {
   bool isLoading = true;
   bool isLoadingMore = false;
   int page = 1;
@@ -30,38 +32,40 @@ class _LeadListScreenState extends State<LeadListScreen> {
   final GlobalKey<AnimatedFloatingActionButtonState> key =
       GlobalKey<AnimatedFloatingActionButtonState>();
 
-  List<LeadListModel> totalLeadList = [];
+  List<FollowUpModel> totalFollowUpList = [];
   bool hasMoreLeads = true; // Flag to check if more leads are available
 
   @override
   void initState() {
     super.initState();
-    getLeadList(page);
+    getFollowupList(page);
   }
 
   // fetch leads from API with pagination
-  Future<void> getLeadList(int page) async {
+  Future<void> getFollowupList(int page) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString("token");
     String? userId = sharedPreferences.getString("id");
 
     if (!isLoadingMore) setState(() => isLoadingMore = true);
 
+    // Make the POST request with form data
+
     final response = await http.post(
-      Uri.parse("https://crm.ihelpbd.com/api/crm-lead-data-show"),
+      Uri.parse("https://crm.ihelpbd.com/api/crm-follow-up-list"),
       headers: {
         'Authorization': 'Bearer $token',
         'user_id': '$userId',
       },
       body: {
-        'start_date': '',
-        'end_date': '',
-        'user_id_search': userId,
+        'start_date': '2024-01-01',
+        'end_date': '2024-11-01',
+        'user_id': userId,
         'session_user_id': userId,
-        'lead_pipeline_id': '',
-        'lead_source_id': '',
-        'searchData': '',
-        'is_type': '0',
+        'followup_type_id': '',
+        'status': '',
+        'lead_id': '1910',
+        'next_followup_date': '',
         'page': '$page', // Pass the current page number
         'per_page': '$pageSize', // Pass the page size
       },
@@ -75,8 +79,8 @@ class _LeadListScreenState extends State<LeadListScreen> {
         isLoading = false;
         isLoadingMore = false;
         if (leadJsonList.isNotEmpty) {
-          totalLeadList.addAll(leadJsonList
-              .map((json) => LeadListModel.fromJson(json))
+          totalFollowUpList.addAll(leadJsonList
+              .map((json) => FollowUpModel.fromJson(json))
               .toList());
         } else {
           hasMoreLeads = false; // No more leads to load
@@ -95,9 +99,9 @@ class _LeadListScreenState extends State<LeadListScreen> {
 
   // Fetch more leads as user scrolls
   Future<void> _loadMoreLeads() async {
-    if (!isLoadingMore && hasMoreLeads && totalLeadList.isNotEmpty) {
+    if (!isLoadingMore && hasMoreLeads && totalFollowUpList.isNotEmpty) {
       page++;
-      await getLeadList(page);
+      await getFollowupList(page);
     }
   }
 
@@ -166,11 +170,11 @@ class _LeadListScreenState extends State<LeadListScreen> {
       body: isLoading
           ? Center(
               child: LoadingAnimationWidget.staggeredDotsWave(
-                color: Colors.blue,
+                color: Colors.black,
                 size: 50,
               ),
             )
-          : totalLeadList.isEmpty
+          : totalFollowUpList.isEmpty
               ? Center(
                   child: Text(
                     'No leads available.',
@@ -189,20 +193,21 @@ class _LeadListScreenState extends State<LeadListScreen> {
                     return true;
                   },
                   child: ListView.builder(
-                    itemCount: totalLeadList.length + (hasMoreLeads ? 1 : 0),
+                    itemCount:
+                        totalFollowUpList.length + (hasMoreLeads ? 1 : 0),
                     itemBuilder: (context, index) {
-                      if (index == totalLeadList.length) {
+                      if (index == totalFollowUpList.length) {
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Center(
                             child: LoadingAnimationWidget.staggeredDotsWave(
-                              color: Colors.blue,
+                              color: Colors.black,
                               size: 50,
                             ),
                           ),
                         );
                       } else {
-                        final lead = totalLeadList[index];
+                        final lead = totalFollowUpList[index];
                         return _buildListItem(lead);
                       }
                     },
@@ -213,7 +218,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
 
   Map<int, bool> state = {};
   // showing Lead List item
-  Widget _buildListItem(LeadListModel lead) {
+  Widget _buildListItem(FollowUpModel lead) {
     double screenWidth = MediaQuery.of(context).size.width;
     double avatarRadius =
         screenWidth * 0.05; // Adjust radius based on screen width
@@ -255,7 +260,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
               ],
             ),
             title: Text(
-              lead.companyName ?? 'Unknown',
+              lead.data?[0].companyName?.name ?? 'Unknown',
               style: TextStyle(
                 fontWeight: FontWeight.w400,
                 fontSize: 16.sp,
@@ -271,7 +276,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                 SizedBox(width: spacing),
                 Text(
                   // lead.assignName?.name ?? 'Unknown',
-                  lead.phoneNumber ?? 'No Phone',
+                  lead.data?[0].phoneNumber ?? 'No Phone',
                   style: TextStyle(
                     fontSize: 13.sp,
                     color: Colors.blue[400],
@@ -288,133 +293,199 @@ class _LeadListScreenState extends State<LeadListScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Email
+                        const SizedBox(height: 10),
                         Row(
                           children: [
-                            Icon(
-                              Icons.email_outlined,
-                              color: Colors.grey.shade700,
+                            CircleAvatar(
+                              backgroundColor: const Color(0x300D6EFD),
+                              radius: avatarRadius,
+                              child: Icon(
+                                size: iconSize,
+                                Icons.cases_rounded,
+                                color: Colors.blue,
+                              ),
                             ),
                             SizedBox(width: spacing),
-                            Text(
-                              lead.email ?? 'No Email',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Color(0xFF242424),
-                              ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  lead.data?[0].companyName?.name ?? 'Unknown',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                                SizedBox(height: spacing),
+                                Text(
+                                  'Company Name',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-
-                        // status
-
+                        const SizedBox(height: 15),
                         Row(
                           children: [
-                            const Icon(
-                              Icons.assignment_outlined,
-                              color: Colors.blue,
+                            CircleAvatar(
+                              backgroundColor: const Color(0x300D6EFD),
+                              radius: avatarRadius,
+                              child: Icon(
+                                size: iconSize,
+                                Icons.phone_rounded,
+                                color: Colors.blue,
+                              ),
                             ),
                             SizedBox(width: spacing),
-                            Text(
-                              lead.leadPipelineName!.name ?? 'Type Unknown',
-                              style: TextStyle(
-                                color: Colors.blue[400],
-                              ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  lead.data?[0].phoneNumber ?? 'Unknown',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                                SizedBox(height: spacing),
+                                Text(
+                                  'Phone Number',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-
-                        // assign to
+                        const SizedBox(height: 15),
                         Row(
                           children: [
-                            const Icon(
-                              Icons.assignment_ind_outlined,
-                              color: Colors.blue,
+                            CircleAvatar(
+                              backgroundColor: const Color(0x300D6EFD),
+                              radius: avatarRadius,
+                              child: Icon(
+                                size: iconSize,
+                                Icons.business,
+                                color: Colors.blue,
+                              ),
                             ),
                             SizedBox(width: spacing),
-                            Text(
-                              lead.assignName?.name ?? 'No Assign',
-                              style: TextStyle(
-                                color: Colors.blue[400],
-                              ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  lead.data?[0].phoneNumber ?? 'Unknown',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                                SizedBox(height: spacing),
+                                Text(
+                                  'Follow Up Type',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
+                        const SizedBox(height: 15),
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: const Color(0x300D6EFD),
+                              radius: avatarRadius,
+                              child: Icon(
+                                size: iconSize,
+                                Icons.calendar_month_rounded,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            SizedBox(width: spacing),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  lead.data?[0].nextFollowupDate ?? 'Unknown',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                                SizedBox(height: spacing),
+                                Text(
+                                  'Next Follow Up Date',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12.sp,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 15),
                       ],
                     ),
-                    const Spacer(),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.green[100],
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.call,
-                              color: Colors.green,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: spacing),
-                        CircleAvatar(
-                          radius: avatarRadius,
-                          backgroundColor: Colors.blue[100],
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: Icon(
-                              Icons.dialer_sip_outlined,
-                              color: Colors.blue,
-                              size: iconSize,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
                   ],
                 ),
               ),
             ],
           ),
         ),
-
-        // divider
-
-        const Divider(
-          height: 3,
-          thickness: 0.2,
-          indent: 20, // empty space to the leading edge of divider.
-          endIndent: 20,
-        ),
+        const Divider(),
       ],
     );
   }
 
-  // FAB button for lead creation
   Widget _createLead() {
-    return FloatingActionButton(
-      heroTag: "btn1",
-      onPressed: () {
-        Navigator.push(
+    return Container(
+      child: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const LeadCreateForm(),
-            ));
-      },
-      tooltip: 'Create Lead',
-      child: const Icon(Icons.add),
+              builder: (context) => const FollowUpCreate(),
+            ),
+          );
+        },
+        heroTag: UniqueKey(),
+        icon: const Icon(Icons.person_add_alt_1_outlined),
+        label: const Text('Create Lead'),
+        backgroundColor: backgroundColor,
+      ),
     );
   }
 
-  // FAB button to view leads
   Widget _viewLeads() {
-    return FloatingActionButton(
-      heroTag: "btn2",
-      onPressed: () {},
-      tooltip: 'View Leads',
-      child: const Icon(Icons.visibility),
+    return Container(
+      child: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const BottomNavigationPage(),
+            ),
+          );
+        },
+        heroTag: UniqueKey(),
+        icon: const Icon(Icons.list_alt_outlined),
+        label: const Text('Lead List'),
+        backgroundColor: backgroundColor,
+      ),
     );
   }
 }

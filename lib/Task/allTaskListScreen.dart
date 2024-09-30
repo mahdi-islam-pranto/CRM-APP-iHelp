@@ -7,7 +7,6 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 import '../Dashboard/bottom_navigation_page.dart';
 import '../Models/taskListModel.dart';
 import 'taskCreateForm.dart';

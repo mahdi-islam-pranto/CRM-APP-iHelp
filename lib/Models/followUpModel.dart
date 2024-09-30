@@ -1,166 +1,378 @@
 class FollowUpModel {
-  FollowUpModel({
-    required this.status,
-    required this.message,
-    required this.data,
-  });
+  String? status;
+  String? message;
+  List<Data>? data;
 
-  final String? status;
-  final String? message;
-  final List<Datum> data;
+  FollowUpModel({this.status, this.message, this.data});
 
-  factory FollowUpModel.fromJson(Map<String, dynamic> json) {
-    return FollowUpModel(
-      status: json["status"],
-      message: json["message"],
-      data: json["data"] == null
-          ? []
-          : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
-    );
+  FollowUpModel.fromJson(Map<String, dynamic> json) {
+    status = json['status'];
+    message = json['message'];
+    if (json['data'] != null) {
+      data = <Data>[];
+      json['data'].forEach((v) {
+        data!.add(Data.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['status'] = this.status;
+    data['message'] = this.message;
+    if (this.data != null) {
+      data['data'] = this.data!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
 }
 
-class Datum {
-  Datum({
-    required this.id,
-    required this.name,
-    required this.phoneNumber,
-    required this.email,
-    required this.companyName,
-    required this.companyEmail,
-    required this.leadPipelineId,
-    required this.leadAreaId,
-    required this.userId,
-    required this.createdAt,
-    required this.amount,
-    required this.leadSourceId,
-    required this.leadPipelineName,
-    required this.leadAreasName,
-    required this.leadSourceName,
-    required this.assignName,
-    required this.associates,
-  });
+class Data {
+  int? id;
+  int? leadId;
+  int? userId;
+  int? creatorUserId;
+  int? followupTypeId;
+  String? subject;
+  String? phoneNumber;
+  String? status;
+  String? nextFollowupDate;
+  String? description;
+  String? isActive;
+  String? createdAt;
+  String? updatedAt;
+  CreatorName? creatorName;
+  CreatorName? assignName;
+  CompanyName? companyName;
+  FollowUpName? followUpName;
+  FollowUpName? followUpStatus;
+  List<Associate>? associates;
 
-  final int? id;
-  final String? name;
-  final String? phoneNumber;
-  final String? email;
-  final String? companyName;
-  final dynamic companyEmail;
-  final int? leadPipelineId;
-  final int? leadAreaId;
-  final int? userId;
-  final DateTime? createdAt;
-  final dynamic amount;
-  final int? leadSourceId;
-  final LeadName? leadPipelineName;
-  final LeadName? leadAreasName;
-  final LeadName? leadSourceName;
-  final AssignName? assignName;
-  final List<dynamic> associates;
+  Data(
+      {this.id,
+      this.leadId,
+      this.userId,
+      this.creatorUserId,
+      this.followupTypeId,
+      this.subject,
+      this.phoneNumber,
+      this.status,
+      this.nextFollowupDate,
+      this.description,
+      this.isActive,
+      this.createdAt,
+      this.updatedAt,
+      this.creatorName,
+      this.assignName,
+      this.companyName,
+      this.followUpName,
+      this.followUpStatus,
+      this.associates});
 
-  factory Datum.fromJson(Map<String, dynamic> json) {
-    return Datum(
-      id: json["id"],
-      name: json["name"],
-      phoneNumber: json["phone_number"],
-      email: json["email"],
-      companyName: json["company_name"],
-      companyEmail: json["company_email"],
-      leadPipelineId: json["lead_pipeline_id"],
-      leadAreaId: json["lead_area_id"],
-      userId: json["user_id"],
-      createdAt: DateTime.tryParse(json["created_at"] ?? ""),
-      amount: json["amount"],
-      leadSourceId: json["lead_source_id"],
-      leadPipelineName: json["lead_pipeline_name"] == null
-          ? null
-          : LeadName.fromJson(json["lead_pipeline_name"]),
-      leadAreasName: json["lead_areas_name"] == null
-          ? null
-          : LeadName.fromJson(json["lead_areas_name"]),
-      leadSourceName: json["lead_source_name"] == null
-          ? null
-          : LeadName.fromJson(json["lead_source_name"]),
-      assignName: json["assign_name"] == null
-          ? null
-          : AssignName.fromJson(json["assign_name"]),
-      associates: json["associates"] == null
-          ? []
-          : List<dynamic>.from(json["associates"]!.map((x) => x)),
-    );
+  Data.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    leadId = json['lead_id'];
+    userId = json['user_id'];
+    creatorUserId = json['creator_user_id'];
+    followupTypeId = json['followup_type_id'];
+    subject = json['subject'];
+    phoneNumber = json['phone_number'];
+    status = json['status'];
+    nextFollowupDate = json['next_followup_date'];
+    description = json['description'];
+    isActive = json['is_active'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    creatorName = json['creator_name'] != null
+        ? CreatorName.fromJson(json['creator_name'])
+        : null;
+    assignName = json['assign_name'] != null
+        ? CreatorName.fromJson(json['assign_name'])
+        : null;
+    companyName = json['company_name'] != null
+        ? CompanyName.fromJson(json['company_name'])
+        : null;
+    followUpName = json['follow_up_name'] != null
+        ? FollowUpName.fromJson(json['follow_up_name'])
+        : null;
+    followUpStatus = json['follow_up_status'] != null
+        ? FollowUpName.fromJson(json['follow_up_status'])
+        : null;
+    if (json['associates'] != null) {
+      associates = <Associate>[];
+      json['associates'].forEach((v) {
+        associates!.add(Associate.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['lead_id'] = this.leadId;
+    data['user_id'] = this.userId;
+    data['creator_user_id'] = this.creatorUserId;
+    data['followup_type_id'] = this.followupTypeId;
+    data['subject'] = this.subject;
+    data['phone_number'] = this.phoneNumber;
+    data['status'] = this.status;
+    data['next_followup_date'] = this.nextFollowupDate;
+    data['description'] = this.description;
+    data['is_active'] = this.isActive;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    if (this.creatorName != null) {
+      data['creator_name'] = this.creatorName!.toJson();
+    }
+    if (this.assignName != null) {
+      data['assign_name'] = this.assignName!.toJson();
+    }
+    if (this.companyName != null) {
+      data['company_name'] = this.companyName!.toJson();
+    }
+    if (this.followUpName != null) {
+      data['follow_up_name'] = this.followUpName!.toJson();
+    }
+    if (this.followUpStatus != null) {
+      data['follow_up_status'] = this.followUpStatus!.toJson();
+    }
+    if (this.associates != null) {
+      data['associates'] = this.associates!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
 }
 
-class AssignName {
-  AssignName({
-    required this.id,
-    required this.name,
-    required this.email,
-    required this.designation,
-    required this.isActive,
-    required this.emailVerifiedAt,
-    required this.attachment,
-    required this.createdAt,
-    required this.updatedAt,
-  });
+class CreatorName {
+  int? id;
+  String? name;
+  String? email;
+  String? designation;
+  String? isActive;
+  Null? emailVerifiedAt;
+  String? attachment;
+  String? createdAt;
+  String? updatedAt;
 
-  final int? id;
-  final String? name;
-  final String? email;
-  final String? designation;
-  final String? isActive;
-  final dynamic emailVerifiedAt;
-  final String? attachment;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+  CreatorName(
+      {this.id,
+      this.name,
+      this.email,
+      this.designation,
+      this.isActive,
+      this.emailVerifiedAt,
+      this.attachment,
+      this.createdAt,
+      this.updatedAt});
 
-  factory AssignName.fromJson(Map<String, dynamic> json) {
-    return AssignName(
-      id: json["id"],
-      name: json["name"],
-      email: json["email"],
-      designation: json["designation"],
-      isActive: json["is_active"],
-      emailVerifiedAt: json["email_verified_at"],
-      attachment: json["attachment"],
-      createdAt: DateTime.tryParse(json["created_at"] ?? ""),
-      updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
-    );
+  CreatorName.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    email = json['email'];
+    designation = json['designation'];
+    isActive = json['is_active'];
+    emailVerifiedAt = json['email_verified_at'];
+    attachment = json['attachment'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['email'] = this.email;
+    data['designation'] = this.designation;
+    data['is_active'] = this.isActive;
+    data['email_verified_at'] = this.emailVerifiedAt;
+    data['attachment'] = this.attachment;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    return data;
   }
 }
 
-class LeadName {
-  LeadName({
-    required this.id,
-    required this.name,
-    required this.isActive,
-    required this.isDelete,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.sla,
-    required this.orderNo,
-  });
+class CompanyName {
+  int? id;
+  String? companyName;
+  int? userId;
+  int? creatorUserId;
+  Null? leadIndustryId;
+  Null? leadSourceId;
+  int? leadPipelineId;
+  Null? leadPriority;
+  Null? leadRatingId;
+  Null? leadAreaId;
+  Null? districtId;
+  Null? name;
+  String? phoneNumber;
+  Null? alternateNumber;
+  Null? email;
+  Null? designation;
+  Null? gender;
+  Null? companyPhone;
+  Null? companyEmail;
+  Null? companyWebsite;
+  Null? amount;
+  Null? facebookPage;
+  Null? facebookLike;
+  Null? address;
+  Null? remarks;
+  String? isActive;
+  String? isType;
+  String? createdAt;
+  String? updatedAt;
 
-  final int? id;
-  final String? name;
-  final String? isActive;
-  final String? isDelete;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final String? sla;
-  final int? orderNo;
+  CompanyName(
+      {this.id,
+      this.companyName,
+      this.userId,
+      this.creatorUserId,
+      this.leadIndustryId,
+      this.leadSourceId,
+      this.leadPipelineId,
+      this.leadPriority,
+      this.leadRatingId,
+      this.leadAreaId,
+      this.districtId,
+      this.name,
+      this.phoneNumber,
+      this.alternateNumber,
+      this.email,
+      this.designation,
+      this.gender,
+      this.companyPhone,
+      this.companyEmail,
+      this.companyWebsite,
+      this.amount,
+      this.facebookPage,
+      this.facebookLike,
+      this.address,
+      this.remarks,
+      this.isActive,
+      this.isType,
+      this.createdAt,
+      this.updatedAt});
 
-  factory LeadName.fromJson(Map<String, dynamic> json) {
-    return LeadName(
-      id: json["id"],
-      name: json["name"],
-      isActive: json["is_active"],
-      isDelete: json["is_delete"],
-      createdAt: DateTime.tryParse(json["created_at"] ?? ""),
-      updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
-      sla: json["sla"],
-      orderNo: json["order_no"],
-    );
+  CompanyName.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    companyName = json['company_name'];
+    userId = json['user_id'];
+    creatorUserId = json['creator_user_id'];
+    leadIndustryId = json['lead_industry_id'];
+    leadSourceId = json['lead_source_id'];
+    leadPipelineId = json['lead_pipeline_id'];
+    leadPriority = json['lead_priority'];
+    leadRatingId = json['lead_rating_id'];
+    leadAreaId = json['lead_area_id'];
+    districtId = json['district_id'];
+    name = json['name'];
+    phoneNumber = json['phone_number'];
+    alternateNumber = json['alternate_number'];
+    email = json['email'];
+    designation = json['designation'];
+    gender = json['gender'];
+    companyPhone = json['company_phone'];
+    companyEmail = json['company_email'];
+    companyWebsite = json['company_website'];
+    amount = json['amount'];
+    facebookPage = json['facebook_page'];
+    facebookLike = json['facebook_like'];
+    address = json['address'];
+    remarks = json['remarks'];
+    isActive = json['is_active'];
+    isType = json['is_type'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['company_name'] = this.companyName;
+    data['user_id'] = this.userId;
+    data['creator_user_id'] = this.creatorUserId;
+    data['lead_industry_id'] = this.leadIndustryId;
+    data['lead_source_id'] = this.leadSourceId;
+    data['lead_pipeline_id'] = this.leadPipelineId;
+    data['lead_priority'] = this.leadPriority;
+    data['lead_rating_id'] = this.leadRatingId;
+    data['lead_area_id'] = this.leadAreaId;
+    data['district_id'] = this.districtId;
+    data['name'] = this.name;
+    data['phone_number'] = this.phoneNumber;
+    data['alternate_number'] = this.alternateNumber;
+    data['email'] = this.email;
+    data['designation'] = this.designation;
+    data['gender'] = this.gender;
+    data['company_phone'] = this.companyPhone;
+    data['company_email'] = this.companyEmail;
+    data['company_website'] = this.companyWebsite;
+    data['amount'] = this.amount;
+    data['facebook_page'] = this.facebookPage;
+    data['facebook_like'] = this.facebookLike;
+    data['address'] = this.address;
+    data['remarks'] = this.remarks;
+    data['is_active'] = this.isActive;
+    data['is_type'] = this.isType;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    return data;
+  }
+}
+
+class FollowUpName {
+  int? id;
+  String? name;
+  String? status;
+  String? isActive;
+  String? createdAt;
+  String? updatedAt;
+
+  FollowUpName(
+      {this.id,
+      this.name,
+      this.status,
+      this.isActive,
+      this.createdAt,
+      this.updatedAt});
+
+  FollowUpName.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    status = json['status'];
+    isActive = json['is_active'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['status'] = this.status;
+    data['is_active'] = this.isActive;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
+    return data;
+  }
+}
+
+class Associate {
+  int? id;
+  String? name;
+
+  Associate({this.id, this.name});
+
+  Associate.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    return data;
   }
 }
