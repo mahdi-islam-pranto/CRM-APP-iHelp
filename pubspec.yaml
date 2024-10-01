@@ -51,7 +51,7 @@ dependencies:
   page_transition: 2.1.0
   loading_animation_widget: 1.2.1
   http: ^1.2.2
-  shared_preferences: ^2.3.0
+  shared_preferences: ^2.2.3
   simple_fontellico_progress_dialog: ^0.3.0
   fl_chart: ^0.68.0
   contacts_service: ^0.6.3
