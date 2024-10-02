@@ -150,7 +150,7 @@ class _LeadCreateFormState extends State<LeadCreateForm> {
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 15, horizontal: 10),
-                              hintText: '+8801610-681903',
+                              hintText: 'Ex: 01610 681903',
                               hintStyle: TextStyle(color: Colors.grey[400]),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
@@ -1043,16 +1043,7 @@ class _LeadCreateFormState extends State<LeadCreateForm> {
                             ),
                           ),
                           onPressed: () {
-                            AwesomeDialog(
-                              context: context,
-                              dialogType: DialogType.warning,
-                              animType: AnimType.topSlide,
-                              showCloseIcon: true,
-                              title: "Warning",
-                              desc: "Please take a good look",
-                              btnCancelOnPress: () {},
-                              btnOkOnPress: () {},
-                            ).show();
+                            Navigator.pop(context);
                           },
                           child: const Text(
                             "Cancel",
@@ -1071,7 +1062,7 @@ class _LeadCreateFormState extends State<LeadCreateForm> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: const Text("Save",
+                        child: const Text("Create Lead",
                             style:
                                 TextStyle(color: Colors.white, fontSize: 16)),
                         onPressed: () async {

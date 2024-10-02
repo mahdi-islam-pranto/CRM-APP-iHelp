@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:untitled1/resourses/resourses.dart';
@@ -51,7 +52,10 @@ class _SplashScreenState extends State<SplashScreen> {
           Positioned(
             bottom: MediaQuery.sizeOf(context).height *
                 0.38, // Position spinner slightly above the bottom edge
-            child: R.appSpinKits.spinKitFadingCube, // Spinner animation
+            child: LoadingAnimationWidget.staggeredDotsWave(
+              color: Colors.blue,
+              size: 50,
+            ), // Spinner animation
           ),
           Align(
             alignment: Alignment.bottomCenter,

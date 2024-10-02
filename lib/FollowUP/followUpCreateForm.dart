@@ -15,6 +15,7 @@ import '../components/CustomProgress.dart';
 
 import '../components/Dropdowns/companyNameDropDown.dart';
 import '../resourses/resourses.dart';
+import 'FollowUPListScreen.dart';
 import 'followUpType.dart';
 
 class FollowUpCreate extends StatefulWidget {
@@ -120,12 +121,12 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
         animType: AnimType.topSlide,
         showCloseIcon: true,
         title: "Success",
-        desc: "Your info saved successfully",
+        desc: "Your follow up created successfully",
         customHeader: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: R.appColors.buttonColor,
+            color: Colors.blue[600],
           ),
           child: const Icon(
             Icons.check,
@@ -133,9 +134,17 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
             size: 50,
           ),
         ),
-        btnOkColor: R.appColors.buttonColor,
-        btnCancelOnPress: () {},
-        btnOkOnPress: () {},
+        btnOkColor: Colors.blue[600],
+        btnCancelOnPress: () {
+          Navigator.of(context).pop();
+        },
+        btnOkOnPress: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const FollowUpList(),
+              ));
+        },
       ).show();
     } else {
       customProgress.hideDialog();
@@ -430,7 +439,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
               decoration: InputDecoration(
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                hintText: '+8801610-681903',
+                hintText: 'Ex: 01610-681903',
                 hintStyle: TextStyle(color: Colors.grey[400]),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -511,18 +520,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
             ),
           ),
           onPressed: () {
-            AwesomeDialog(
-              context: context,
-              dialogType: DialogType.warning,
-              animType: AnimType.topSlide,
-              showCloseIcon: true,
-              title: "Warning",
-              desc: "Please take a good look",
-              btnCancelOnPress: () {},
-              btnOkOnPress: () {
-                Navigator.pop(context);
-              },
-            ).show();
+            Navigator.pop(context);
           },
           child: const Text(
             "Cancel",
@@ -589,7 +587,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text("Save",
+          child: const Text("Create",
               style: TextStyle(color: Colors.white, fontSize: 16)),
         ),
       ],

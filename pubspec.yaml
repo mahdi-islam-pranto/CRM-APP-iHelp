@@ -56,6 +56,7 @@ dependencies:
   fl_chart: ^0.68.0
   contacts_service: ^0.6.3
   permission_handler: ^11.3.1
+  pull_to_refresh_flutter3: ^2.0.2
 
 #  app launching logo 
 flutter_icons:

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import '../resourses/app_colors.dart';
 import '../resourses/resourses.dart';
 
 class FollowupType {
@@ -79,6 +80,8 @@ class _FollowUpTypeDropdownState extends State<FollowUpTypeDropdown> {
               ],
             ),
             child: DropdownButtonFormField<dynamic>(
+              dropdownColor: backgroundColor,
+              menuMaxHeight: 500,
               hint: Text(
                 "Select Follow Up Type",
                 style: TextStyle(color: Colors.grey[400]),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../resourses/app_colors.dart';
 import '../resourses/resourses.dart';
 
 class Owner {
@@ -73,9 +74,10 @@ class _LeadOwnerDropDownState extends State<LeadOwnerDropDown> {
               ],
             ),
             child: DropdownButtonFormField<dynamic>(
+              dropdownColor: backgroundColor,
               validator: (value) =>
                   value == null ? 'Assign member is required' : null,
-              menuMaxHeight: 5000,
+              menuMaxHeight: 400,
               isExpanded: true,
               hint: Text(
                 "Select Member",

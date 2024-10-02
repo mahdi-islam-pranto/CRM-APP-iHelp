@@ -150,78 +150,70 @@ class _NewDashboardState extends State<NewDashboard> {
   }
 
   Widget sipDailpad() {
-    return Container(
-      child: FloatingActionButton(
-        onPressed: () {
-          // Navigator.push(context, PageTransition(child: SipAccountSetting(),
-          //   type: PageTransitionType.leftToRight,
-          //   duration: Duration(milliseconds:400),
-          //   inheritTheme: true,
-          // ));
+    return FloatingActionButton(
+      onPressed: () {
+        // Navigator.push(context, PageTransition(child: SipAccountSetting(),
+        //   type: PageTransitionType.leftToRight,
+        //   duration: Duration(milliseconds:400),
+        //   inheritTheme: true,
+        // ));
 
-          showAnimatedDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (BuildContext context) {
-              return const SipAccountSetting();
-            },
-            curve: Curves.fastOutSlowIn,
-            duration: const Duration(seconds: 1),
-          );
-        },
-        heroTag: "Sip Call",
-        tooltip: 'Sip Call',
-        child: const Icon(
-          Icons.dialer_sip_outlined,
-          color: Colors.green,
-        ),
+        showAnimatedDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return const SipAccountSetting();
+          },
+          curve: Curves.fastOutSlowIn,
+          duration: const Duration(seconds: 1),
+        );
+      },
+      heroTag: "Sip Call",
+      tooltip: 'Sip Call',
+      child: const Icon(
+        Icons.dialer_sip_outlined,
+        color: Colors.green,
       ),
     );
   }
 
   Widget Clients() {
-    return Container(
-      child: const InkWell(
-        // onTap: () => Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => NewDashboard())),
-        child: FloatingActionButton(
-          onPressed: null,
-          heroTag: "Clients",
-          tooltip: 'Clients',
-          child: Icon(
-            Icons.manage_accounts,
-          ),
+    return const InkWell(
+      // onTap: () => Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => NewDashboard())),
+      child: FloatingActionButton(
+        onPressed: null,
+        heroTag: "Clients",
+        tooltip: 'Clients',
+        child: Icon(
+          Icons.manage_accounts,
         ),
       ),
     );
   }
 
   Widget Opportunity() {
-    return Container(
-      child: const InkWell(
-        // onTap: () => Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => NewDashboard())),
-        child: FloatingActionButton(
-          onPressed: null,
-          heroTag: "Opportunity",
-          tooltip: 'Opportunity',
-          child: Icon(Icons.ac_unit_outlined),
-        ),
+    return const InkWell(
+      // onTap: () => Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => NewDashboard())),
+      child: FloatingActionButton(
+        onPressed: null,
+        heroTag: "Opportunity",
+        tooltip: 'Opportunity',
+        child: Icon(Icons.ac_unit_outlined),
       ),
     );
   }
 
   Widget repport() {
-    return Container(
-      child: const InkWell(
-        // onTap: () => Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => NewDashboard())),
-        child: FloatingActionButton(
-          onPressed: null,
-          heroTag: "Report",
-          tooltip: 'Report',
-          child: Icon(Icons.report),
-        ),
+    return const InkWell(
+      // onTap: () => Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => NewDashboard())),
+      child: FloatingActionButton(
+        onPressed: null,
+        heroTag: "Report",
+        tooltip: 'Report',
+        child: Icon(Icons.report),
       ),
     );
   }

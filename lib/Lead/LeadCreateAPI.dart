@@ -3,10 +3,12 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
+import '../Dashboard/bottom_navigation_page.dart';
 import '../components/CustomProgress.dart';
 import 'package:http/http.dart' as http;
 
 import '../resourses/resourses.dart';
+import '../screens/totalLeadList.dart';
 
 class LeadCreateAPI {
   final BuildContext context;
@@ -149,12 +151,12 @@ class LeadCreateAPI {
         animType: AnimType.topSlide,
         showCloseIcon: true,
         title: "Success",
-        desc: "Your info saved successfully",
+        desc: "Your lead created successfully",
         customHeader: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: R.appColors.buttonColor,
+            color: Colors.blue[600],
           ),
           child: const Icon(
             Icons.check,
@@ -162,9 +164,17 @@ class LeadCreateAPI {
             size: 50,
           ),
         ),
-        btnOkColor: R.appColors.buttonColor,
-        btnCancelOnPress: () {},
-        btnOkOnPress: () {},
+        btnOkColor: Colors.blue[600],
+        btnCancelOnPress: () {
+          Navigator.pop(context);
+        },
+        btnOkOnPress: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LeadListScreen(),
+              ));
+        },
       ).show();
     } else {
       customProgress.hideDialog();

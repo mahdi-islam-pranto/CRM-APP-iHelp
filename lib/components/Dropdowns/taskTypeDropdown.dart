@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../resourses/app_colors.dart';
 import '../../resourses/resourses.dart';
 
 // Class to hold the static pipeline ID
@@ -80,6 +81,7 @@ class _TasktypedropdownState extends State<Tasktypedropdown> {
               ],
             ),
             child: DropdownButtonFormField<dynamic>(
+              dropdownColor: backgroundColor,
               validator: (value) =>
                   value == null ? 'task type is required' : null,
               hint: Text(

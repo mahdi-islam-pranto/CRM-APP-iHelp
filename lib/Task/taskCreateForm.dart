@@ -6,17 +6,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
-
 import 'package:untitled1/components/Dropdowns/companyNameDropDown.dart';
 import 'package:untitled1/resourses/app_colors.dart';
-
 import '../FollowUP/followUpType.dart';
-
 import '../Lead/LeadOwnerDropdown.dart';
 import '../components/CustomProgress.dart';
-
 import '../components/Dropdowns/taskTypeDropdown.dart';
 import '../resourses/resourses.dart';
+import 'allTaskListScreen.dart';
 
 class TaskCreateForm extends StatefulWidget {
   const TaskCreateForm({Key? key}) : super(key: key);
@@ -119,7 +116,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: R.appColors.buttonColor,
+            color: Colors.blue[600],
           ),
           child: const Icon(
             Icons.check,
@@ -127,9 +124,14 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
             size: 50,
           ),
         ),
-        btnOkColor: R.appColors.buttonColor,
-        btnCancelOnPress: () {},
-        btnOkOnPress: () {},
+        btnOkColor: Colors.blue[600],
+        btnCancelOnPress: () {
+          Navigator.pop(context);
+        },
+        btnOkOnPress: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => TaskListScreen()));
+        },
       ).show();
     } else {
       customProgress.hideDialog();
@@ -594,17 +596,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
             ),
           ),
           onPressed: () {
-            AwesomeDialog(
-              context: context,
-              dialogType: DialogType.warning,
-              animType: AnimType.topSlide,
-              showCloseIcon: true,
-              title: "Cancel task creation?",
-              btnCancelOnPress: () {},
-              btnOkOnPress: () {
-                Navigator.pop(context);
-              },
-            ).show();
+            Navigator.pop(context);
           },
           child: const Text(
             "Cancel",
@@ -673,7 +665,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text("Save",
+          child: const Text("Create Task",
               style: TextStyle(color: Colors.white, fontSize: 16)),
         ),
       ],

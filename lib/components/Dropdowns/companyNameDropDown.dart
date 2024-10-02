@@ -1,9 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:untitled1/resourses/app_colors.dart';
 import '../../resourses/resourses.dart';
 
 class CompanyName {
@@ -19,7 +18,6 @@ class CompanyNameDropdown extends StatefulWidget {
 
 class _CompanyNameDropdownState extends State<CompanyNameDropdown> {
   // Lead API
-
   List<dynamic> _totalLeadList = [];
   bool isLoading = true;
 
@@ -102,6 +100,9 @@ class _CompanyNameDropdownState extends State<CompanyNameDropdown> {
               ],
             ),
             child: DropdownButtonFormField<dynamic>(
+              isExpanded: false,
+              menuMaxHeight: 500,
+              dropdownColor: backgroundColor,
               validator: (value) =>
                   value == null ? 'Company name is required' : null,
               hint: Text(
@@ -112,8 +113,6 @@ class _CompanyNameDropdownState extends State<CompanyNameDropdown> {
                   size: 30, color: Colors.blue),
               borderRadius: BorderRadius.circular(8),
               decoration: const InputDecoration(
-                // hintText: 'Select Follow Up Type',
-                // labelText: 'Select Follow Up Type',
                 enabledBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Color(0xFFF8F6F8)),
                 ),
