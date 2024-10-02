@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -7,8 +5,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 
 import '../Dashboard/bottom_navigation_page.dart';
-import '../Dashboard/dashboard.dart';
-import '../resourses/resourses.dart';
 
 class ContactServices extends StatefulWidget {
   const ContactServices({super.key});

@@ -8,6 +8,7 @@ import '../Task/allTaskListScreen.dart';
 import '../resourses/app_colors.dart';
 import '../resourses/resourses.dart';
 
+import '../screens/leadDetailsTabs.dart';
 import '../screens/totalLeadList.dart';
 
 import '../screens/settings.dart';
@@ -26,7 +27,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
 
   List<Widget> pages = [
     // const Settings(),
-    const ContactServices(),
+    const LeadDetailsTabs(),
     const FollowUpList(),
     const NewDashboard(),
     const LeadListScreen(),
@@ -82,7 +83,10 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             },
             items: const [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.contacts), label: "Contacts"),
+                  icon: Icon(Icons.contact_page_outlined),
+                  label: "Lead Details"),
+              // BottomNavigationBarItem(
+              //     icon: Icon(Icons.contacts), label: "Contacts"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.follow_the_signs), label: "Followup"),
               BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),

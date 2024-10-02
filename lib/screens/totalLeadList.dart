@@ -107,7 +107,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
 
   Future<void> refreshData() async {
     // Simulating an API request or data refresh
-    await Future.delayed(Duration(milliseconds: 1000));
+    await Future.delayed(const Duration(milliseconds: 1000));
     setState(() {
       // Show loading animation
       isLoading = true;
@@ -129,7 +129,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
 
   void _onLoading() async {
     // monitor network fetch
-    await Future.delayed(Duration(milliseconds: 1000));
+    await Future.delayed(const Duration(milliseconds: 1000));
 
     _refreshController.loadComplete();
   }
@@ -341,10 +341,9 @@ class _LeadListScreenState extends State<LeadListScreen> {
                             SizedBox(width: spacing),
                             Text(
                               lead.email ?? 'No Email',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: Colors.grey[900],
                               ),
                             ),
                           ],
@@ -354,17 +353,16 @@ class _LeadListScreenState extends State<LeadListScreen> {
                         Row(
                           children: [
                             Icon(
-                              Icons.dns_rounded,
+                              Icons.dns_outlined,
                               color: Colors.grey[700],
                             ),
                             SizedBox(width: spacing),
                             Text(
                               lead.leadPipelineName!.name.toString() ??
                                   'No Pipeline',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: Colors.grey[900],
                               ),
                             ),
                           ],
@@ -374,16 +372,15 @@ class _LeadListScreenState extends State<LeadListScreen> {
                         Row(
                           children: [
                             Icon(
-                              Icons.person_add,
+                              Icons.person_add_alt_1_outlined,
                               color: Colors.grey[700],
                             ),
                             SizedBox(width: spacing),
                             Text(
                               lead.assignName?.name ?? 'No Assignee',
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
+                              style: TextStyle(
+                                fontSize: 13.sp,
+                                color: Colors.grey[900],
                               ),
                             ),
                           ],
@@ -402,7 +399,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                             TextButton(
                               style: TextButton.styleFrom(
                                   padding: EdgeInsets.zero,
-                                  minimumSize: Size(50, 30),
+                                  minimumSize: const Size(50, 30),
                                   tapTargetSize:
                                       MaterialTapTargetSize.shrinkWrap,
                                   alignment: Alignment.centerLeft),
@@ -442,7 +439,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => LeadCreateForm()),
+            MaterialPageRoute(builder: (context) => const LeadCreateForm()),
           );
         },
         heroTag: "CreateLead",
