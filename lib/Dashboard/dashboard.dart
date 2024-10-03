@@ -1,23 +1,22 @@
 import 'package:animated_floating_buttons/widgets/animated_floating_action_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/Auth/login_page.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import 'package:untitled1/sip_account/SipAccountSetting.dart';
-
 import '../Auth/logout.dart';
 import '../Models/leadPipeline.dart';
 import '../Models/menuItem.dart';
 import '../Models/menuItems.dart';
 import '../components/DashboardCounter.dart';
 import '../components/Dashboard_Tasks.dart';
-
 import '../components/LeadPipelineChart.dart';
 import '../components/LeadSourceChart.dart';
 import '../components/leadIndustryChart.dart';
+import '../notification/notificaton_service.dart';
 import '../screens/form.dart';
 
 class NewDashboard extends StatefulWidget {
@@ -33,11 +32,33 @@ class _NewDashboardState extends State<NewDashboard> {
 
   late Future<Map<String, dynamic>> futureLeadData;
 
+  // notification
+
+  static NotificationServices notificationServices = NotificationServices();
+
+
   @override
   void initState() {
     super.initState();
     _loadUserInfo();
     futureLeadData = fetchLeadPipelineData();
+    //notification
+    notificationServices.requestNotificationPermissin();
+    notificationServices.forgroundMessage();
+    notificationServices.firebaseInit(context);
+    notificationServices.isTokenRefresh();
+    notificationServices.isTokenRefresh();
+
+    /// Device Token
+
+    notificationServices.getDeviceToken().then((value) {
+      if (kDebugMode) {
+        print('device token : ${value}');
+        print(value);
+      }
+    });
+
+
   }
 
   String? username;

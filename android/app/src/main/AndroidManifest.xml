@@ -1,8 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-        <uses-permission android:name="android.permission.INTERNET"/>
-        <uses-permission android:name="android.permission.READ_CONTACTS" />  
-        <uses-permission android:name="android.permission.WRITE_CONTACTS" /> 
+         <uses-permission android:name="android.permission.INTERNET"/>
+         <uses-permission android:name="android.permission.READ_CONTACTS" />
+         <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+         <uses-permission android:name="android.permission.VIBRATE" />
+         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+         <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+
     <application
         android:label="iCRM"
         android:name="${applicationName}"
@@ -33,6 +39,27 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        // new
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="high_importance_channel" />
+
+        <!--Board Cast Receiver for call action-->
+        <receiver
+            android:name=".AppReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.READ_PHONE_STATE">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.READ_PHONE_STATE" />
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>
+                <action android:name="android.intent.action.CALL_PHONE"/>
+                <action android:name="icrm_call_action" />
+
+            </intent-filter>
+        </receiver>
+
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility?hl=en and
@@ -45,4 +72,8 @@
             <data android:mimeType="text/plain"/>
         </intent>
     </queries>
+
+
+
+
 </manifest>

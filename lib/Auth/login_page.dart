@@ -6,6 +6,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 import 'package:untitled1/Dashboard/bottom_navigation_page.dart';
+import 'package:untitled1/Dashboard/dashboard.dart';
 import 'package:untitled1/components/CustomProgress.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import '../API/api_url.dart';
@@ -49,14 +50,12 @@ class _loginPageState extends State<UserLoginScreen> {
               body: Stack(
                 children: <Widget>[
                   // background image
-
                   Positioned(
                     top: 10,
                     right: 10,
                     child: Image.asset(
                       'assets/images/union.png', // Update with your image path
                       width: MediaQuery.of(context).size.width / 2.5,
-
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -344,10 +343,12 @@ class _loginPageState extends State<UserLoginScreen> {
               ),
             ),
             onPressed: () {
-              if (emailKey.currentState!.validate() &&
-                  passwordKey.currentState!.validate()) {
-                login();
-              }
+
+              Navigator.push(context,MaterialPageRoute(builder: (context) => BottomNavigationPage(),));
+              // if (emailKey.currentState!.validate() &&
+              //     passwordKey.currentState!.validate()) {
+              //   login();
+              // }
             },
             child: Text(
               "Log In",

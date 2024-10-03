@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "597249513001",
+    "project_id": "icrm-app",
+    "storage_bucket": "icrm-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:597249513001:android:f588c0b2510570ffe52e38",
+        "android_client_info": {
+          "package_name": "com.example.untitled1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmIsK0G9mtJgS50dtsWD2ZkDpd0z_zp1E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

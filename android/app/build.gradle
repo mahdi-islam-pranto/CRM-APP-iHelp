@@ -1,5 +1,8 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
 }
@@ -41,6 +44,7 @@ android {
     }
 
     defaultConfig {
+        multiDexEnabled true
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.example.untitled1"
         // You can update the following values to match your application needs.
@@ -53,6 +57,7 @@ android {
 
     buildTypes {
         release {
+            multiDexEnabled true
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
@@ -64,4 +69,13 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation "com.google.firebase:firebase-analytics:17.2.2"
+    // implementation 'com.android.support:multidex:1.0.3'
+    implementation platform('com.google.firebase:firebase-bom:32.3.1')
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.android.support:multidex:1.0.3'
+}
