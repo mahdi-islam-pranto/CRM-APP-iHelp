@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
-import '../Dashboard/bottom_navigation_page.dart';
+import 'package:untitled1/screens/totalLeadList.dart';
+
+import '../Lead/leadFollowUpList.dart';
 import '../Lead/leadOverview.dart';
 import '../resourses/app_colors.dart';
 
 class LeadDetailsTabs extends StatefulWidget {
-  const LeadDetailsTabs({super.key});
+  final int leadId;
+  const LeadDetailsTabs({Key? key, required this.leadId}) : super(key: key);
 
   @override
   State<LeadDetailsTabs> createState() => _LeadDetailsTabsState();
@@ -90,7 +92,7 @@ class _LeadDetailsTabsState extends State<LeadDetailsTabs> {
             onPressed: () {
               // got to previous screen
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const BottomNavigationPage();
+                return const LeadListScreen();
               }));
             },
           ),
@@ -98,16 +100,11 @@ class _LeadDetailsTabsState extends State<LeadDetailsTabs> {
         body: TabBarView(
           children: [
             // overview
-            LeadOverview(),
+            LeadOverview(leadId: widget.leadId),
 
             // Followup
 
-            Container(
-              color: Colors.white,
-              child: const Center(
-                child: Text("Follow up"),
-              ),
-            ),
+            LeadFollowUpList(leadId: widget.leadId),
 
             // Task
 

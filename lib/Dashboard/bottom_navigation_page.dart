@@ -27,7 +27,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
 
   List<Widget> pages = [
     // const Settings(),
-    const LeadDetailsTabs(),
+    const Settings(),
     const FollowUpList(),
     const NewDashboard(),
     const LeadListScreen(),

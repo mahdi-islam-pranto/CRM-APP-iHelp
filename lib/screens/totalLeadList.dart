@@ -403,7 +403,14 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                   tapTargetSize:
                                       MaterialTapTargetSize.shrinkWrap,
                                   alignment: Alignment.centerLeft),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          LeadDetailsTabs(leadId: lead.id),
+                                    ));
+                              },
                               child: Text(
                                 'More Details',
                                 style: TextStyle(

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../resourses/app_colors.dart';
 
 class LeadOverview extends StatefulWidget {
-  const LeadOverview({super.key});
+  final int leadId;
+
+  const LeadOverview({Key? key, required this.leadId}) : super(key: key);
 
   @override
   State<LeadOverview> createState() => _LeadOverviewState();
@@ -35,7 +37,7 @@ class _LeadOverviewState extends State<LeadOverview> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    "MM Organic Farm",
+                    "MM Organic Farm id:${widget.leadId}",
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   const SizedBox(height: 5),
