@@ -44,8 +44,8 @@ class _LeadTaskListScreenState extends State<LeadTaskListScreen> {
         'session_user_id': userId,
         'status': '',
         'next_task_start_time': '',
-        'lead_id': '', // lead id
-        'task_type_id': '1',
+        'lead_id': '${widget.leadId}', // lead id
+        'task_type_id': '5',
       },
     );
     // print(response.body.toString());

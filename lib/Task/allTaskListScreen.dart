@@ -217,7 +217,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   } else {
                     return Center(
                       child: LoadingAnimationWidget.staggeredDotsWave(
-                        color: Colors.red,
+                        color: Colors.blue,
                         size: 50,
                       ),
                     );
