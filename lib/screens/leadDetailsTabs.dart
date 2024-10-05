@@ -3,8 +3,9 @@ import 'package:flutter/services.dart';
 
 import 'package:untitled1/screens/totalLeadList.dart';
 
-import '../Lead/leadFollowUpList.dart';
+import '../FollowUP/leadFollowUpList.dart';
 import '../Lead/leadOverview.dart';
+import '../Task/leadTaskList.dart';
 import '../resourses/app_colors.dart';
 
 class LeadDetailsTabs extends StatefulWidget {
@@ -108,12 +109,7 @@ class _LeadDetailsTabsState extends State<LeadDetailsTabs> {
 
             // Task
 
-            Container(
-              color: Colors.white,
-              child: const Center(
-                child: Text("task"),
-              ),
-            ),
+            LeadTaskListScreen(leadId: widget.leadId),
 
             // Note
             Container(

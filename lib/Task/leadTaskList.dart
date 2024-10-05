@@ -11,55 +11,57 @@ import '../Dashboard/bottom_navigation_page.dart';
 import '../Models/taskListModel.dart';
 import 'taskCreateForm.dart';
 
-class TaskListScreen extends StatefulWidget {
-  const TaskListScreen({super.key});
+class LeadTaskListScreen extends StatefulWidget {
+  final int leadId;
+
+  const LeadTaskListScreen({Key? key, required this.leadId}) : super(key: key);
 
   @override
-  State<TaskListScreen> createState() => _TaskListScreenState();
+  State<LeadTaskListScreen> createState() => _LeadTaskListScreenState();
 }
 
 final GlobalKey<AnimatedFloatingActionButtonState> key =
     GlobalKey<AnimatedFloatingActionButtonState>();
 
-// fetch task from API
-Future<TaskListModel> getTaskList() async {
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  String? token = sharedPreferences.getString("token");
-  String? userId = sharedPreferences.getString("id");
+class _LeadTaskListScreenState extends State<LeadTaskListScreen> {
+  // API code
+  // fetch task from API
+  Future<TaskListModel> getTaskList() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? token = sharedPreferences.getString("token");
+    String? userId = sharedPreferences.getString("id");
 
-  final response = await http.post(
-    Uri.parse("https://crm.ihelpbd.com/api/crm-lead-task-list"),
-    headers: {
-      'Authorization': 'Bearer $token',
-      'user_id': '$userId',
-    },
-    body: {
-      'start_date': '2024-01-01',
-      'end_date': '2025-11-01',
-      'user_id': userId,
-      'session_user_id': '',
-      'status': '',
-      'next_task_start_time': '',
-      'lead_id': '',
-      'task_type_id': '1',
-    },
-  );
-  // print(response.body.toString());
-  var data = jsonDecode(response.body.toString());
+    final response = await http.post(
+      Uri.parse("https://crm.ihelpbd.com/api/crm-lead-task-list"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'user_id': '$userId',
+      },
+      body: {
+        'start_date': '2024-01-01',
+        'end_date': '2025-11-01',
+        'user_id': userId,
+        'session_user_id': userId,
+        'status': '',
+        'next_task_start_time': '',
+        'lead_id': '', // lead id
+        'task_type_id': '1',
+      },
+    );
+    // print(response.body.toString());
+    var data = jsonDecode(response.body.toString());
 
-  if (response.statusCode == 200) {
-    // print("########Response task data: $data");
-    return TaskListModel.fromJson(data);
-  } else {
-    return TaskListModel.fromJson(data);
-    // Handle error
-    // return TaskListModel.fromJson(data);
+    if (response.statusCode == 200) {
+      // print("########Response task data: $data");
+      return TaskListModel.fromJson(data);
+    } else {
+      // Handle error
+      return TaskListModel.fromJson(data);
 
-    // You can also show an error message if needed
+      // You can also show an error message if needed
+    }
   }
-}
 
-class _TaskListScreenState extends State<TaskListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,48 +78,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
               colorStartAnimation: Colors.white,
               colorEndAnimation: Colors.red,
               animatedIconData: AnimatedIcons.menu_close,
-            ),
-          ),
-        ],
-      ),
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            size: 18,
-          ),
-          onPressed: () {
-            showAnimatedDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (BuildContext context) {
-                return const BottomNavigationPage();
-              },
-              curve: Curves.fastOutSlowIn,
-              duration: const Duration(seconds: 1),
-            );
-          },
-        ),
-        backgroundColor: Colors.white,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.white,
-        ),
-        title: Container(
-          height: 35,
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          decoration: BoxDecoration(
-            color: Colors.white70,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: const Text('All Tasks'),
-        ),
-        automaticallyImplyLeading: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.search_outlined,
-              color: Colors.black87,
             ),
           ),
         ],
@@ -217,7 +177,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   } else {
                     return Center(
                       child: LoadingAnimationWidget.staggeredDotsWave(
-                        color: Colors.red,
+                        color: Colors.blue,
                         size: 50,
                       ),
                     );
