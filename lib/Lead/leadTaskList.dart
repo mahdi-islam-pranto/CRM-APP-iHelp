@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../Dashboard/bottom_navigation_page.dart';
 import '../Models/taskListModel.dart';
-import 'taskCreateForm.dart';
+import '../Task/taskCreateForm.dart';
 
 class LeadTaskListScreen extends StatefulWidget {
   final int leadId;
@@ -45,7 +45,7 @@ class _LeadTaskListScreenState extends State<LeadTaskListScreen> {
         'status': '',
         'next_task_start_time': '',
         'lead_id': '${widget.leadId}', // lead id
-        'task_type_id': '5',
+        'task_type_id': '',
       },
     );
     // print(response.body.toString());

@@ -5,7 +5,7 @@ import 'package:untitled1/screens/totalLeadList.dart';
 
 import '../FollowUP/leadFollowUpList.dart';
 import '../Lead/leadOverview.dart';
-import '../Task/leadTaskList.dart';
+import '../Lead/leadTaskList.dart';
 import '../resourses/app_colors.dart';
 
 class LeadDetailsTabs extends StatefulWidget {

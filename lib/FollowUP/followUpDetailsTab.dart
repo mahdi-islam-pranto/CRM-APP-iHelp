@@ -5,8 +5,9 @@ import 'package:untitled1/screens/totalLeadList.dart';
 
 import '../FollowUP/leadFollowUpList.dart';
 import '../Lead/leadOverview.dart';
-import '../Task/leadTaskList.dart';
+import '../Lead/leadTaskList.dart';
 import '../resourses/app_colors.dart';
+import 'followUpOverview.dart';
 
 class FollowUpDetailsTabs extends StatefulWidget {
   final int leadId;
@@ -80,7 +81,7 @@ class _FollowUpDetailsTabsState extends State<FollowUpDetailsTabs> {
           backgroundColor: Colors.white,
           // toolbarHeight: 112.62,
           title: const Text(
-            "Lead Details",
+            "Follow Up Details",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           centerTitle: true,
@@ -101,7 +102,7 @@ class _FollowUpDetailsTabsState extends State<FollowUpDetailsTabs> {
         body: TabBarView(
           children: [
             // overview
-            LeadOverview(leadId: widget.leadId),
+            FollowUpOverview(leadId: widget.leadId),
 
             // Followup
 
