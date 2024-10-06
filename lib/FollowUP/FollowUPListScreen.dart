@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled1/FollowUP/followUpDetailsTab.dart';
 import 'package:untitled1/Models/followUpModel.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import '../Dashboard/bottom_navigation_page.dart';
@@ -97,6 +99,39 @@ class _FollowUpListState extends State<FollowUpList> {
     });
   }
 
+  // pull down refresh functions
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  Future<void> refreshData() async {
+    // Simulating an API request or data refresh
+    await Future.delayed(const Duration(milliseconds: 1000));
+    setState(() {
+      // Show loading animation
+      isLoading = true;
+
+      // Reset the page and total lead list
+
+      followUpList.clear();
+    });
+
+    await getFollowUpList();
+
+    setState(() {
+      // Hide loading animation
+      isLoading = false;
+    });
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+    await Future.delayed(const Duration(milliseconds: 1000));
+
+    _refreshController.loadComplete();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -183,295 +218,319 @@ class _FollowUpListState extends State<FollowUpList> {
               : Column(
                   children: [
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: followUpList.length + 1,
-                        itemBuilder: (context, index) {
-                          if (index == followUpList.length) {
-                            if (hasMoreData) {
-                              getFollowUpList();
-                              return Center(
-                                child: LoadingAnimationWidget.staggeredDotsWave(
-                                  color: Colors.blue,
-                                  size: 50,
-                                ),
-                              );
-                            } else {
-                              return const Center(
-                                child: Text('No more data'),
-                              );
+                      child: SmartRefresher(
+                        onLoading: _onLoading,
+                        enablePullDown: true,
+                        enablePullUp: true,
+                        header: const WaterDropHeader(
+                          waterDropColor: Colors.blue,
+                        ),
+                        onRefresh: refreshData,
+                        controller: _refreshController,
+                        child: ListView.builder(
+                          itemCount: followUpList.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == followUpList.length) {
+                              if (hasMoreData) {
+                                getFollowUpList();
+                                return Center(
+                                  child:
+                                      LoadingAnimationWidget.staggeredDotsWave(
+                                    color: Colors.blue,
+                                    size: 50,
+                                  ),
+                                );
+                              } else {
+                                return const Center(
+                                  child: Text('No more data'),
+                                );
+                              }
                             }
-                          }
 
-                          return Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10.0, right: 10.0),
-                                child: ExpansionTile(
-                                  childrenPadding: const EdgeInsets.only(
-                                      left: 15.0,
-                                      right: 15.0,
-                                      top: 0.0,
-                                      bottom: 0.0),
-                                  // leading: const Padding(
-                                  //   padding: EdgeInsets.only(right: 10),
-                                  //   child: CircleAvatar(
-                                  //     backgroundColor: Color(0x300D6EFD),
-                                  //     radius: 26,
-                                  //     child: Icon(
-                                  //       size: 26,
-                                  //       Icons.person_2_outlined,
-                                  //       color: Colors.blue,
-                                  //     ),
-                                  //   ),
-                                  // ),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      // Icon(
-                                      //   Icons.remove_red_eye_rounded,
-                                      //   color: Colors.grey[400],
-                                      // ),
-                                      const SizedBox(width: 10),
-                                      Icon(
-                                        Icons.keyboard_arrow_down,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ],
-                                  ),
-
-                                  //company name
-                                  title: Text(
-                                    followUpList[index]['company_name']
-                                            ['company_name'] ??
-                                        'Unknown',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16.sp,
+                            return Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10.0, right: 10.0),
+                                  child: ExpansionTile(
+                                    childrenPadding: const EdgeInsets.only(
+                                        left: 15.0,
+                                        right: 15.0,
+                                        top: 0.0,
+                                        bottom: 0.0),
+                                    // leading: const Padding(
+                                    //   padding: EdgeInsets.only(right: 10),
+                                    //   child: CircleAvatar(
+                                    //     backgroundColor: Color(0x300D6EFD),
+                                    //     radius: 26,
+                                    //     child: Icon(
+                                    //       size: 26,
+                                    //       Icons.person_2_outlined,
+                                    //       color: Colors.blue,
+                                    //     ),
+                                    //   ),
+                                    // ),
+                                    trailing: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        // Icon(
+                                        //   Icons.remove_red_eye_rounded,
+                                        //   color: Colors.grey[400],
+                                        // ),
+                                        const SizedBox(width: 10),
+                                        Icon(
+                                          Icons.keyboard_arrow_down,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  subtitle: Column(
+
+                                    //company name
+                                    title: Text(
+                                      followUpList[index]['company_name']
+                                              ['company_name'] ??
+                                          'Unknown',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16.sp,
+                                      ),
+                                    ),
+                                    subtitle: Column(
+                                      children: [
+                                        // status
+                                        Row(
+                                          children: [
+                                            const Text("Status: "),
+                                            const SizedBox(width: 5),
+                                            // status
+                                            Text(
+                                              followUpList[index]['status'] ==
+                                                      '1'
+                                                  ? 'Solved'
+                                                  : followUpList[index]
+                                                              ['status'] ==
+                                                          '2'
+                                                      ? 'Pending'
+                                                      : followUpList[index]
+                                                                  ['status'] ==
+                                                              '3'
+                                                          ? 'Working Progress'
+                                                          : 'Cancel' ??
+                                                              'Type Unknown',
+                                              style: TextStyle(
+                                                color: Colors.blue[600],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+
+                                        // next follow up date
+
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.calendar_month_outlined,
+                                              color: Colors.blue,
+                                            ),
+                                            const SizedBox(width: 10),
+                                            // phone
+                                            Text(
+                                              followUpList[index]
+                                                      ['next_followup_date'] ??
+                                                  'No Next Follow Up Date',
+                                              style: TextStyle(
+                                                fontSize: 13.sp,
+                                                color: Colors.blue[400],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+
+                                    // inside tile datas
                                     children: [
-                                      // status
-                                      Row(
-                                        children: [
-                                          const Text("Status: "),
-                                          const SizedBox(width: 5),
-                                          // status
-                                          Text(
-                                            followUpList[index]['status'] == '1'
-                                                ? 'Solved'
-                                                : followUpList[index]
-                                                            ['status'] ==
-                                                        '2'
-                                                    ? 'Pending'
-                                                    : followUpList[index]
-                                                                ['status'] ==
-                                                            '3'
-                                                        ? 'Working Progress'
-                                                        : 'Cancel' ??
-                                                            'Type Unknown',
-                                            style: TextStyle(
-                                              color: Colors.blue[600],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-
-                                      // next follow up date
-
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.calendar_month_outlined,
-                                            color: Colors.blue,
-                                          ),
-                                          const SizedBox(width: 10),
-                                          // phone
-                                          Text(
-                                            followUpList[index]
-                                                    ['next_followup_date'] ??
-                                                'No Next Follow Up Date',
-                                            style: TextStyle(
-                                              fontSize: 13.sp,
-                                              color: Colors.blue[400],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-
-                                  // inside tile datas
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 8, top: 8, bottom: 8),
-                                      child: Row(
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              // follow up type
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.merge_type_outlined,
-                                                    color: Colors.grey.shade700,
-                                                  ),
-                                                  SizedBox(width: spacing),
-
-                                                  // follow up type
-                                                  Text(
-                                                    'Follow up type',
-                                                    style: TextStyle(
-                                                      fontSize: 13.sp,
-                                                      color: Colors.grey[900],
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 8, top: 8, bottom: 8),
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                // follow up type
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.merge_type_outlined,
+                                                      color:
+                                                          Colors.grey.shade700,
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
+                                                    SizedBox(width: spacing),
 
-                                              SizedBox(height: spacing),
-                                              // phone
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.phone,
-                                                    color: Colors.grey[700],
-                                                  ),
-                                                  SizedBox(width: spacing),
-                                                  // phone
-                                                  Text(
-                                                    followUpList[index]
-                                                            ['phone_number'] ??
-                                                        'No Phone No.',
-                                                    style: TextStyle(
-                                                      fontSize: 13.sp,
-                                                      color: Colors.grey[900],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-
-                                              SizedBox(
-                                                height: spacing,
-                                              ),
-                                              // assign to
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons
-                                                        .person_add_alt_1_outlined,
-                                                    color: Colors.grey[700],
-                                                  ),
-                                                  SizedBox(width: spacing),
-                                                  Text(
-                                                    followUpList[index]
-                                                                ['assign_name']
-                                                            ['name'] ??
-                                                        'No Assign',
-                                                    style: TextStyle(
-                                                        color: Colors.grey[900],
-                                                        fontSize: 13.sp),
-                                                  ),
-                                                ],
-                                              ),
-
-                                              SizedBox(
-                                                height: spacing,
-                                              ),
-
-                                              // Other details
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.more_horiz,
-                                                    color: Colors.grey[700],
-                                                  ),
-                                                  SizedBox(
-                                                    width: spacing,
-                                                  ),
-                                                  TextButton(
-                                                    style: TextButton.styleFrom(
-                                                        padding:
-                                                            EdgeInsets.zero,
-                                                        minimumSize:
-                                                            Size(50, 30),
-                                                        tapTargetSize:
-                                                            MaterialTapTargetSize
-                                                                .shrinkWrap,
-                                                        alignment: Alignment
-                                                            .centerLeft),
-                                                    onPressed: () {},
-                                                    child: Text(
-                                                      'More Details',
+                                                    // follow up type
+                                                    Text(
+                                                      'Follow up type',
                                                       style: TextStyle(
                                                         fontSize: 13.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.blue[600],
+                                                        color: Colors.grey[900],
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          // const Spacer(),
-                                          // Row(
-                                          //   mainAxisSize: MainAxisSize.min,
-                                          //   children: [
-                                          //     CircleAvatar(
-                                          //       radius: 20,
-                                          //       backgroundColor:
-                                          //           Colors.green[100],
-                                          //       child: IconButton(
-                                          //         onPressed: () {},
-                                          //         icon: const Icon(
-                                          //           Icons.call,
-                                          //           color: Colors.green,
-                                          //           size: 20,
-                                          //         ),
-                                          //       ),
-                                          //     ),
-                                          //     const SizedBox(width: 10),
-                                          //     CircleAvatar(
-                                          //       radius: 20,
-                                          //       backgroundColor:
-                                          //           Colors.blue[100],
-                                          //       child: IconButton(
-                                          //         onPressed: () {},
-                                          //         icon: const Icon(
-                                          //           Icons.dialer_sip_outlined,
-                                          //           color: Colors.blue,
-                                          //           size: 20,
-                                          //         ),
-                                          //       ),
-                                          //     ),
-                                          //   ],
-                                          // ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // divider
+                                                  ],
+                                                ),
 
-                              const Divider(
-                                height: 3,
-                                thickness: 0.2,
-                                indent:
-                                    20, // empty space to the leading edge of divider.
-                                endIndent: 20,
-                              ),
-                            ],
-                          );
-                        },
+                                                SizedBox(height: spacing),
+                                                // phone
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.phone,
+                                                      color: Colors.grey[700],
+                                                    ),
+                                                    SizedBox(width: spacing),
+                                                    // phone
+                                                    Text(
+                                                      followUpList[index][
+                                                              'phone_number'] ??
+                                                          'No Phone No.',
+                                                      style: TextStyle(
+                                                        fontSize: 13.sp,
+                                                        color: Colors.grey[900],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+
+                                                SizedBox(
+                                                  height: spacing,
+                                                ),
+                                                // assign to
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons
+                                                          .person_add_alt_1_outlined,
+                                                      color: Colors.grey[700],
+                                                    ),
+                                                    SizedBox(width: spacing),
+                                                    Text(
+                                                      followUpList[index][
+                                                                  'assign_name']
+                                                              ['name'] ??
+                                                          'No Assign',
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.grey[900],
+                                                          fontSize: 13.sp),
+                                                    ),
+                                                  ],
+                                                ),
+
+                                                SizedBox(
+                                                  height: spacing,
+                                                ),
+
+                                                // Other details
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.more_horiz,
+                                                      color: Colors.grey[700],
+                                                    ),
+                                                    SizedBox(
+                                                      width: spacing,
+                                                    ),
+                                                    TextButton(
+                                                      style: TextButton.styleFrom(
+                                                          padding:
+                                                              EdgeInsets.zero,
+                                                          minimumSize:
+                                                              Size(50, 30),
+                                                          tapTargetSize:
+                                                              MaterialTapTargetSize
+                                                                  .shrinkWrap,
+                                                          alignment: Alignment
+                                                              .centerLeft),
+                                                      onPressed: () {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (context) =>
+                                                                    FollowUpDetailsTabs(
+                                                                        leadId: followUpList[index]
+                                                                            [
+                                                                            'id'])));
+                                                      },
+                                                      child: Text(
+                                                        'More Details',
+                                                        style: TextStyle(
+                                                          fontSize: 13.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          color:
+                                                              Colors.blue[600],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            // const Spacer(),
+                                            // Row(
+                                            //   mainAxisSize: MainAxisSize.min,
+                                            //   children: [
+                                            //     CircleAvatar(
+                                            //       radius: 20,
+                                            //       backgroundColor:
+                                            //           Colors.green[100],
+                                            //       child: IconButton(
+                                            //         onPressed: () {},
+                                            //         icon: const Icon(
+                                            //           Icons.call,
+                                            //           color: Colors.green,
+                                            //           size: 20,
+                                            //         ),
+                                            //       ),
+                                            //     ),
+                                            //     const SizedBox(width: 10),
+                                            //     CircleAvatar(
+                                            //       radius: 20,
+                                            //       backgroundColor:
+                                            //           Colors.blue[100],
+                                            //       child: IconButton(
+                                            //         onPressed: () {},
+                                            //         icon: const Icon(
+                                            //           Icons.dialer_sip_outlined,
+                                            //           color: Colors.blue,
+                                            //           size: 20,
+                                            //         ),
+                                            //       ),
+                                            //     ),
+                                            //   ],
+                                            // ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // divider
+
+                                const Divider(
+                                  height: 3,
+                                  thickness: 0.2,
+                                  indent:
+                                      20, // empty space to the leading edge of divider.
+                                  endIndent: 20,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ],

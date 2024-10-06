@@ -9,10 +9,11 @@ class Settings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Settings"),
+        title: const Text("Settings"),
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
             size: 18, // Replace with the desired custom icon
           ),
@@ -21,10 +22,10 @@ class Settings extends StatelessWidget {
               context: context,
               barrierDismissible: true,
               builder: (BuildContext context) {
-                return BottomNavigationPage();
+                return const BottomNavigationPage();
               },
               curve: Curves.fastOutSlowIn,
-              duration: Duration(seconds: 1),
+              duration: const Duration(seconds: 1),
             );
           },
         ),
