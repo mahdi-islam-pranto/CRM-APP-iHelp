@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
 
 import 'package:untitled1/screens/totalLeadList.dart';
 
@@ -10,8 +11,9 @@ import '../resourses/app_colors.dart';
 import 'followUpOverview.dart';
 
 class FollowUpDetailsTabs extends StatefulWidget {
-  final int leadId;
-  const FollowUpDetailsTabs({Key? key, required this.leadId}) : super(key: key);
+  final int followUpId;
+  const FollowUpDetailsTabs({Key? key, required this.followUpId})
+      : super(key: key);
 
   @override
   State<FollowUpDetailsTabs> createState() => _FollowUpDetailsTabsState();
@@ -21,7 +23,7 @@ class _FollowUpDetailsTabsState extends State<FollowUpDetailsTabs> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 6,
+      length: 5,
       initialIndex: 0,
       child: Scaffold(
         backgroundColor: backgroundColor,
@@ -42,13 +44,7 @@ class _FollowUpDetailsTabsState extends State<FollowUpDetailsTabs> {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                   ),
                 ),
-                // lead follow up
-                Tab(
-                  child: Text(
-                    "Follow up",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                  ),
-                ),
+
                 // lead task
                 Tab(
                   child: Text(
@@ -94,7 +90,7 @@ class _FollowUpDetailsTabsState extends State<FollowUpDetailsTabs> {
             onPressed: () {
               // got to previous screen
               Navigator.push(context, MaterialPageRoute(builder: (context) {
-                return const LeadListScreen();
+                return const FollowUpList();
               }));
             },
           ),
@@ -102,15 +98,11 @@ class _FollowUpDetailsTabsState extends State<FollowUpDetailsTabs> {
         body: TabBarView(
           children: [
             // overview
-            FollowUpOverview(leadId: widget.leadId),
-
-            // Followup
-
-            LeadFollowUpList(leadId: widget.leadId),
+            FollowUpOverview(followUpId: widget.followUpId),
 
             // Task
 
-            LeadTaskListScreen(leadId: widget.leadId),
+            LeadTaskListScreen(leadId: widget.followUpId),
 
             // Note
             Container(

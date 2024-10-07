@@ -179,7 +179,7 @@ class LeadCreateAPI {
     } else {
       customProgress.hideDialog();
       print('Failed to create lead: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      print('Response body: ${response}');
 
       // Parse the error message from the response
       Map<String, dynamic> errorResponse = json.decode(response.body);

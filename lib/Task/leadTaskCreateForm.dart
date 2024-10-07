@@ -6,34 +6,32 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
-
+import 'package:untitled1/components/Dropdowns/companyNameDropDown.dart';
 import 'package:untitled1/resourses/app_colors.dart';
-
-import '../Lead/LeadAssociateDropdown.dart';
+import '../FollowUP/followUpType.dart';
 import '../Lead/LeadOwnerDropdown.dart';
 import '../components/CustomProgress.dart';
-
-import '../components/Dropdowns/companyNameDropDown.dart';
+import '../components/Dropdowns/taskTypeDropdown.dart';
 import '../resourses/resourses.dart';
-import '../screens/leadDetailsTabs.dart';
-import 'FollowUPListScreen.dart';
-import 'followUpType.dart';
-import 'leadFollowUpList.dart';
+import 'allTaskListScreen.dart';
 
-class LeadFollowUpCreate extends StatefulWidget {
-  const LeadFollowUpCreate({Key? key}) : super(key: key);
+class LeadTaskCreateForm extends StatefulWidget {
+  final int leadId;
 
+  const LeadTaskCreateForm({Key? key, required this.leadId}) : super(key: key);
   @override
-  State<LeadFollowUpCreate> createState() => _LeadFollowUpCreateState();
+  State<LeadTaskCreateForm> createState() => _LeadTaskCreateFormState();
 }
 
-class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
+class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
   final _formKey = GlobalKey<FormState>();
   final _companyName = TextEditingController();
+
   final _subject = TextEditingController();
   final _description = TextEditingController();
   final _contactNumber = TextEditingController();
-  TextEditingController dateTimeController = TextEditingController();
+  TextEditingController startDateTimeController = TextEditingController();
+  TextEditingController endDateTimeController = TextEditingController();
   late String dateTimePicker;
 
   bool validatePhoneNumber(String phoneNumber) {
@@ -45,16 +43,6 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
   Future sendDataToServer() async {
     CustomProgress customProgress = CustomProgress(context);
 
-    if (!validatePhoneNumber(_contactNumber.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Phone number must be 11 digits.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
     customProgress.showDialog(
         "Please wait", SimpleFontelicoProgressDialogType.spinner);
 
@@ -65,24 +53,25 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
     if (token == null || token.isEmpty) {
       customProgress.hideDialog();
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Token not found. Please log in again.'),
+        content: Text('Not found. Please log in again.'),
       ));
       return;
     }
     print("Token: $token");
 
-    String url = 'https://crm.ihelpbd.com/api/crm-create-follow-up';
+    String url = 'https://crm.ihelpbd.com/api/crm-create-task';
 
     Map body = {
       "lead_id": CompanyName.companyId.toString(),
       "user_id": userId,
       "creator_user_id": userId,
-      "followup_type_id": FollowupType.followUpType.toString(),
+      "task_type_id": SelectedPipeline.taskTypeId.toString(),
       "subject": _subject.text,
-      "phone_number": _contactNumber.text,
-      "next_followup_date": dateTimeController.text,
+      "start_time": startDateTimeController.text,
+      "end_time": endDateTimeController.text,
+      "reminder_time": "",
       "description": _description.text,
-      "associate_user_id": Associate.associateId.toString(),
+      "associate_user_id": "",
     };
 
     print('Sending request with body: ${jsonEncode(body)}');
@@ -106,7 +95,7 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
       _subject.clear();
       _description.clear();
       _contactNumber.clear();
-      dateTimeController.clear();
+      startDateTimeController.clear();
 
       // Reset dropdowns to their initial state
       setState(() {
@@ -123,7 +112,7 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
         animType: AnimType.topSlide,
         showCloseIcon: true,
         title: "Success",
-        desc: "Your follow up created successfully",
+        desc: "Your task created successfully",
         customHeader: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -138,16 +127,11 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
         ),
         btnOkColor: Colors.blue[600],
         btnCancelOnPress: () {
-          Navigator.of(context).pop();
+          Navigator.pop(context);
         },
         btnOkOnPress: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => LeadDetailsTabs(
-                  leadId: CompanyName.companyId!.toInt(),
-                ),
-              ));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => TaskListScreen()));
         },
       ).show();
     } else {
@@ -157,9 +141,9 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
         builder: (context) => AlertDialog(
           title: const Column(
             children: [
-              Text("Error", style: TextStyle(color: Colors.red)),
-              Text("Please select Owner and Follow Up Type",
-                  style: TextStyle(color: Colors.red, fontSize: 13)),
+              Text("Task Not Created", style: TextStyle(color: Colors.red)),
+              Text("Please Check All the Fields",
+                  style: TextStyle(color: Colors.blue, fontSize: 13)),
             ],
           ),
           actions: [
@@ -179,12 +163,13 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+          resizeToAvoidBottomInset: true,
           backgroundColor: backgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.white,
             // toolbarHeight: 80,
             title: const Text(
-              "CREATE  FOLLOW  UP",
+              "CREATE NEW TASK",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             centerTitle: true,
@@ -207,34 +192,45 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      dropDownRow("Company Name", CompanyNameDropdown()),
+                      //company
+                      dropDownRow("Company Name", const CompanyNameDropdown()),
                       const SizedBox(height: 10),
-                      formField("Subject", _subject, 'Please enter subject'),
+
+                      // task type
+                      dropDownRow(
+                        "Task Type",
+                        Tasktypedropdown(),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // task title
+                      formField("Task Title", _subject, 'Please enter subject'),
                       const SizedBox(height: 10),
+
+                      // assign to
+                      dropDownRow("Assign Member", LeadOwnerDropDown()),
+                      const SizedBox(height: 12),
+
+                      // start date & end date
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Flexible(
                             flex: 1,
-                            child: dropDownRow("Owner", LeadOwnerDropDown()),
+                            child: startdateField(
+                                "Start Date", startDateTimeController),
                           ),
                           const SizedBox(width: 10),
                           Flexible(
                             flex: 1,
-                            child: dropDownRow(
-                                "Associate", LeadAssociateDropDown()),
+                            child: enddateField(
+                                "Deadline Date", endDateTimeController),
                           ),
                         ],
                       ),
                       const SizedBox(height: 12),
-                      dropDownRow(
-                          "Follow Up Type", const FollowUpTypeDropdown()),
-                      const SizedBox(height: 12),
-                      dateField("Next Follow Up Date", dateTimeController),
-                      const SizedBox(height: 10),
-                      phoneNumberField(),
-                      const SizedBox(height: 10),
+
                       descritionFormField("Description", _description,
                           'Please enter description'),
                       const SizedBox(height: 30),
@@ -336,7 +332,84 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
     );
   }
 
-  Widget dateField(String label, TextEditingController dateTimeController) {
+  // start date field
+
+  Widget startdateField(
+      String label, TextEditingController dateTimeController) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(label,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        ),
+        // const SizedBox(height: 10),
+        InkWell(
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+            );
+
+            if (pickedDate != null) {
+              setState(() {
+                dateTimeController.text =
+                    "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+              });
+            }
+            if (pickedDate == null) {
+              setState(() {
+                dateTimeController.text =
+                    "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}"; // set current date
+              });
+            }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
+            ),
+            // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: TextFormField(
+              readOnly: true,
+              controller: dateTimeController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Start Date is required";
+                }
+                return null;
+              },
+              enabled: false,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                fillColor: Color(0xFFF8F6F8),
+                hintText: 'Select Date',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // End date field
+
+  Widget enddateField(String label, TextEditingController dateTimeController) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -383,7 +456,7 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
               controller: dateTimeController,
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return "Next Follow up date is required";
+                  return "Deadline is required";
                 }
                 return null;
               },
@@ -431,19 +504,19 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
             child: TextFormField(
               controller: _contactNumber,
               keyboardType: TextInputType.phone,
-              // validator: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return 'Please enter phone number';
-              //   }
-              //   if (!validatePhoneNumber(value)) {
-              //     return 'Phone number must be 11 digits';
-              //   }
-              //   return null;
-              // },
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter phone number';
+                }
+                if (!validatePhoneNumber(value)) {
+                  return 'Phone number must be 11 digits';
+                }
+                return null;
+              },
               decoration: InputDecoration(
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                hintText: 'Ex: 01610-681903',
+                hintText: '+8801610-681903',
                 hintStyle: TextStyle(color: Colors.grey[400]),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -532,52 +605,54 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
           ),
         ),
         const SizedBox(width: 12),
+
+        //
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState?.validate() == true) {
-              if (Owner.ownerId == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    dismissDirection: DismissDirection.endToStart,
-                    elevation: 2,
-                    backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating, // Makes it floating
-                    shape: RoundedRectangleBorder(
-                      // Adds border radius
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    margin:
-                        const EdgeInsets.all(10), // Margin around the SnackBar
-                    content: const Text(
-                      'Please Select Owner',
-                      style:
-                          TextStyle(color: Colors.white), // Custom text style
-                    ),
-                  ),
-                );
-                return;
-              }
-              if (FollowupType.followUpType == null) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    elevation: 2,
-                    backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating, // Makes it floating
-                    shape: RoundedRectangleBorder(
-                      // Adds border radius
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    margin:
-                        const EdgeInsets.all(10), // Margin around the SnackBar
-                    content: const Text(
-                      'Please Select Follow Up Type',
-                      style:
-                          TextStyle(color: Colors.white), // Custom text style
-                    ),
-                  ),
-                );
-                return;
-              }
+              // if (Owner.ownerId == null) {
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //     SnackBar(
+              //       dismissDirection: DismissDirection.endToStart,
+              //       elevation: 2,
+              //       backgroundColor: Colors.red,
+              //       behavior: SnackBarBehavior.floating, // Makes it floating
+              //       shape: RoundedRectangleBorder(
+              //         // Adds border radius
+              //         borderRadius: BorderRadius.circular(12),
+              //       ),
+              //       margin:
+              //           const EdgeInsets.all(10), // Margin around the SnackBar
+              //       content: const Text(
+              //         'Please Select Owner',
+              //         style:
+              //             TextStyle(color: Colors.white), // Custom text style
+              //       ),
+              //     ),
+              //   );
+              //   return;
+              // }
+              // if (FollowupType.followUpType == null) {
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //     SnackBar(
+              //       elevation: 2,
+              //       backgroundColor: Colors.red,
+              //       behavior: SnackBarBehavior.floating, // Makes it floating
+              //       shape: RoundedRectangleBorder(
+              //         // Adds border radius
+              //         borderRadius: BorderRadius.circular(12),
+              //       ),
+              //       margin:
+              //           const EdgeInsets.all(10), // Margin around the SnackBar
+              //       content: const Text(
+              //         'Please Select Follow Up Type',
+              //         style:
+              //             TextStyle(color: Colors.white), // Custom text style
+              //       ),
+              //     ),
+              //   );
+              //   return;
+              // }
               sendDataToServer();
             }
           },
@@ -591,7 +666,7 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text("Create",
+          child: const Text("Create Task",
               style: TextStyle(color: Colors.white, fontSize: 16)),
         ),
       ],

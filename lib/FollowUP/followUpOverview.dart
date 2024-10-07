@@ -1,17 +1,17 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
-import '../Models/LeadListModel.dart';
+import '../Models/followUpModel.dart';
 import '../resourses/app_colors.dart';
 
 class FollowUpOverview extends StatefulWidget {
-  final int leadId;
+  final int followUpId;
 
-  const FollowUpOverview({Key? key, required this.leadId}) : super(key: key);
+  const FollowUpOverview({Key? key, required this.followUpId})
+      : super(key: key);
 
   @override
   State<FollowUpOverview> createState() => _FollowUpOverviewState();
@@ -19,22 +19,21 @@ class FollowUpOverview extends StatefulWidget {
 
 class _FollowUpOverviewState extends State<FollowUpOverview> {
   bool isLoading = true;
-  LeadListModel? leadDetails;
+  Data? followUpDetails;
 
   @override
   void initState() {
     super.initState();
-    getLeadDetails();
+    getFollowUpDetails();
   }
 
-  // fetch specific lead details
-  Future<void> getLeadDetails() async {
+  Future<void> getFollowUpDetails() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString("token");
     String? userId = sharedPreferences.getString("id");
 
     final response = await http.post(
-      Uri.parse("https://crm.ihelpbd.com/api/crm-lead-data-show"),
+      Uri.parse("https://crm.ihelpbd.com/api/crm-follow-up-list"),
       headers: {
         'Authorization': 'Bearer $token',
         'user_id': '$userId',
@@ -42,37 +41,31 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
       body: {
         'start_date': '',
         'end_date': '',
-        'user_id_search': userId,
+        'user_id': userId,
         'session_user_id': "",
-        'lead_pipeline_id': '',
-        'lead_source_id': '',
-        'searchData': '',
-        'is_type': '0',
+        'followup_type_id': '',
+        'status': '',
+        'lead_id': '',
+        'next_followup_date': '',
       },
     );
 
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body.toString());
-      List<dynamic> leadJsonList = data['data'];
-
-      // Find the specific lead that matches the leadId
-      var matchingLead = leadJsonList.firstWhere(
-        (lead) => lead['id'] == widget.leadId,
-        orElse: () => null,
-      );
+      var data = jsonDecode(response.body);
+      FollowUpModel followUpModel = FollowUpModel.fromJson(data);
 
       setState(() {
-        if (matchingLead != null) {
-          leadDetails = LeadListModel.fromJson(matchingLead);
-        }
+        followUpDetails = followUpModel.data?.firstWhere(
+          (followUp) => followUp.id == widget.followUpId,
+          orElse: () => Data(),
+        );
         isLoading = false;
       });
     } else {
-      // Handle error
       setState(() {
         isLoading = false;
       });
-      // You can also show an error message if needed
+      // Handle error
     }
   }
 
@@ -87,15 +80,15 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                 size: 50,
               ),
             )
-          : leadDetails == null
-              ? const Center(child: Text("Lead not found"))
+          : followUpDetails == null
+              ? const Center(child: Text("Follow-up not found"))
               : SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Top Section
+                        // top section
                         Center(
                           child: Column(
                             children: [
@@ -103,62 +96,60 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                 backgroundColor: Color(0x300D6EFD),
                                 radius: 50,
                                 child: Icon(
-                                  Icons.person_2_outlined,
+                                  Icons.follow_the_signs_rounded,
                                   size: 50,
                                   color: Colors.blue,
                                 ),
                               ),
                               const SizedBox(height: 10),
                               Text(
-                                leadDetails?.companyName ?? "N/A",
+                                followUpDetails?.companyName?.companyName ??
+                                    "N/A",
                                 style:
                                     Theme.of(context).textTheme.headlineSmall,
                               ),
                               const SizedBox(height: 5),
                               Text(
-                                leadDetails?.name ?? "No lead name",
+                                followUpDetails?.subject ?? "No subject",
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                               const SizedBox(height: 5),
                               Text(
-                                "Phone: ${leadDetails?.phoneNumber ?? "N/A"}",
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                "Email: ${leadDetails?.email ?? "N/A"}",
+                                "Phone: ${followUpDetails?.phoneNumber ?? "N/A"}",
                                 style: Theme.of(context).textTheme.titleSmall,
                               ),
                             ],
                           ),
                         ),
                         const SizedBox(height: 20),
-
-                        // Lead Information Section
+                        // follow up info section
                         Card(
                           color: Colors.blue[100],
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: ListTile(
-                            title: Text("Lead Information",
+                            title: Text("Follow-up Information",
                                 style: Theme.of(context).textTheme.titleLarge),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 10),
                                 Text(
-                                    "Lead Pipeline: ${leadDetails?.leadPipelineName?.name ?? "N/A"}"),
+                                    "Follow-up Type: ${followUpDetails?.followUpName?.name ?? "N/A"}"),
                                 Text(
-                                    "Lead Area: ${leadDetails?.leadAreasName ?? "N/A"}"),
+                                    "Status: ${followUpDetails?.followUpStatus?.name ?? "N/A"}"),
                                 Text(
-                                    "Lead Source: ${leadDetails?.leadSourceName ?? "N/A"}"),
+                                    "Next Follow-up Date: ${followUpDetails?.nextFollowupDate ?? "N/A"}"),
                                 Text(
-                                    "Lead Date: ${leadDetails?.leadPipelineName?.createdAt ?? "N/A"}"),
+                                  "Created At: ${DateFormat.yMd().add_jm().format(DateTime.parse(followUpDetails?.createdAt ?? "N/A"))}",
+                                ),
+                                // Text(
+                                //     "Created At: ${followUpDetails?.createdAt ?? "N/A"}"),
+                                // returns: 2024-02-29T12:49:43.000000Z
                               ],
                             ),
                           ),
                         ),
-
-                        // Assign Users Section
+                        // assigned users section
                         Card(
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: ListTile(
@@ -169,36 +160,38 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                               children: [
                                 const SizedBox(height: 10),
                                 Text(
-                                    "Assign to: ${leadDetails?.assignName?.name ?? "N/A"}"),
+                                    "Assign to: ${followUpDetails?.assignName?.name ?? "N/A"}"),
                                 Text(
-                                    "Associates: ${leadDetails?.associates?.isNotEmpty == true ? leadDetails!.associates!.map((e) => e.name).join(", ") : "N/A"}"),
+                                    "Creator: ${followUpDetails?.creatorName?.name ?? "N/A"}"),
+                                Text(
+                                    "Associates: ${followUpDetails?.associates?.map((e) => e.name).join(", ") ?? "N/A"}"),
                               ],
                             ),
                           ),
                         ),
 
-                        // Description Section
-                        // Card(
-                        //   margin: const EdgeInsets.symmetric(vertical: 10),
-                        //   child: ListTile(
-                        //     title: Text("Description",
-                        //         style: Theme.of(context).textTheme.titleLarge),
-                        //     subtitle: const Padding(
-                        //       padding: EdgeInsets.only(top: 10.0),
-                        //       child: Text(
-                        //         "This is a detailed description of the lead. Here you can provide more information about the lead and any other relevant details that might be useful.",
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-
-                        // Bottom Section (Optional actions or additional info)
+                        const SizedBox(height: 20),
+                        // description section
+                        Card(
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          child: ListTile(
+                            title: Text("Description",
+                                style: Theme.of(context).textTheme.titleLarge),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: Text(
+                                followUpDetails?.description ??
+                                    "No description available",
+                              ),
+                            ),
+                          ),
+                        ),
+                        // buttons
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 20.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              // Delete lead
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: const Size(164, 52),
@@ -211,17 +204,15 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  // Implement delete functionality
                                 },
                                 child: const Text(
-                                  "DELETE LEAD",
+                                  "DELETE ",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16),
                                 ),
                               ),
                               const SizedBox(width: 11),
-
-                              // update lead
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                   minimumSize: const Size(164, 52),
@@ -231,10 +222,12 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
-                                child: const Text("EDIT LEAD",
+                                child: const Text("UPDATE",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16)),
-                                onPressed: () {},
+                                onPressed: () {
+                                  // Implement edit functionality
+                                },
                               ),
                             ],
                           ),

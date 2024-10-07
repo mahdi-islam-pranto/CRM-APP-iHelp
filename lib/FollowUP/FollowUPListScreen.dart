@@ -62,7 +62,7 @@ class _FollowUpListState extends State<FollowUpList> {
         'start_date': '',
         'end_date': '',
         'user_id': userId,
-        'session_user_id': "",
+        'session_user_id': userId,
         'followup_type_id': '',
         'status': '',
         'lead_id': '',
@@ -365,7 +365,7 @@ class _FollowUpListState extends State<FollowUpList> {
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      Icons.merge_type_outlined,
+                                                      Icons.subject_outlined,
                                                       color:
                                                           Colors.grey.shade700,
                                                     ),
@@ -373,7 +373,10 @@ class _FollowUpListState extends State<FollowUpList> {
 
                                                     // follow up type
                                                     Text(
-                                                      'Follow up type',
+                                                      "${followUpList[index]['subject'] ?? 'No Subject'}",
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 2,
                                                       style: TextStyle(
                                                         fontSize: 13.sp,
                                                         color: Colors.grey[900],
@@ -460,9 +463,8 @@ class _FollowUpListState extends State<FollowUpList> {
                                                             MaterialPageRoute(
                                                                 builder: (context) =>
                                                                     FollowUpDetailsTabs(
-                                                                        leadId: followUpList[index]
-                                                                            [
-                                                                            'id'])));
+                                                                        followUpId:
+                                                                            followUpList[index]['id'])));
                                                       },
                                                       child: Text(
                                                         'More Details',

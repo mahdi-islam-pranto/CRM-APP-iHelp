@@ -17,9 +17,9 @@ class FollowUpModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['message'] = this.message;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['message'] = message;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
@@ -48,26 +48,27 @@ class Data {
   FollowUpName? followUpStatus;
   List<Associate>? associates;
 
-  Data(
-      {this.id,
-      this.leadId,
-      this.userId,
-      this.creatorUserId,
-      this.followupTypeId,
-      this.subject,
-      this.phoneNumber,
-      this.status,
-      this.nextFollowupDate,
-      this.description,
-      this.isActive,
-      this.createdAt,
-      this.updatedAt,
-      this.creatorName,
-      this.assignName,
-      this.companyName,
-      this.followUpName,
-      this.followUpStatus,
-      this.associates});
+  Data({
+    this.id,
+    this.leadId,
+    this.userId,
+    this.creatorUserId,
+    this.followupTypeId,
+    this.subject,
+    this.phoneNumber,
+    this.status,
+    this.nextFollowupDate,
+    this.description,
+    this.isActive,
+    this.createdAt,
+    this.updatedAt,
+    this.creatorName,
+    this.assignName,
+    this.companyName,
+    this.followUpName,
+    this.followUpStatus,
+    this.associates,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -107,37 +108,37 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['lead_id'] = this.leadId;
-    data['user_id'] = this.userId;
-    data['creator_user_id'] = this.creatorUserId;
-    data['followup_type_id'] = this.followupTypeId;
-    data['subject'] = this.subject;
-    data['phone_number'] = this.phoneNumber;
-    data['status'] = this.status;
-    data['next_followup_date'] = this.nextFollowupDate;
-    data['description'] = this.description;
-    data['is_active'] = this.isActive;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.creatorName != null) {
-      data['creator_name'] = this.creatorName!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['lead_id'] = leadId;
+    data['user_id'] = userId;
+    data['creator_user_id'] = creatorUserId;
+    data['followup_type_id'] = followupTypeId;
+    data['subject'] = subject;
+    data['phone_number'] = phoneNumber;
+    data['status'] = status;
+    data['next_followup_date'] = nextFollowupDate;
+    data['description'] = description;
+    data['is_active'] = isActive;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (creatorName != null) {
+      data['creator_name'] = creatorName!.toJson();
     }
-    if (this.assignName != null) {
-      data['assign_name'] = this.assignName!.toJson();
+    if (assignName != null) {
+      data['assign_name'] = assignName!.toJson();
     }
-    if (this.companyName != null) {
-      data['company_name'] = this.companyName!.toJson();
+    if (companyName != null) {
+      data['company_name'] = companyName!.toJson();
     }
-    if (this.followUpName != null) {
-      data['follow_up_name'] = this.followUpName!.toJson();
+    if (followUpName != null) {
+      data['follow_up_name'] = followUpName!.toJson();
     }
-    if (this.followUpStatus != null) {
-      data['follow_up_status'] = this.followUpStatus!.toJson();
+    if (followUpStatus != null) {
+      data['follow_up_status'] = followUpStatus!.toJson();
     }
-    if (this.associates != null) {
-      data['associates'] = this.associates!.map((v) => v.toJson()).toList();
+    if (associates != null) {
+      data['associates'] = associates!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -149,21 +150,22 @@ class CreatorName {
   String? email;
   String? designation;
   String? isActive;
-  Null? emailVerifiedAt;
+  String? emailVerifiedAt;
   String? attachment;
   String? createdAt;
   String? updatedAt;
 
-  CreatorName(
-      {this.id,
-      this.name,
-      this.email,
-      this.designation,
-      this.isActive,
-      this.emailVerifiedAt,
-      this.attachment,
-      this.createdAt,
-      this.updatedAt});
+  CreatorName({
+    this.id,
+    this.name,
+    this.email,
+    this.designation,
+    this.isActive,
+    this.emailVerifiedAt,
+    this.attachment,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   CreatorName.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -178,16 +180,16 @@ class CreatorName {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['email'] = this.email;
-    data['designation'] = this.designation;
-    data['is_active'] = this.isActive;
-    data['email_verified_at'] = this.emailVerifiedAt;
-    data['attachment'] = this.attachment;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['email'] = email;
+    data['designation'] = designation;
+    data['is_active'] = isActive;
+    data['email_verified_at'] = emailVerifiedAt;
+    data['attachment'] = attachment;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }
@@ -197,62 +199,63 @@ class CompanyName {
   String? companyName;
   int? userId;
   int? creatorUserId;
-  Null? leadIndustryId;
-  Null? leadSourceId;
+  int? leadIndustryId;
+  int? leadSourceId;
   int? leadPipelineId;
-  Null? leadPriority;
-  Null? leadRatingId;
-  Null? leadAreaId;
-  Null? districtId;
-  Null? name;
+  String? leadPriority;
+  int? leadRatingId;
+  int? leadAreaId;
+  int? districtId;
+  String? name;
   String? phoneNumber;
-  Null? alternateNumber;
-  Null? email;
-  Null? designation;
-  Null? gender;
-  Null? companyPhone;
-  Null? companyEmail;
-  Null? companyWebsite;
-  Null? amount;
-  Null? facebookPage;
-  Null? facebookLike;
-  Null? address;
-  Null? remarks;
+  String? alternateNumber;
+  String? email;
+  String? designation;
+  String? gender;
+  String? companyPhone;
+  String? companyEmail;
+  String? companyWebsite;
+  String? amount;
+  String? facebookPage;
+  String? facebookLike;
+  String? address;
+  String? remarks;
   String? isActive;
   String? isType;
   String? createdAt;
   String? updatedAt;
 
-  CompanyName(
-      {this.id,
-      this.companyName,
-      this.userId,
-      this.creatorUserId,
-      this.leadIndustryId,
-      this.leadSourceId,
-      this.leadPipelineId,
-      this.leadPriority,
-      this.leadRatingId,
-      this.leadAreaId,
-      this.districtId,
-      this.name,
-      this.phoneNumber,
-      this.alternateNumber,
-      this.email,
-      this.designation,
-      this.gender,
-      this.companyPhone,
-      this.companyEmail,
-      this.companyWebsite,
-      this.amount,
-      this.facebookPage,
-      this.facebookLike,
-      this.address,
-      this.remarks,
-      this.isActive,
-      this.isType,
-      this.createdAt,
-      this.updatedAt});
+  CompanyName({
+    this.id,
+    this.companyName,
+    this.userId,
+    this.creatorUserId,
+    this.leadIndustryId,
+    this.leadSourceId,
+    this.leadPipelineId,
+    this.leadPriority,
+    this.leadRatingId,
+    this.leadAreaId,
+    this.districtId,
+    this.name,
+    this.phoneNumber,
+    this.alternateNumber,
+    this.email,
+    this.designation,
+    this.gender,
+    this.companyPhone,
+    this.companyEmail,
+    this.companyWebsite,
+    this.amount,
+    this.facebookPage,
+    this.facebookLike,
+    this.address,
+    this.remarks,
+    this.isActive,
+    this.isType,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   CompanyName.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -287,36 +290,36 @@ class CompanyName {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['company_name'] = this.companyName;
-    data['user_id'] = this.userId;
-    data['creator_user_id'] = this.creatorUserId;
-    data['lead_industry_id'] = this.leadIndustryId;
-    data['lead_source_id'] = this.leadSourceId;
-    data['lead_pipeline_id'] = this.leadPipelineId;
-    data['lead_priority'] = this.leadPriority;
-    data['lead_rating_id'] = this.leadRatingId;
-    data['lead_area_id'] = this.leadAreaId;
-    data['district_id'] = this.districtId;
-    data['name'] = this.name;
-    data['phone_number'] = this.phoneNumber;
-    data['alternate_number'] = this.alternateNumber;
-    data['email'] = this.email;
-    data['designation'] = this.designation;
-    data['gender'] = this.gender;
-    data['company_phone'] = this.companyPhone;
-    data['company_email'] = this.companyEmail;
-    data['company_website'] = this.companyWebsite;
-    data['amount'] = this.amount;
-    data['facebook_page'] = this.facebookPage;
-    data['facebook_like'] = this.facebookLike;
-    data['address'] = this.address;
-    data['remarks'] = this.remarks;
-    data['is_active'] = this.isActive;
-    data['is_type'] = this.isType;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['company_name'] = companyName;
+    data['user_id'] = userId;
+    data['creator_user_id'] = creatorUserId;
+    data['lead_industry_id'] = leadIndustryId;
+    data['lead_source_id'] = leadSourceId;
+    data['lead_pipeline_id'] = leadPipelineId;
+    data['lead_priority'] = leadPriority;
+    data['lead_rating_id'] = leadRatingId;
+    data['lead_area_id'] = leadAreaId;
+    data['district_id'] = districtId;
+    data['name'] = name;
+    data['phone_number'] = phoneNumber;
+    data['alternate_number'] = alternateNumber;
+    data['email'] = email;
+    data['designation'] = designation;
+    data['gender'] = gender;
+    data['company_phone'] = companyPhone;
+    data['company_email'] = companyEmail;
+    data['company_website'] = companyWebsite;
+    data['amount'] = amount;
+    data['facebook_page'] = facebookPage;
+    data['facebook_like'] = facebookLike;
+    data['address'] = address;
+    data['remarks'] = remarks;
+    data['is_active'] = isActive;
+    data['is_type'] = isType;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }
@@ -329,13 +332,14 @@ class FollowUpName {
   String? createdAt;
   String? updatedAt;
 
-  FollowUpName(
-      {this.id,
-      this.name,
-      this.status,
-      this.isActive,
-      this.createdAt,
-      this.updatedAt});
+  FollowUpName({
+    this.id,
+    this.name,
+    this.status,
+    this.isActive,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   FollowUpName.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -347,13 +351,13 @@ class FollowUpName {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['status'] = this.status;
-    data['is_active'] = this.isActive;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['status'] = status;
+    data['is_active'] = isActive;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }
@@ -370,9 +374,9 @@ class Associate {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
     return data;
   }
 }

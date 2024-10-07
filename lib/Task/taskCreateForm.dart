@@ -62,7 +62,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
 
     Map body = {
       "lead_id": CompanyName.companyId.toString(),
-      "user_id": Owner.ownerId.toString(),
+      "user_id": userId,
       "creator_user_id": userId,
       "task_type_id": SelectedPipeline.taskTypeId.toString(),
       "subject": _subject.text,
