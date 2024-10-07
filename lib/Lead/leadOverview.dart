@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -152,7 +153,7 @@ class _LeadOverviewState extends State<LeadOverview> {
                                 Text(
                                     "Lead Source: ${leadDetails?.leadSourceName ?? "N/A"}"),
                                 Text(
-                                    "Lead Date: ${leadDetails?.leadPipelineName?.createdAt ?? "N/A"}"),
+                                    "Created At: ${DateFormat.yMd().add_jm().format(DateTime.parse(leadDetails?.leadPipelineName?.createdAt ?? "N/A"))} "),
                               ],
                             ),
                           ),

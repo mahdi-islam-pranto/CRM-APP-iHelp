@@ -5,10 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
-import 'package:untitled1/Dashboard/bottom_navigation_page.dart';
-import 'package:untitled1/components/CustomProgress.dart';
-import 'package:untitled1/resourses/app_colors.dart';
+
 import '../API/api_url.dart';
+import '../Dashboard/bottom_navigation_page.dart';
+import '../components/CustomProgress.dart';
+
+import '../resourses/app_colors.dart';
 import '../resourses/resourses.dart';
 
 class UserLoginScreen extends StatefulWidget {
@@ -49,14 +51,12 @@ class _loginPageState extends State<UserLoginScreen> {
               body: Stack(
                 children: <Widget>[
                   // background image
-
                   Positioned(
                     top: 10,
                     right: 10,
                     child: Image.asset(
                       'assets/images/union.png', // Update with your image path
                       width: MediaQuery.of(context).size.width / 2.5,
-
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -428,7 +428,10 @@ class _loginPageState extends State<UserLoginScreen> {
 
     try {
       // API URL
-      String url = ApiUrls.loginUrl;
+      String url = 'https://crm.ihelpbd.com/api/crm-app-login';
+
+      // For testing purposes, use a static device token
+      String deviceToken = "stuybuybsd";
 
       // Send POST request
       var response = await http.post(
@@ -436,6 +439,7 @@ class _loginPageState extends State<UserLoginScreen> {
         body: {
           'email': email,
           'password': password,
+          'device_id': deviceToken,
         },
       );
 
@@ -445,7 +449,7 @@ class _loginPageState extends State<UserLoginScreen> {
       print("Response data: $data");
 
       // Check response status
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && data['status'] == "200") {
         SharedPreferences sharedPreferences =
             await SharedPreferences.getInstance();
 
@@ -461,42 +465,31 @@ class _loginPageState extends State<UserLoginScreen> {
           sharedPreferences.setString(
               "user_role", data['data']['user']['designation'].toString());
 
-          // Print email, password, and token
-          print("Email: ${email}");
-          print("Password: ${password}");
+          // Print login details for debugging
+          print("Email: $email");
+          print("Password: $password");
           print("User Name: ${data['data']['user']['name']}");
           print("User ID: ${data['data']['user']['id']}");
           print("Token: ${data['data']['token']}");
           print("Message: ${data['message']}");
 
-          // Store the API error message
-          loginApiError = data['message'];
-
           // Hide progress
           customProgress.hideDialog();
 
           // Navigate to dashboard
-          showAnimatedDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (BuildContext context) {
-              return const BottomNavigationPage();
-            },
-            animationType: DialogTransitionType.fadeScale,
-            curve: Curves.fastOutSlowIn,
-            duration: const Duration(milliseconds: 500),
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+                builder: (context) => const BottomNavigationPage()),
           );
         } else {
-          customProgress.hideDialog();
-          showErrorDialog("Login failed: Invalid credentials or no token.");
+          throw Exception("Invalid response structure");
         }
       } else {
-        customProgress.hideDialog();
-        showErrorDialog("Login failed: ${data['message'] ?? 'Unknown error.'}");
+        throw Exception(data['message'] ?? "Unknown error occurred");
       }
     } catch (e) {
       customProgress.hideDialog();
-      showErrorDialog("Invalid Email And Password");
+      showErrorDialog("Login failed: ${e.toString()}");
     }
   }
 
