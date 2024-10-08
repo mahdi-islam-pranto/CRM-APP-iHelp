@@ -189,8 +189,6 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   // right side column
 
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(task.taskName?.name ?? 'No Task Name'),
                       Card(

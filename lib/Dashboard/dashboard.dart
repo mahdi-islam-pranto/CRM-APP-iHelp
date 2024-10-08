@@ -233,6 +233,7 @@ class _NewDashboardState extends State<NewDashboard> {
                 /// App's Top section with user name and logout button
                 Center(
                   child: Container(
+                    padding: const EdgeInsets.only(left: 0, right: 0),
                     width: 330.w,
                     height: 80.h,
                     color: backgroundColor,
@@ -245,23 +246,23 @@ class _NewDashboardState extends State<NewDashboard> {
                               "Hi, $username",
                               style: TextStyle(
                                   fontSize: 20.sp,
-                                  color: const Color.fromRGBO(18, 22, 92, 100),
+                                  color: const Color(0xFF2C3131),
                                   fontWeight: FontWeight.bold),
                             ),
                             subtitle: Text(
                               email.toString(),
                               style: TextStyle(
-                                fontSize: 15.sp,
-                                color: const Color.fromRGBO(153, 153, 153, 100),
+                                fontSize: 14.sp,
+                                color: const Color(0xFF707070),
                               ),
                             ),
 
-                            ///tra
+                            ///trailing
                             trailing: PopupMenuButton<DropMenuItem>(
-                              color: Colors.green[50],
+                              color: Colors.blue[50],
                               position: PopupMenuPosition.under,
                               padding: const EdgeInsets.only(
-                                  right: 15, top: 10, bottom: 10),
+                                  right: 0, top: 10, bottom: 10),
                               icon: Image.asset(
                                 "assets/images/person.png",
                                 color: Colors.blueGrey,
@@ -281,7 +282,7 @@ class _NewDashboardState extends State<NewDashboard> {
 
                 /// All Containers with Total lead number, Total user, etc
                 const Padding(
-                  padding: EdgeInsets.only(bottom: 20),
+                  padding: EdgeInsets.only(bottom: 10),
                   child: DashboardCounter(),
                 ),
 
@@ -295,19 +296,33 @@ class _NewDashboardState extends State<NewDashboard> {
                         "Today's Tasks",
                         style: TextStyle(
                             fontSize: 20.sp,
-                            color: const Color.fromRGBO(17, 23, 93, 100),
+                            color: const Color(0xFF2C3131),
                             fontWeight: FontWeight.bold),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: IconButton(
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.chevron_right,
-                            color: Colors.grey,
-                            size: 25.sp,
-                          )),
+                      child: Row(
+                        children: [
+                          TextButton(
+                            onPressed: () {},
+                            child: Row(
+                              children: [
+                                Text(
+                                  "See All",
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12.sp),
+                                ),
+                                Icon(
+                                  Icons.chevron_right,
+                                  color: Colors.grey,
+                                  size: 25.sp,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     )
                   ],
                 ),
