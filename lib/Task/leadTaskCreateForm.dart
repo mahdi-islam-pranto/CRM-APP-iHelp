@@ -10,6 +10,8 @@ import 'package:untitled1/components/Dropdowns/companyNameDropDown.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import '../FollowUP/followUpType.dart';
 import '../Lead/LeadOwnerDropdown.dart';
+import '../Lead/leadTaskList.dart';
+import '../Notification/fcm_server.dart';
 import '../components/CustomProgress.dart';
 import '../components/Dropdowns/taskTypeDropdown.dart';
 import '../resourses/resourses.dart';
@@ -39,6 +41,25 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
   }
 
   // API call and send data to server
+
+  // notification
+
+  String selectedDeviceToken = "";
+  String associateSelectedDeviceToken = "";
+
+  // assign
+  void handleDeviceToken(String deviceToken) {
+    setState(() {
+      selectedDeviceToken = deviceToken;
+      print("selected token:$selectedDeviceToken");
+    });
+  }
+
+  void associateHandelDeviceToken(String assiciateDeviceToken) {
+    setState(() {
+      associateSelectedDeviceToken = assiciateDeviceToken;
+    });
+  }
 
   Future sendDataToServer() async {
     CustomProgress customProgress = CustomProgress(context);
@@ -97,6 +118,28 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
       _contactNumber.clear();
       startDateTimeController.clear();
 
+      // send notification
+      if (selectedDeviceToken.isNotEmpty) {
+        FCMService.sendNotification(
+            deviceToken: selectedDeviceToken,
+            title: "Reminder",
+            body: "New Task Created! Please Check",
+            storyId: "story_12345");
+        print("selected device token: $selectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
+      if (associateSelectedDeviceToken.isNotEmpty) {
+        FCMService.sendNotification(
+            deviceToken: associateSelectedDeviceToken,
+            title: "Reminder",
+            body: "New Follow Up Created ! Please Check",
+            storyId: "story_12345");
+        print("selected associate device token: $associateSelectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
+
       // Reset dropdowns to their initial state
       setState(() {
         FollowupType.followUpType =
@@ -130,8 +173,12 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
           Navigator.pop(context);
         },
         btnOkOnPress: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => TaskListScreen()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => LeadTaskListScreen(
+                        leadId: widget.leadId,
+                      )));
         },
       ).show();
     } else {
@@ -208,7 +255,11 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
                       const SizedBox(height: 10),
 
                       // assign to
-                      dropDownRow("Assign Member", LeadOwnerDropDown()),
+                      dropDownRow(
+                          "Assign Member",
+                          LeadOwnerDropDown(
+                            onDeviceTokenReceived: handleDeviceToken,
+                          )),
                       const SizedBox(height: 12),
 
                       // start date & end date

@@ -83,8 +83,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             },
             items: const [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.contact_page_outlined),
-                  label: "Lead Details"),
+                  icon: Icon(Icons.settings), label: "Settings"),
               // BottomNavigationBarItem(
               //     icon: Icon(Icons.contacts), label: "Contacts"),
               BottomNavigationBarItem(

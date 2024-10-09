@@ -11,6 +11,7 @@ import 'package:untitled1/resourses/app_colors.dart';
 
 import '../Lead/LeadAssociateDropdown.dart';
 import '../Lead/LeadOwnerDropdown.dart';
+import '../Notification/fcm_server.dart';
 import '../components/CustomProgress.dart';
 
 import '../components/Dropdowns/companyNameDropDown.dart';
@@ -38,6 +39,25 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
 
   bool validatePhoneNumber(String phoneNumber) {
     return RegExp(r'^[0-9]{11}$').hasMatch(phoneNumber);
+  }
+
+  // notification
+
+  String selectedDeviceToken = "";
+  String associateSelectedDeviceToken = "";
+
+  // assign
+  void handleDeviceToken(String deviceToken) {
+    setState(() {
+      selectedDeviceToken = deviceToken;
+      print("selected token:$selectedDeviceToken");
+    });
+  }
+
+  void associateHandelDeviceToken(String assiciateDeviceToken) {
+    setState(() {
+      associateSelectedDeviceToken = assiciateDeviceToken;
+    });
   }
 
   // API call and send data to server
@@ -107,6 +127,28 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
       _description.clear();
       _contactNumber.clear();
       dateTimeController.clear();
+
+      // send notification
+      if (selectedDeviceToken.isNotEmpty) {
+        FCMService.sendNotification(
+            deviceToken: selectedDeviceToken,
+            title: "Reminder",
+            body: "New Task Created! Please Check",
+            storyId: "story_12345");
+        print("selected device token: $selectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
+      if (associateSelectedDeviceToken.isNotEmpty) {
+        FCMService.sendNotification(
+            deviceToken: associateSelectedDeviceToken,
+            title: "Reminder",
+            body: "New Follow Up Created ! Please Check",
+            storyId: "story_12345");
+        print("selected associate device token: $associateSelectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
 
       // Reset dropdowns to their initial state
       setState(() {
@@ -217,13 +259,21 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
                         children: [
                           Flexible(
                             flex: 1,
-                            child: dropDownRow("Owner", LeadOwnerDropDown()),
+                            child: dropDownRow(
+                                "Owner",
+                                LeadOwnerDropDown(
+                                  onDeviceTokenReceived: handleDeviceToken,
+                                )),
                           ),
                           const SizedBox(width: 10),
                           Flexible(
                             flex: 1,
                             child: dropDownRow(
-                                "Associate", LeadAssociateDropDown()),
+                                "Associate",
+                                LeadAssociateDropDown(
+                                  onDeviceTokenReceived:
+                                      associateHandelDeviceToken,
+                                )),
                           ),
                         ],
                       ),

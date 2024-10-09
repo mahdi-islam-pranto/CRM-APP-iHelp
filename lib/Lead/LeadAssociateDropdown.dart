@@ -1,25 +1,32 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../resourses/app_colors.dart';
+import 'package:flutter/material.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:untitled1/resourses/app_colors.dart';
+
 import '../resourses/resourses.dart';
-import '../static_variable/static_variable.dart';
 
 class Associate {
   static int? associateId;
 }
 
 class LeadAssociateDropDown extends StatefulWidget {
+  final Function(String) onDeviceTokenReceived;
+
+  const LeadAssociateDropDown({Key? key, required this.onDeviceTokenReceived})
+      : super(key: key);
+
   @override
-  _LeadSourceDropDownState createState() => _LeadSourceDropDownState();
+  State<LeadAssociateDropDown> createState() => _LeadAssociateDropDownState();
 }
 
-class _LeadSourceDropDownState extends State<LeadAssociateDropDown> {
+class _LeadAssociateDropDownState extends State<LeadAssociateDropDown> {
   List<dynamic> _pipelineList = [];
   String? _selectedPipelineName;
   int? _selectedPipelineId;
+  String? _selectedDeviceId;
 
   @override
   void initState() {
@@ -52,7 +59,14 @@ class _LeadSourceDropDownState extends State<LeadAssociateDropDown> {
     setState(() {
       _selectedPipelineName = selectedPipeline['name'];
       _selectedPipelineId = selectedPipeline['id'];
+      _selectedDeviceId = selectedPipeline['device_id']; // Extract device_id
+
       Associate.associateId = _selectedPipelineId;
+
+      print("Selected name: $_selectedPipelineName");
+      print("Selected device_id: $_selectedDeviceId");
+
+      widget.onDeviceTokenReceived(_selectedDeviceId ?? '');
     });
 
     print('Selected associate ID (static): ${Associate.associateId}');
@@ -76,7 +90,7 @@ class _LeadSourceDropDownState extends State<LeadAssociateDropDown> {
             ),
             child: DropdownButtonFormField<dynamic>(
               dropdownColor: backgroundColor,
-              menuMaxHeight: 400,
+              menuMaxHeight: 5000,
               isExpanded: true,
               hint: Text(
                 "Select Member",
@@ -97,7 +111,8 @@ class _LeadSourceDropDownState extends State<LeadAssociateDropDown> {
               items: _pipelineList.map((pipeline) {
                 return DropdownMenuItem<dynamic>(
                   value: pipeline,
-                  child: Text(pipeline['name']),
+                  child: Text('${pipeline['name']}'),
+                  //child: Text('${pipeline['name']} (Device ID: ${pipeline['device_id']})'),
                 );
               }).toList(),
               onChanged: _onPipelineSelected,

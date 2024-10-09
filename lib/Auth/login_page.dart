@@ -8,6 +8,7 @@ import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 
 import '../API/api_url.dart';
 import '../Dashboard/bottom_navigation_page.dart';
+import '../Notification/notification_service.dart';
 import '../components/CustomProgress.dart';
 
 import '../resourses/app_colors.dart';
@@ -431,7 +432,17 @@ class _loginPageState extends State<UserLoginScreen> {
       String url = 'https://crm.ihelpbd.com/api/crm-app-login';
 
       // For testing purposes, use a static device token
-      String deviceToken = "stuybuybsd";
+      String deviceToken = await NotificationServices().getDeviceToken();
+
+      if (deviceToken.isEmpty) {
+        // Handle the case where the token couldn't be fetched
+        customProgress.hideDialog();
+        showErrorDialog(
+            "Device token could not be retrieved. Please try again.");
+        return;
+      }
+
+      print("User login device token: $deviceToken");
 
       // Send POST request
       var response = await http.post(

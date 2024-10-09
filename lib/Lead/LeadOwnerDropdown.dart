@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled1/resourses/app_colors.dart';
 
-import '../resourses/app_colors.dart';
 import '../resourses/resourses.dart';
 
 class Owner {
@@ -11,14 +11,22 @@ class Owner {
 }
 
 class LeadOwnerDropDown extends StatefulWidget {
+  final Function(String) onDeviceTokenReceived;
+
+  const LeadOwnerDropDown({
+    Key? key,
+    required this.onDeviceTokenReceived,
+  }) : super(key: key);
+
   @override
-  _LeadOwnerDropDownState createState() => _LeadOwnerDropDownState();
+  State<LeadOwnerDropDown> createState() => _LeadOwnerDropDownState();
 }
 
 class _LeadOwnerDropDownState extends State<LeadOwnerDropDown> {
   List<dynamic> _pipelineList = [];
   String? _selectedPipelineName;
   int? _selectedPipelineId;
+  String? _selectedDeviceId;
 
   @override
   void initState() {
@@ -51,7 +59,14 @@ class _LeadOwnerDropDownState extends State<LeadOwnerDropDown> {
     setState(() {
       _selectedPipelineName = selectedPipeline['name'];
       _selectedPipelineId = selectedPipeline['id'];
+      _selectedDeviceId = selectedPipeline['device_id']; // Extract device_id
+
       Owner.ownerId = _selectedPipelineId;
+
+      print("Selected name: $_selectedPipelineName");
+      print("Selected device_id: $_selectedDeviceId");
+
+      widget.onDeviceTokenReceived(_selectedDeviceId ?? '');
     });
 
     print('Selected Owner ID (static): ${Owner.ownerId}');
@@ -77,7 +92,7 @@ class _LeadOwnerDropDownState extends State<LeadOwnerDropDown> {
               dropdownColor: backgroundColor,
               validator: (value) =>
                   value == null ? 'Assign member is required' : null,
-              menuMaxHeight: 400,
+              menuMaxHeight: 5000,
               isExpanded: true,
               hint: Text(
                 "Select Member",
@@ -97,7 +112,9 @@ class _LeadOwnerDropDownState extends State<LeadOwnerDropDown> {
               items: _pipelineList.map((pipeline) {
                 return DropdownMenuItem<dynamic>(
                   value: pipeline,
-                  child: Text(pipeline['name']),
+                  child: Text('${pipeline['name']}'),
+
+                  // child: Text('${pipeline['name']} (Device ID: ${pipeline['device_id']})'), // Display name with device_id
                 );
               }).toList(),
               onChanged: _onPipelineSelected,

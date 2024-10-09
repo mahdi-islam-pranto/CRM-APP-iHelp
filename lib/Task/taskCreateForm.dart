@@ -10,6 +10,7 @@ import 'package:untitled1/components/Dropdowns/companyNameDropDown.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import '../FollowUP/followUpType.dart';
 import '../Lead/LeadOwnerDropdown.dart';
+import '../Notification/fcm_server.dart';
 import '../components/CustomProgress.dart';
 import '../components/Dropdowns/taskTypeDropdown.dart';
 import '../resourses/resourses.dart';
@@ -35,6 +36,25 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
 
   bool validatePhoneNumber(String phoneNumber) {
     return RegExp(r'^[0-9]{11}$').hasMatch(phoneNumber);
+  }
+
+  // notification
+
+  String selectedDeviceToken = "";
+  String associateSelectedDeviceToken = "";
+
+  // assign
+  void handleDeviceToken(String deviceToken) {
+    setState(() {
+      selectedDeviceToken = deviceToken;
+      print("selected token:$selectedDeviceToken");
+    });
+  }
+
+  void associateHandelDeviceToken(String assiciateDeviceToken) {
+    setState(() {
+      associateSelectedDeviceToken = assiciateDeviceToken;
+    });
   }
 
   // API call and send data to server
@@ -95,6 +115,28 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       _description.clear();
       _contactNumber.clear();
       startDateTimeController.clear();
+
+      // send notification
+      if (selectedDeviceToken.isNotEmpty) {
+        FCMService.sendNotification(
+            deviceToken: selectedDeviceToken,
+            title: "Reminder",
+            body: "New Task Created ! Please Check",
+            storyId: "story_12345");
+        print("selected device token: $selectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
+      if (associateSelectedDeviceToken.isNotEmpty) {
+        FCMService.sendNotification(
+            deviceToken: associateSelectedDeviceToken,
+            title: "Reminder",
+            body: "New Follow Up Created ! Please Check",
+            storyId: "story_12345");
+        print("selected associate device token: $associateSelectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
 
       // Reset dropdowns to their initial state
       setState(() {
@@ -207,7 +249,11 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                       const SizedBox(height: 10),
 
                       // assign to
-                      dropDownRow("Assign Member", LeadOwnerDropDown()),
+                      dropDownRow(
+                          "Assign Member",
+                          LeadOwnerDropDown(
+                            onDeviceTokenReceived: handleDeviceToken,
+                          )),
                       const SizedBox(height: 12),
 
                       // start date & end date
@@ -419,7 +465,6 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
               style:
                   const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
         ),
-        // const SizedBox(height: 10),
         InkWell(
           onTap: () async {
             DateTime? pickedDate = await showDatePicker(
@@ -431,8 +476,25 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
 
             if (pickedDate != null) {
               setState(() {
-                dateTimeController.text =
-                    "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+                var date =
+                    "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+                dateTimeController.text = date;
+                print("Date selected: $date");
+
+                // Send notification to assigned member
+                if (selectedDeviceToken.isNotEmpty) {
+                  FCMService.sendNotification(
+                      deviceToken: selectedDeviceToken,
+                      title: "Task Deadline Set",
+                      body:
+                          "A task has been assigned to you with a deadline of $date",
+                      storyId:
+                          "story_${DateTime.now().millisecondsSinceEpoch}");
+                  print(
+                      "Notification sent to device token: $selectedDeviceToken");
+                } else {
+                  print("No device token available for notification");
+                }
               });
             }
           },
@@ -445,11 +507,10 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                   color: Colors.grey.withOpacity(0.1),
                   spreadRadius: 0,
                   blurRadius: 3,
-                  offset: const Offset(0, 1), // changes position of shadow
+                  offset: const Offset(0, 1),
                 ),
               ],
             ),
-            // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
             child: TextFormField(
               readOnly: true,
               controller: dateTimeController,
@@ -607,51 +668,29 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
 
         //
         ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
+            // AccessFirebase accessTokenFirebase = AccessFirebase();
+            // String accessToken = await accessTokenFirebase.getAccessToken();
+            // print("Access Token Firebase: $accessToken");
+            // if (selectedDeviceToken.isNotEmpty) {
+            //   FCMService.sendNotification(
+            //       deviceToken: selectedDeviceToken,
+            //       title: "Pending task available",
+            //       body: "Please solved the task",
+            //       storyId: "story_12345");
+            //   print("selected device token: $selectedDeviceToken");
+            // } else {
+            //   print("Device token is empty");
+            // }
+
             if (_formKey.currentState?.validate() == true) {
-              // if (Owner.ownerId == null) {
-              //   ScaffoldMessenger.of(context).showSnackBar(
-              //     SnackBar(
-              //       dismissDirection: DismissDirection.endToStart,
-              //       elevation: 2,
-              //       backgroundColor: Colors.red,
-              //       behavior: SnackBarBehavior.floating, // Makes it floating
-              //       shape: RoundedRectangleBorder(
-              //         // Adds border radius
-              //         borderRadius: BorderRadius.circular(12),
-              //       ),
-              //       margin:
-              //           const EdgeInsets.all(10), // Margin around the SnackBar
-              //       content: const Text(
-              //         'Please Select Owner',
-              //         style:
-              //             TextStyle(color: Colors.white), // Custom text style
-              //       ),
-              //     ),
-              //   );
-              //   return;
-              // }
-              // if (FollowupType.followUpType == null) {
-              //   ScaffoldMessenger.of(context).showSnackBar(
-              //     SnackBar(
-              //       elevation: 2,
-              //       backgroundColor: Colors.red,
-              //       behavior: SnackBarBehavior.floating, // Makes it floating
-              //       shape: RoundedRectangleBorder(
-              //         // Adds border radius
-              //         borderRadius: BorderRadius.circular(12),
-              //       ),
-              //       margin:
-              //           const EdgeInsets.all(10), // Margin around the SnackBar
-              //       content: const Text(
-              //         'Please Select Follow Up Type',
-              //         style:
-              //             TextStyle(color: Colors.white), // Custom text style
-              //       ),
-              //     ),
-              //   );
-              //   return;
-              // }
+              // notification
+              //  FCMService.sendNotification(
+              //        deviceToken: deviceToken,
+              //        title: "Pending task available",
+              //        body: "Please solved the task",
+              //        storyId: "story_12345"
+              //  );
               sendDataToServer();
             }
           },

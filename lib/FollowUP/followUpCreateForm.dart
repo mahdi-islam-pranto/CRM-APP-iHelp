@@ -11,6 +11,7 @@ import 'package:untitled1/resourses/app_colors.dart';
 
 import '../Lead/LeadAssociateDropdown.dart';
 import '../Lead/LeadOwnerDropdown.dart';
+import '../Notification/fcm_server.dart';
 import '../components/CustomProgress.dart';
 
 import '../components/Dropdowns/companyNameDropDown.dart';
@@ -36,6 +37,24 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
 
   bool validatePhoneNumber(String phoneNumber) {
     return RegExp(r'^[0-9]{11}$').hasMatch(phoneNumber);
+  }
+
+// notification
+  String selectedDeviceToken = "";
+  String associateSelectedDeviceToken = "";
+
+  // assign
+  void handleDeviceToken(String deviceToken) {
+    setState(() {
+      selectedDeviceToken = deviceToken;
+      print("selected token:$selectedDeviceToken");
+    });
+  }
+
+  void associateHandelDeviceToken(String assiciateDeviceToken) {
+    setState(() {
+      associateSelectedDeviceToken = assiciateDeviceToken;
+    });
   }
 
   // API call and send data to server
@@ -114,6 +133,28 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
       });
 
       print('Response Body: ${response.body}');
+
+      // send notification
+      if (selectedDeviceToken.isNotEmpty) {
+        FCMService.sendNotification(
+            deviceToken: selectedDeviceToken,
+            title: "Reminder",
+            body: "FollowUp Available ! Please Solved FollowUp",
+            storyId: "story_12345");
+        print("selected device token: $selectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
+      if (associateSelectedDeviceToken.isNotEmpty) {
+        FCMService.sendNotification(
+            deviceToken: associateSelectedDeviceToken,
+            title: "Reminder",
+            body: "FollowUp Available ! Please Solved FollowUp",
+            storyId: "story_12345");
+        print("selected associate device token: $associateSelectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
 
       await AwesomeDialog(
         context: context,
@@ -213,13 +254,21 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                         children: [
                           Flexible(
                             flex: 1,
-                            child: dropDownRow("Owner", LeadOwnerDropDown()),
+                            child: dropDownRow(
+                                "Owner",
+                                LeadOwnerDropDown(
+                                  onDeviceTokenReceived: handleDeviceToken,
+                                )),
                           ),
                           const SizedBox(width: 10),
                           Flexible(
                             flex: 1,
                             child: dropDownRow(
-                                "Associate", LeadAssociateDropDown()),
+                                "Associate",
+                                LeadAssociateDropDown(
+                                  onDeviceTokenReceived:
+                                      associateHandelDeviceToken,
+                                )),
                           ),
                         ],
                       ),
@@ -530,6 +579,28 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
         const SizedBox(width: 12),
         ElevatedButton(
           onPressed: () {
+            // if (selectedDeviceToken.isNotEmpty) {
+            //   FCMService.sendNotification(
+            //       deviceToken: selectedDeviceToken,
+            //       title: "Reminder",
+            //       body: "FollowUp Available ! Please Solved FollowUp",
+            //       storyId: "story_12345");
+            //   print("selected device token: $selectedDeviceToken");
+            // } else {
+            //   print("Device token is empty");
+            // }
+            // if (associateSelectedDeviceToken.isNotEmpty) {
+            //   FCMService.sendNotification(
+            //       deviceToken: associateSelectedDeviceToken,
+            //       title: "Reminder",
+            //       body: "FollowUp Available ! Please Solved FollowUp",
+            //       storyId: "story_12345");
+            //   print(
+            //       "selected associate device token: $associateSelectedDeviceToken");
+            // } else {
+            //   print("Device token is empty");
+            // }
+
             if (_formKey.currentState?.validate() == true) {
               if (Owner.ownerId == null) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -587,7 +658,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text("Create",
+          child: const Text("Save",
               style: TextStyle(color: Colors.white, fontSize: 16)),
         ),
       ],
