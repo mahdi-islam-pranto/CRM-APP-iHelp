@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Models/taskListModel.dart';
@@ -29,6 +30,14 @@ class _DashboardTasksState extends State<DashboardTasks> {
     String? token = sharedPreferences.getString("token");
     String? userId = sharedPreferences.getString("id");
 
+    String startDate = DateFormat('yyyy-MM-dd').format(DateTime(
+        DateTime.now().year, DateTime.now().month, DateTime.now().day));
+
+    String endDate = DateFormat('yyyy-MM-dd').format(DateTime(
+        DateTime.now().year, DateTime.now().month, DateTime.now().day));
+
+    print("Start date task $startDate");
+
     final response = await http.post(
       Uri.parse("https://crm.ihelpbd.com/api/crm-lead-task-list"),
       headers: {
@@ -36,8 +45,8 @@ class _DashboardTasksState extends State<DashboardTasks> {
         'user_id': '$userId',
       },
       body: {
-        'start_date': '2024-01-01',
-        'end_date': '2025-11-01',
+        'start_date': startDate, // var statDate
+        'end_date': endDate,
         'user_id': userId,
         'session_user_id': '',
         'status': '',
@@ -58,7 +67,7 @@ class _DashboardTasksState extends State<DashboardTasks> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200.h,
+      height: 240.h,
       child: FutureBuilder<TaskListModel>(
         future: _taskListFuture,
         builder: (context, snapshot) {
@@ -71,93 +80,100 @@ class _DashboardTasksState extends State<DashboardTasks> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData && snapshot.data!.data != null) {
-            return ListView.builder(
-              itemCount: snapshot.data!.data!.length > 5
-                  ? 5
-                  : snapshot.data!.data!.length,
-              itemBuilder: (context, index) {
-                var task = snapshot.data!.data![index];
-                return Padding(
-                  padding:
-                      const EdgeInsets.only(left: 20, right: 20, bottom: 5),
-                  child: Card(
-                    color: Colors.white,
-                    elevation: 4,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
+            return Scrollbar(
+              thickness: 10,
+              trackVisibility: true,
+              child: ListView.builder(
+                itemCount: snapshot.data!.data!.length > 5
+                    ? 5
+                    : snapshot.data!.data!.length,
+                itemBuilder: (context, index) {
+                  var task = snapshot.data!.data![index];
+                  return Padding(
+                    padding:
+                        const EdgeInsets.only(left: 20, right: 20, bottom: 5),
+                    child: Card(
+                      color: Colors.white,
+                      elevation: 4,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15),
+                        ),
                       ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15),
-                      child: ListTile(
-                        contentPadding:
-                            const EdgeInsets.only(bottom: 5, top: 5),
-                        title: Text(
-                          task.companyName?.companyName ?? 'No Company',
-                          style: TextStyle(
-                            color: const Color(0xFF2C3131),
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15, right: 15),
+                        child: ListTile(
+                          contentPadding:
+                              const EdgeInsets.only(bottom: 5, top: 5),
+                          title: Text(
+                            task.companyName?.companyName ?? 'No Company',
+                            style: TextStyle(
+                              color: const Color(0xFF2C3131),
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              task.taskName?.name ?? 'No Task Name',
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                color: const Color(0xFF707070),
-                              ),
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.person_add_alt_1_outlined,
-                                  size: 15.sp,
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                task.taskName?.name ?? 'No Task Name',
+                                style: TextStyle(
+                                  fontSize: 13.sp,
+                                  color: const Color(0xFF707070),
                                 ),
-                                SizedBox(width: 5.w),
-                                Text(
-                                  task.assignName?.name ?? 'No End Time',
-                                  style: TextStyle(
-                                      color: const Color(0xFF707070),
-                                      fontSize: 13.sp),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        trailing: Column(
-                          children: [
-                            Text(
-                              task.taskStatus?.name ?? 'No status',
-                              style: TextStyle(
-                                  color: Colors.blueGrey, fontSize: 12.sp),
-                            ),
-                            Card(
-                              color: Colors.blue[100],
-                              child: Padding(
-                                padding: const EdgeInsets.all(3.0),
-                                child: Text(task.endTime ?? 'No End Time'),
                               ),
-                            ),
-                          ],
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.person_add_alt_1_outlined,
+                                    size: 15.sp,
+                                  ),
+                                  SizedBox(width: 5.w),
+                                  Text(
+                                    task.assignName?.name ?? 'No Assign Name',
+                                    style: TextStyle(
+                                        color: const Color(0xFF707070),
+                                        fontSize: 13.sp),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          trailing: Column(
+                            children: [
+                              Text(
+                                task.taskStatus?.name ?? 'No status',
+                                style: TextStyle(
+                                    color: Colors.blueGrey, fontSize: 12.sp),
+                              ),
+                              Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(7.0),
+                                ),
+                                color: Colors.blue[100],
+                                child: Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: Text(task.endTime ?? 'No End Time'),
+                                ),
+                              ),
+                            ],
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    TaskOverview(taskId: task.id!.toInt()),
+                              ),
+                            );
+                          },
                         ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  TaskOverview(taskId: task.id!.toInt()),
-                            ),
-                          );
-                        },
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             );
           } else {
             return Center(

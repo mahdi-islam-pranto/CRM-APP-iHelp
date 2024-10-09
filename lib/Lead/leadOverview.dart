@@ -149,9 +149,9 @@ class _LeadOverviewState extends State<LeadOverview> {
                                 Text(
                                     "Lead Pipeline: ${leadDetails?.leadPipelineName?.name ?? "N/A"}"),
                                 Text(
-                                    "Lead Area: ${leadDetails?.leadAreasName ?? "N/A"}"),
+                                    "Lead Area: ${leadDetails?.leadAreasName?['name'] ?? "N/A"}"),
                                 Text(
-                                    "Lead Source: ${leadDetails?.leadSourceName ?? "N/A"}"),
+                                    "Lead Source: ${leadDetails?.leadSourceName?['name'] ?? "N/A"}"),
                                 Text(
                                     "Created At: ${DateFormat.yMd().add_jm().format(DateTime.parse(leadDetails?.leadPipelineName?.createdAt ?? "N/A"))} "),
                               ],

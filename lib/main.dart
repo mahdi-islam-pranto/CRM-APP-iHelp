@@ -1,9 +1,15 @@
+import 'dart:developer';
 import 'dart:io';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:untitled1/splash_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'Notification/notification_handler.dart';
+import 'splash_screen.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -14,9 +20,35 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-void main() {
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
+void main() async {
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
   HttpOverrides.global = MyHttpOverrides();
+
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    FirebaseMessaging.onBackgroundMessage(
+        _firebaseMassageingBackgroundHandeler);
+    NotificationHandler.initialize();
+  } catch (e, tr) {
+    log("Error :::: => ${e.toString()}");
+    tr.printError();
+  }
+
   runApp(const MyApp());
+}
+
+Future<void> _firebaseMassageingBackgroundHandeler(
+    RemoteMessage massage) async {
+  print(":::::::::::::::::::::::::: ${massage.notification?.title.toString()}");
+  await Firebase.initializeApp();
 }
 
 class MyApp extends StatelessWidget {

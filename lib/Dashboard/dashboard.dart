@@ -1,8 +1,10 @@
 import 'package:animated_floating_buttons/widgets/animated_floating_action_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/Auth/login_page.dart';
 import 'package:untitled1/resourses/app_colors.dart';
@@ -12,6 +14,8 @@ import '../Auth/logout.dart';
 import '../Models/leadPipeline.dart';
 import '../Models/menuItem.dart';
 import '../Models/menuItems.dart';
+import '../Notification/notification_service.dart';
+import '../Task/todayTaskList.dart';
 import '../components/DashboardCounter.dart';
 import '../components/Dashboard_Tasks.dart';
 
@@ -33,11 +37,27 @@ class _NewDashboardState extends State<NewDashboard> {
 
   late Future<Map<String, dynamic>> futureLeadData;
 
+  static NotificationServices notificationServices = NotificationServices();
+
   @override
   void initState() {
     super.initState();
     _loadUserInfo();
     futureLeadData = fetchLeadPipelineData();
+    //notification
+    notificationServices.requestNotificationPermissin();
+    notificationServices.forgroundMessage();
+    notificationServices.firebaseInit(context);
+    notificationServices.isTokenRefresh();
+    notificationServices.isTokenRefresh();
+
+    /// Device Token
+    notificationServices.getDeviceToken().then((value) {
+      if (kDebugMode) {
+        print('device token : ${value}');
+        print(value);
+      }
+    });
   }
 
   String? username;
@@ -233,7 +253,7 @@ class _NewDashboardState extends State<NewDashboard> {
                 /// App's Top section with user name and logout button
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.only(left: 0, right: 0),
+                    padding: const EdgeInsets.only(left: 0, right: 0, top: 10),
                     width: 330.w,
                     height: 80.h,
                     color: backgroundColor,
@@ -242,8 +262,9 @@ class _NewDashboardState extends State<NewDashboard> {
                         // User Name and user detail in APP top section
                         Expanded(
                           child: ListTile(
+                            contentPadding: EdgeInsets.all(8),
                             title: Text(
-                              "Hi, $username",
+                              "Hi, ${username?.split(' ')[0]}",
                               style: TextStyle(
                                   fontSize: 20.sp,
                                   color: const Color(0xFF2C3131),
@@ -282,7 +303,7 @@ class _NewDashboardState extends State<NewDashboard> {
 
                 /// All Containers with Total lead number, Total user, etc
                 const Padding(
-                  padding: EdgeInsets.only(bottom: 10),
+                  padding: EdgeInsets.only(bottom: 6),
                   child: DashboardCounter(),
                 ),
 
@@ -291,7 +312,7 @@ class _NewDashboardState extends State<NewDashboard> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 26),
+                      padding: const EdgeInsets.only(left: 22),
                       child: Text(
                         "Today's Tasks",
                         style: TextStyle(
@@ -305,7 +326,13 @@ class _NewDashboardState extends State<NewDashboard> {
                       child: Row(
                         children: [
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const TodayTaskListScreen()));
+                            },
                             child: Row(
                               children: [
                                 Text(
@@ -339,12 +366,12 @@ class _NewDashboardState extends State<NewDashboard> {
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 26),
+                      padding: const EdgeInsets.only(left: 22),
                       child: Text(
                         "Analytics",
                         style: TextStyle(
                             fontSize: 20.sp,
-                            color: const Color.fromRGBO(17, 23, 93, 100),
+                            color: const Color(0xFF2C3131),
                             fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -352,18 +379,18 @@ class _NewDashboardState extends State<NewDashboard> {
                 ),
 
                 SizedBox(
-                  height: 20.h,
+                  height: 22.h,
                 ),
 
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 26),
+                      padding: const EdgeInsets.only(left: 22),
                       child: Text(
-                        "Lead PipeLine: ",
+                        "Lead PipeLine ",
                         style: TextStyle(
                             fontSize: 17.sp,
-                            color: const Color.fromRGBO(17, 23, 93, 100),
+                            color: const Color(0xFF2C3131),
                             fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -401,9 +428,14 @@ class _NewDashboardState extends State<NewDashboard> {
                           ],
                         );
                       } else if (snapshot.hasError) {
-                        return Text("${snapshot.error}");
+                        return const Text("Couldn't Generate Chart");
+                        // return Text("${snapshot.error}");
                       }
-                      return const CircularProgressIndicator();
+                      return Center(
+                          child: LoadingAnimationWidget.staggeredDotsWave(
+                        color: Colors.blue,
+                        size: 40,
+                      ));
                     },
                   ),
                 ),
@@ -417,12 +449,12 @@ class _NewDashboardState extends State<NewDashboard> {
                 Row(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(left: 26),
+                      padding: const EdgeInsets.only(left: 20, top: 10),
                       child: Text(
                         "Lead Industry: ",
                         style: TextStyle(
                             fontSize: 17.sp,
-                            color: const Color.fromRGBO(17, 23, 93, 100),
+                            color: const Color(0xFF2C3131),
                             fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -446,22 +478,22 @@ class _NewDashboardState extends State<NewDashboard> {
 
                 // Lead Source Chart
 
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 26, bottom: 20),
-                      child: Text(
-                        "Lead Source: ",
-                        style: TextStyle(
-                            fontSize: 17.sp,
-                            color: const Color.fromRGBO(17, 23, 93, 100),
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     Padding(
+                //       padding: const EdgeInsets.only(left: 26, bottom: 20),
+                //       child: Text(
+                //         "Lead Source: ",
+                //         style: TextStyle(
+                //             fontSize: 17.sp,
+                //             color: const Color.fromRGBO(17, 23, 93, 100),
+                //             fontWeight: FontWeight.bold),
+                //       ),
+                //     ),
+                //   ],
+                // ),
 
-                LeadSourceChart(),
+                // LeadSourceChart(),
 
                 // Other Widgets in Dashboard
               ],

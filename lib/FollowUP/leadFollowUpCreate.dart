@@ -144,7 +144,7 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => LeadDetailsTabs(
+                builder: (context) => LeadFollowUpList(
                   leadId: CompanyName.companyId!.toInt(),
                 ),
               ));

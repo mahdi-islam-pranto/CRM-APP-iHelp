@@ -44,7 +44,7 @@ class LeadPipelineChart extends StatelessWidget {
                     barRods: [
                       BarChartRodData(
                         toY: lead.value,
-                        color: Colors.green,
+                        color: Colors.blue,
                       ),
                     ],
                     showingTooltipIndicators: [0],
@@ -54,12 +54,18 @@ class LeadPipelineChart extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 10.0,
-            children: List.generate(categories.length, (index) {
-              return Text("${index + 1}. ${categories[index]}");
-            }),
+          Container(
+            padding: const EdgeInsets.only(
+              left: 10,
+              right: 10,
+            ),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: 10.0,
+              children: List.generate(categories.length, (index) {
+                return Text("${index + 1}. ${categories[index]}");
+              }),
+            ),
           ),
         ],
       ),

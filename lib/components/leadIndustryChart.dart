@@ -1,6 +1,5 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
 import '../Models/leadIndustry.dart';
 
 class LeadIndustryChart extends StatefulWidget {
@@ -34,7 +33,7 @@ class _LeadIndustryChartState extends State<LeadIndustryChart> {
 
         // Calculate maxY dynamically based on the data
         final maxY = leadIndustryData
-                .map((e) => double.parse(e.isActive))
+                .map((e) => e.count.toDouble())
                 .reduce((a, b) => a > b ? a : b) *
             1.2;
 
@@ -62,10 +61,11 @@ class _LeadIndustryChartState extends State<LeadIndustryChart> {
                           child: Transform.rotate(
                             angle: -0.3,
                             child: Text(
-                              industry.name,
+                              industry.category,
                               style: const TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
+                                fontSize: 10, // Smaller font size
                               ),
                             ),
                           ),
@@ -73,8 +73,22 @@ class _LeadIndustryChartState extends State<LeadIndustryChart> {
                       },
                     ),
                   ),
-                  leftTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: true),
+                  leftTitles: AxisTitles(
+                    sideTitles: SideTitles(
+                      showTitles: true,
+                      getTitlesWidget: (double value, TitleMeta meta) {
+                        // Format Y-axis values
+                        return Text(
+                          value.toInt().toString(),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        );
+                      },
+                      reservedSize: 40, // Adjust size for better fit
+                    ),
                   ),
                   topTitles: const AxisTitles(
                       sideTitles: SideTitles(showTitles: false)),
@@ -87,16 +101,11 @@ class _LeadIndustryChartState extends State<LeadIndustryChart> {
                   final index = entry.key;
                   final industry = entry.value;
 
-                  // Ensure value is finite and valid
-                  final value = double.tryParse(industry.isActive) ?? 0.0;
-                  final sanitizedValue =
-                      value.isFinite && value >= 0 ? value : 0.0;
-
                   return BarChartGroupData(
                     x: index,
                     barRods: [
                       BarChartRodData(
-                        toY: sanitizedValue,
+                        toY: industry.count.toDouble(),
                         color: Colors.amber,
                         width: 15,
                       ),

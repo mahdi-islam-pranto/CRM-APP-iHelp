@@ -57,6 +57,16 @@ dependencies:
   contacts_service: ^0.6.3
   permission_handler: ^11.3.1
   pull_to_refresh_flutter3: ^2.0.2
+  # notification
+  firebase_core: ^2.15.0
+  firebase_auth:
+  firebase_database:
+  cloud_firestore: ^4.13.5
+  firebase_messaging:
+  flutter_local_notifications: ^17.2.3
+  app_settings: ^5.1.1
+  googleapis_auth: ^1.4.1
+  googleapis:
   
 
 #  app launching logo 

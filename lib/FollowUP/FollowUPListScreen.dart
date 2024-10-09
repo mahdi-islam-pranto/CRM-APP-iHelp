@@ -9,6 +9,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/FollowUP/followUpDetailsTab.dart';
+import 'package:untitled1/FollowUP/followUpOverview.dart';
 import 'package:untitled1/Models/followUpModel.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import '../Dashboard/bottom_navigation_page.dart';
@@ -462,7 +463,7 @@ class _FollowUpListState extends State<FollowUpList> {
                                                             context,
                                                             MaterialPageRoute(
                                                                 builder: (context) =>
-                                                                    FollowUpDetailsTabs(
+                                                                    FollowUpOverview(
                                                                         followUpId:
                                                                             followUpList[index]['id'])));
                                                       },
