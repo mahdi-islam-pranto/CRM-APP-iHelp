@@ -79,7 +79,9 @@ class _DashboardTasksState extends State<DashboardTasks> {
             ));
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData && snapshot.data!.data != null) {
+          } else if (snapshot.hasData &&
+              snapshot.data!.data != null &&
+              snapshot.data!.data!.isNotEmpty) {
             return Scrollbar(
               thickness: 10,
               trackVisibility: true,
@@ -177,10 +179,34 @@ class _DashboardTasksState extends State<DashboardTasks> {
             );
           } else {
             return Center(
-                child: Text(
-              'No tasks available today',
-              style: TextStyle(fontSize: 16.sp, color: Colors.grey),
-            ));
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.task_alt,
+                    size: 50.sp,
+                    color: Colors.blueGrey[200],
+                  ),
+                  SizedBox(height: 10.h),
+                  Text(
+                    'No tasks for today',
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      color: Colors.blueGrey[200],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 5.h),
+                  Text(
+                    'Enjoy your free time!',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.blueGrey[200],
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
         },
       ),
