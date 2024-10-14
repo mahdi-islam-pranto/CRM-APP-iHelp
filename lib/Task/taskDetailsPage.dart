@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:untitled1/Models/taskListModel.dart';
 import 'package:untitled1/Task/allTaskListScreen.dart';
 import '../resourses/app_colors.dart';
+import 'taskUpdate.dart';
 
 class TaskOverview extends StatefulWidget {
   final int taskId;
@@ -250,11 +251,26 @@ class _TaskOverviewState extends State<TaskOverview> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  child: const Text("EDIT TASK",
+                                  child: const Text("UPDATE TASK",
                                       style: TextStyle(
                                           color: Colors.white, fontSize: 16)),
                                   onPressed: () {
-                                    // Implement edit task functionality
+                                    // Implement update task functionality
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => TaskUpdateForm(
+                                            leadId: taskDetails?.leadId ?? 0,
+                                            taskId: widget.taskId,
+                                            taskDetails: taskDetails!),
+                                      ),
+                                    ).then((updated) {
+                                      if (updated == true) {
+                                        // Refresh the task details if the update was successful
+                                        getTaskDetails();
+                                      }
+                                    });
                                   },
                                 ),
                               ],

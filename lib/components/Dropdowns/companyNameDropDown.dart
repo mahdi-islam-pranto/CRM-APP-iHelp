@@ -10,14 +10,15 @@ class CompanyName {
 }
 
 class CompanyNameDropdown extends StatefulWidget {
-  const CompanyNameDropdown({super.key});
+  final String? initialValue;
+
+  const CompanyNameDropdown({Key? key, this.initialValue}) : super(key: key);
 
   @override
   _CompanyNameDropdownState createState() => _CompanyNameDropdownState();
 }
 
 class _CompanyNameDropdownState extends State<CompanyNameDropdown> {
-  // Lead API
   List<dynamic> _totalLeadList = [];
   bool isLoading = true;
 
@@ -59,6 +60,15 @@ class _CompanyNameDropdownState extends State<CompanyNameDropdown> {
         final responseData = json.decode(response.body);
         setState(() {
           _totalLeadList = responseData['data'];
+          if (widget.initialValue != null) {
+            final initialCompany = _totalLeadList.firstWhere(
+              (company) => company['company_name'] == widget.initialValue,
+              orElse: () => null,
+            );
+            if (initialCompany != null) {
+              _onCompanySelected(initialCompany);
+            }
+          }
         });
       } else {
         print('Failed to fetch Company data');

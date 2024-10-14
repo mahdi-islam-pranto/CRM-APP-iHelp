@@ -14,6 +14,9 @@ class SelectedPipeline {
 }
 
 class Tasktypedropdown extends StatefulWidget {
+  final String? initialValue;
+
+  const Tasktypedropdown({Key? key, this.initialValue}) : super(key: key);
   @override
   _TasktypedropdownState createState() => _TasktypedropdownState();
 }
@@ -45,6 +48,15 @@ class _TasktypedropdownState extends State<Tasktypedropdown> {
       final responseData = json.decode(response.body);
       setState(() {
         _pipelineList = responseData['data'];
+        if (widget.initialValue != null) {
+          final initialPipeline = _pipelineList.firstWhere(
+            (pipeline) => pipeline['name'] == widget.initialValue,
+            orElse: () => null,
+          );
+          if (initialPipeline != null) {
+            _onPipelineSelected(initialPipeline);
+          }
+        }
       });
     } else {
       print('Failed to fetch lead pipeline');
