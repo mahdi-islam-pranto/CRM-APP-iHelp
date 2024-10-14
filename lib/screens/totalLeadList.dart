@@ -300,25 +300,38 @@ class _LeadListScreenState extends State<LeadListScreen> {
             title: Text(
               lead.companyName ?? 'Unknown',
               style: TextStyle(
-                fontWeight: FontWeight.w400,
+                fontWeight: FontWeight.w500,
                 fontSize: 16.sp,
               ),
             ),
-            subtitle: Row(
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Icons.phone,
-                  color: Colors.blue,
-                  size: 16,
-                ),
-                SizedBox(width: spacing),
                 Text(
                   // lead.assignName?.name ?? 'Unknown',
-                  lead.phoneNumber ?? 'No Phone',
+                  lead.name ?? 'No name',
                   style: TextStyle(
                     fontSize: 13.sp,
-                    color: Colors.blue[400],
+                    color: Colors.grey[600],
                   ),
+                ),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.phone,
+                      color: Colors.grey[600],
+                      size: 16,
+                    ),
+                    SizedBox(width: spacing),
+                    Text(
+                      // lead.assignName?.name ?? 'Unknown',
+                      lead.phoneNumber ?? 'No Phone',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        color: Colors.blue[400],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
