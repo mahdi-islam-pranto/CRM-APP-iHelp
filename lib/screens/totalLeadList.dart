@@ -7,6 +7,7 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled1/Dashboard/dashboard.dart';
 
 import 'package:untitled1/screens/leadDetailsTabs.dart';
 import 'package:http/http.dart' as http;
@@ -456,6 +457,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
   Widget _createLead() {
     return Container(
       child: FloatingActionButton(
+        backgroundColor: Colors.blue[400],
         onPressed: () {
           Navigator.push(
             context,
@@ -472,12 +474,18 @@ class _LeadListScreenState extends State<LeadListScreen> {
   Widget _viewLeads() {
     return Container(
       child: FloatingActionButton(
+        backgroundColor: Colors.grey[300],
         onPressed: () {
           // Add navigation to your view leads screen here
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const BottomNavigationPage()),
+          );
         },
         heroTag: "ViewLeads",
         tooltip: 'View Leads',
-        child: const Icon(Icons.visibility),
+        child: const Icon(Icons.home),
       ),
     );
   }

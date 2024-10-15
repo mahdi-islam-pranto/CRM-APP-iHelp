@@ -7,10 +7,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/Auth/login_page.dart';
+import 'package:untitled1/FollowUP/followUpCreateForm.dart';
+import 'package:untitled1/Lead/leadCreateform.dart';
+import 'package:untitled1/Task/taskCreateForm.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import 'package:untitled1/sip_account/SipAccountSetting.dart';
 
 import '../Auth/logout.dart';
+import '../Contacts/contact_services.dart';
 import '../Models/leadPipeline.dart';
 import '../Models/menuItem.dart';
 import '../Models/menuItems.dart';
@@ -20,9 +24,8 @@ import '../components/DashboardCounter.dart';
 import '../components/Dashboard_Tasks.dart';
 
 import '../components/LeadPipelineChart.dart';
-import '../components/LeadSourceChart.dart';
+
 import '../components/leadIndustryChart.dart';
-import '../screens/form.dart';
 
 class NewDashboard extends StatefulWidget {
   const NewDashboard({Key? key}) : super(key: key);
@@ -78,6 +81,7 @@ class _NewDashboardState extends State<NewDashboard> {
   Widget add() {
     return Container(
       child: FloatingActionButton(
+        backgroundColor: Colors.blue[400],
         onPressed: () {
           // Navigate to another page when the "Image" button is pressed
           showAnimatedDialog(
@@ -90,9 +94,6 @@ class _NewDashboardState extends State<NewDashboard> {
                   width: 300,
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    border: Border.all(
-                      width: 0.2,
-                    ),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Column(
@@ -100,7 +101,7 @@ class _NewDashboardState extends State<NewDashboard> {
                       Center(
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Text("Create",
+                          child: Text("CREATE NEW",
                               style: TextStyle(
                                   fontSize: 18.sp, color: Colors.black)),
                         ),
@@ -113,13 +114,16 @@ class _NewDashboardState extends State<NewDashboard> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue[100],
+                              ),
                               onPressed: () {
                                 // Handle lead btton click
                                 showAnimatedDialog(
                                   context: context,
                                   barrierDismissible: true,
                                   builder: (BuildContext context) {
-                                    return const FormPage();
+                                    return const LeadCreateForm();
                                   },
                                   curve: Curves.fastOutSlowIn,
                                   duration: const Duration(seconds: 1),
@@ -127,28 +131,70 @@ class _NewDashboardState extends State<NewDashboard> {
 
                                 // Add your lead button logic here
                               },
-                              child: const Text('Lead'),
+                              child: const Text('Lead',
+                                  style: TextStyle(color: Colors.black)),
                             ),
                             SizedBox(
                               width: 10.w,
                             ),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue[100],
+                              ),
                               onPressed: () {
                                 // Handle task button click
                                 showAnimatedDialog(
                                   context: context,
                                   barrierDismissible: true,
                                   builder: (BuildContext context) {
-                                    return const FormPage();
+                                    return const TaskCreateForm();
                                   },
                                   curve: Curves.fastOutSlowIn,
                                   duration: const Duration(seconds: 1),
                                 );
                               },
-                              child: const Text('Task'),
+                              child: const Text(
+                                'Task',
+                                style: TextStyle(color: Colors.black),
+                              ),
                             ),
                           ],
                         ),
+                      ),
+
+                      // new row
+
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue[100],
+                              ),
+                              onPressed: () {
+                                // Handle task button click
+                                showAnimatedDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context) {
+                                    return const FollowUpCreate();
+                                  },
+                                  curve: Curves.fastOutSlowIn,
+                                  duration: const Duration(seconds: 1),
+                                );
+                              },
+                              child: const Text(
+                                'Follow Up',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(
+                        height: 15,
                       ),
                     ],
                   ),
@@ -171,6 +217,7 @@ class _NewDashboardState extends State<NewDashboard> {
 
   Widget sipDailpad() {
     return FloatingActionButton(
+      backgroundColor: Colors.grey[300],
       onPressed: () {
         // Navigator.push(context, PageTransition(child: SipAccountSetting(),
         //   type: PageTransitionType.leftToRight,
@@ -192,35 +239,37 @@ class _NewDashboardState extends State<NewDashboard> {
       tooltip: 'Sip Call',
       child: const Icon(
         Icons.dialer_sip_outlined,
-        color: Colors.green,
+        color: Colors.black,
       ),
     );
   }
 
-  Widget Clients() {
-    return const InkWell(
-      // onTap: () => Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => NewDashboard())),
+  Widget Contacts() {
+    return InkWell(
+      onTap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (context) => ContactServices())),
       child: FloatingActionButton(
+        backgroundColor: Colors.grey[300],
         onPressed: null,
         heroTag: "Clients",
         tooltip: 'Clients',
         child: Icon(
-          Icons.manage_accounts,
+          Icons.contact_page,
         ),
       ),
     );
   }
 
-  Widget Opportunity() {
-    return const InkWell(
+  Widget notifications() {
+    return InkWell(
       // onTap: () => Navigator.push(
       //     context, MaterialPageRoute(builder: (context) => NewDashboard())),
       child: FloatingActionButton(
+        backgroundColor: Colors.grey[300],
         onPressed: null,
         heroTag: "Opportunity",
         tooltip: 'Opportunity',
-        child: Icon(Icons.ac_unit_outlined),
+        child: Icon(Icons.notifications),
       ),
     );
   }
@@ -513,9 +562,8 @@ class _NewDashboardState extends State<NewDashboard> {
                 fabButtons: <Widget>[
                   add(),
                   sipDailpad(),
-                  Clients(),
-                  Opportunity(),
-                  repport(),
+                  Contacts(),
+                  notifications(),
                 ],
                 colorStartAnimation: Colors.white,
                 colorEndAnimation: Colors.red,

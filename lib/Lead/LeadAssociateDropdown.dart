@@ -23,6 +23,9 @@ class LeadAssociateDropDown extends StatefulWidget {
 }
 
 class _LeadAssociateDropDownState extends State<LeadAssociateDropDown> {
+  // instance of associate
+  // Associate associate = Associate();
+
   List<dynamic> _pipelineList = [];
   String? _selectedPipelineName;
   int? _selectedPipelineId;
@@ -49,6 +52,7 @@ class _LeadAssociateDropDownState extends State<LeadAssociateDropDown> {
       final responseData = json.decode(response.body);
       setState(() {
         _pipelineList = responseData['data'];
+        // Associate.associateId = responseData['data'][0]['id'];
       });
     } else {
       print('Failed to fetch Owner');

@@ -7,6 +7,9 @@ import 'package:http/http.dart' as http;
 import '../Models/followUpModel.dart';
 import '../resourses/app_colors.dart';
 import 'FollowUPListScreen.dart';
+import 'followUpUpdate.dart';
+
+// follow up details page
 
 class FollowUpOverview extends StatefulWidget {
   final int followUpId;
@@ -255,6 +258,18 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                           color: Colors.white, fontSize: 16)),
                                   onPressed: () {
                                     // Implement edit functionality
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //         builder: (context) =>
+                                    //             FollowUpUpdate(
+                                    //                 leadId: followUpDetails
+                                    //                         ?.leadId ??
+                                    //                     0,
+                                    //                 followUpId:
+                                    //                     widget.followUpId,
+                                    //                 followUpDetails:
+                                    //                     followUpDetails!)));
                                   },
                                 ),
                               ],
