@@ -246,14 +246,14 @@ class _NewDashboardState extends State<NewDashboard> {
 
   Widget Contacts() {
     return InkWell(
-      onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (context) => ContactServices())),
+      onTap: () => Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const ContactServices())),
       child: FloatingActionButton(
         backgroundColor: Colors.grey[300],
         onPressed: null,
         heroTag: "Clients",
         tooltip: 'Clients',
-        child: Icon(
+        child: const Icon(
           Icons.contact_page,
         ),
       ),
@@ -269,7 +269,7 @@ class _NewDashboardState extends State<NewDashboard> {
         onPressed: null,
         heroTag: "Opportunity",
         tooltip: 'Opportunity',
-        child: Icon(Icons.notifications),
+        child: const Icon(Icons.notifications),
       ),
     );
   }
@@ -311,7 +311,7 @@ class _NewDashboardState extends State<NewDashboard> {
                         // User Name and user detail in APP top section
                         Expanded(
                           child: ListTile(
-                            contentPadding: EdgeInsets.all(8),
+                            contentPadding: const EdgeInsets.all(8),
                             title: Text(
                               "Hi, ${username?.split(' ')[0]}",
                               style: TextStyle(

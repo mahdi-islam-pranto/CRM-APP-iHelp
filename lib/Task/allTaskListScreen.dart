@@ -22,10 +22,35 @@ class TaskListScreen extends StatefulWidget {
 class _TaskListScreenState extends State<TaskListScreen> {
   late Future<TaskListModel> _taskListFuture;
 
+  // search function starts
+  TextEditingController _searchController = TextEditingController();
+  List<Data>? _filteredTasks;
+  List<Data>? _allTasks; // To store all tasks
+
   @override
   void initState() {
     super.initState();
     _taskListFuture = getTaskList();
+    _searchController.addListener(_filterTasks);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterTasks() {
+    if (_allTasks != null) {
+      setState(() {
+        _filteredTasks = _allTasks!.where((task) {
+          return task.companyName?.companyName
+                  ?.toLowerCase()
+                  .contains(_searchController.text.toLowerCase()) ??
+              false;
+        }).toList();
+      });
+    }
   }
 
   Future<TaskListModel> getTaskList() async {
@@ -54,11 +79,17 @@ class _TaskListScreenState extends State<TaskListScreen> {
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       // print("########Response task data: $data");
+      // searched tasks
+      _allTasks = TaskListModel.fromJson(data).data;
+      _filteredTasks = _allTasks;
       return TaskListModel.fromJson(data);
     } else {
       throw Exception('Failed to load tasks');
     }
   }
+
+  // search bar apperence
+  bool searchBar = false;
 
   @override
   Widget build(BuildContext context) {
@@ -100,39 +131,83 @@ class _TaskListScreenState extends State<TaskListScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                searchBar = !searchBar;
+              });
+              // print(searchBar);
+            },
             icon: const Icon(Icons.search_outlined, color: Colors.black87),
           ),
         ],
       ),
-      body: FutureBuilder<TaskListModel>(
-        future: _taskListFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: LoadingAnimationWidget.staggeredDotsWave(
-                color: Colors.blue,
-                size: 50,
+      body: Column(
+        children: [
+          // serach bar
+          if (searchBar == true)
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 10,
+                left: 20,
+                right: 20,
+                bottom: 10,
               ),
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData && snapshot.data!.data != null) {
-            return ListView.builder(
-              itemCount: snapshot.data!.data!.length,
-              itemBuilder: (context, index) {
-                var task = snapshot.data!.data![index];
-                return _buildTaskItem(task);
+              child: TextFormField(
+                controller: _searchController,
+                cursorColor: Colors.blue,
+                decoration: const InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                  ),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(width: 0.2),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10.0),
+                      )),
+                  labelText: "Search",
+                  floatingLabelStyle: TextStyle(color: Colors.grey),
+                  prefixIcon: Icon(Icons.search),
+                ),
+              ),
+            ),
+
+          // all task
+          Expanded(
+            child: FutureBuilder<TaskListModel>(
+              future: _taskListFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: LoadingAnimationWidget.staggeredDotsWave(
+                      color: Colors.blue,
+                      size: 50,
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.hasData && snapshot.data!.data != null) {
+                  return ListView.builder(
+                    // itemCount: snapshot.data!.data!.length,
+                    itemCount: _filteredTasks?.length,
+                    itemBuilder: (context, index) {
+                      // var task = snapshot.data!.data![index];
+                      var task = _filteredTasks![index];
+                      return _buildTaskItem(task);
+                    },
+                  );
+                } else {
+                  return Center(
+                      child: Text(
+                    'No tasks available',
+                    style: TextStyle(fontSize: 18.sp, color: Colors.grey),
+                  ));
+                }
               },
-            );
-          } else {
-            return Center(
-                child: Text(
-              'No tasks available',
-              style: TextStyle(fontSize: 18.sp, color: Colors.grey),
-            ));
-          }
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
