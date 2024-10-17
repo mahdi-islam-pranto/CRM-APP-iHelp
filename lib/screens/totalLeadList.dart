@@ -8,10 +8,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/Dashboard/dashboard.dart';
-
 import 'package:untitled1/screens/leadDetailsTabs.dart';
 import 'package:http/http.dart' as http;
-
 import '../Dashboard/bottom_navigation_page.dart';
 import '../Lead/leadCreateform.dart';
 import '../Models/LeadListModel.dart';
@@ -33,15 +31,44 @@ class _LeadListScreenState extends State<LeadListScreen> {
       GlobalKey<AnimatedFloatingActionButtonState>();
 
   List<LeadListModel> totalLeadList = [];
+  Set<int> leadIds = {}; // Set to track unique lead IDs
   bool hasMoreLeads = true; // Flag to check if more leads are available
 
   // search functions
-  bool searchBar = false;
+  List<LeadListModel> filteredLeadList = [];
+
+  final TextEditingController _searchController = TextEditingController();
+  String searchQuery = "";
 
   @override
   void initState() {
     super.initState();
     getLeadList(page);
+
+    // Add listener to search controller
+    _searchController.addListener(() {
+      setState(() {
+        searchQuery = _searchController.text;
+        filterLeads();
+      });
+    });
+  }
+
+  // filter list for search
+  void filterLeads() {
+    setState(() {
+      if (searchQuery.isEmpty) {
+        filteredLeadList = totalLeadList;
+      } else {
+        filteredLeadList = totalLeadList.where((lead) {
+          final companyName = lead.companyName?.toLowerCase() ?? '';
+          final leadPipeline = lead.leadPipelineName?.name.toLowerCase() ?? '';
+          final query = searchQuery.toLowerCase();
+
+          return companyName.contains(query) || leadPipeline.contains(query);
+        }).toList();
+      }
+    });
   }
 
   // fetch leads from API with pagination
@@ -80,9 +107,14 @@ class _LeadListScreenState extends State<LeadListScreen> {
         isLoading = false;
         isLoadingMore = false;
         if (leadJsonList.isNotEmpty) {
-          totalLeadList.addAll(leadJsonList
-              .map((json) => LeadListModel.fromJson(json))
-              .toList());
+          for (var json in leadJsonList) {
+            LeadListModel lead = LeadListModel.fromJson(json);
+            if (!leadIds.contains(lead.id)) {
+              leadIds.add(lead.id!);
+              totalLeadList.add(lead);
+            }
+          }
+          filterLeads(); // Filter leads after fetching
         } else {
           hasMoreLeads = false; // No more leads to load
         }
@@ -119,6 +151,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
       // Reset the page and total lead list
       page = 1;
       totalLeadList.clear();
+      leadIds.clear(); // Clear the set of lead IDs
     });
 
     await getLeadList(page);
@@ -137,6 +170,9 @@ class _LeadListScreenState extends State<LeadListScreen> {
 
     _refreshController.loadComplete();
   }
+
+  // search bar appearance
+  bool searchBar = false;
 
   @override
   Widget build(BuildContext context) {
@@ -192,6 +228,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
         automaticallyImplyLeading: true,
         actions: [
           IconButton(
+            tooltip: 'Search',
             onPressed: () {
               setState(() {
                 searchBar = !searchBar;
@@ -239,7 +276,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                     onRefresh: refreshData,
                     controller: _refreshController,
                     child: Column(children: [
-                      // serach bar
+                      // search bar
                       if (searchBar == true)
                         Padding(
                           padding: const EdgeInsets.only(
@@ -248,48 +285,136 @@ class _LeadListScreenState extends State<LeadListScreen> {
                             right: 20,
                             bottom: 10,
                           ),
-                          child: TextFormField(
+                          child: TextField(
+                            controller: _searchController,
                             cursorColor: Colors.blue,
-                            decoration: const InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.blue, width: 1.0),
+                            decoration: InputDecoration(
+                              labelText: 'Search',
+                              labelStyle: const TextStyle(
+                                fontSize: 14,
                               ),
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 16, horizontal: 10),
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.clear),
+                                onPressed: () {
+                                  setState(() {
+                                    _searchController.clear();
+                                  });
+                                },
+                              ),
                               border: OutlineInputBorder(
-                                  borderSide: BorderSide(width: 0.2),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10.0),
-                                  )),
-                              labelText: "Search",
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 15.0),
                               floatingLabelStyle: TextStyle(color: Colors.grey),
                               prefixIcon: Icon(Icons.search),
                             ),
                           ),
                         ),
 
-                      // lead list showing
+                      // lead data
                       Expanded(
                         child: ListView.builder(
-                          itemCount:
-                              totalLeadList.length + (hasMoreLeads ? 1 : 0),
+                          itemCount: filteredLeadList.length,
                           itemBuilder: (context, index) {
-                            if (index == totalLeadList.length) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Center(
-                                  child:
-                                      LoadingAnimationWidget.staggeredDotsWave(
-                                    color: Colors.blue,
-                                    size: 50,
+                            LeadListModel lead = filteredLeadList[index];
+                            return Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  child: Card(
+                                    color: Colors.white,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 5),
+                                    elevation: 2.0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: ListTile(
+                                      title: Text(
+                                        lead.companyName ?? "",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15.sp),
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 8.0),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.phone,
+                                                color: Colors.blue,
+                                                size: 16,
+                                              ),
+                                              const SizedBox(width: 5.0),
+                                              Text(lead.phoneNumber ?? ""),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 5.0),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.money_outlined,
+                                                color: Colors.blue,
+                                                size: 16,
+                                              ),
+                                              const SizedBox(width: 5.0),
+                                              Text(
+                                                  lead.leadPipelineName?.name ??
+                                                      ""),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 5.0),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.person,
+                                                color: Colors.blue,
+                                                size: 16,
+                                              ),
+                                              const SizedBox(width: 5.0),
+                                              Text(lead.assignName?.name ?? ""),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: const Icon(
+                                        Icons.arrow_forward_ios,
+                                        size: 14,
+                                        color: Colors.blue,
+                                      ),
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    LeadDetailsTabs(
+                                                        leadId: lead.id!)));
+                                      },
+                                    ),
                                   ),
                                 ),
-                              );
-                            } else {
-                              final lead = totalLeadList[index];
-                              return _buildListItem(lead);
-                            }
+                                if (index == filteredLeadList.length - 1 &&
+                                    isLoadingMore)
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20.0),
+                                    child: Center(
+                                      child: LoadingAnimationWidget
+                                          .staggeredDotsWave(
+                                        color: Colors.blue,
+                                        size: 30,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            );
                           },
                         ),
                       ),
@@ -299,237 +424,36 @@ class _LeadListScreenState extends State<LeadListScreen> {
     );
   }
 
-  Map<int, bool> state = {};
-  // showing Lead List item
-  Widget _buildListItem(LeadListModel lead) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double avatarRadius =
-        screenWidth * 0.05; // Adjust radius based on screen width
-    double iconSize =
-        screenWidth * 0.05; // Adjust icon size based on screen width
-    double spacing = screenWidth * 0.02; // Adjust spacing based on screen width
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-          child: ExpansionTile(
-            childrenPadding: const EdgeInsets.only(
-                left: 15.0, right: 15.0, top: 0.0, bottom: 0.0),
-            leading: const Padding(
-              padding: EdgeInsets.only(right: 10),
-              child: CircleAvatar(
-                backgroundColor: Color(0x300D6EFD),
-                radius: 26,
-                child: Icon(
-                  size: 26,
-                  Icons.person_2_outlined,
-                  color: Colors.blue,
-                ),
-              ),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Icon(
-                //   Icons.remove_red_eye_rounded,
-                //   color: Colors.grey[400],
-                // ),
-                SizedBox(width: spacing),
-                Icon(
-                  Icons.keyboard_arrow_down,
-                  color: Colors.grey[600],
-                ),
-              ],
-            ),
-            title: Text(
-              lead.companyName ?? 'Unknown',
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 16.sp,
-              ),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  // lead.assignName?.name ?? 'Unknown',
-                  lead.name ?? 'No name',
-                  style: TextStyle(
-                    fontSize: 13.sp,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.phone,
-                      color: Colors.grey[600],
-                      size: 16,
-                    ),
-                    SizedBox(width: spacing),
-                    Text(
-                      // lead.assignName?.name ?? 'Unknown',
-                      lead.phoneNumber ?? 'No Phone',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        color: Colors.blue[400],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Email
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.email_outlined,
-                              color: Colors.grey[700],
-                            ),
-                            SizedBox(width: spacing),
-                            Text(
-                              lead.email ?? 'No Email',
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                color: Colors.grey[900],
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: spacing),
-                        // Lead Pipeline
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.dns_outlined,
-                              color: Colors.grey[700],
-                            ),
-                            SizedBox(width: spacing),
-                            Text(
-                              lead.leadPipelineName!.name.toString() ??
-                                  'No Pipeline',
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                color: Colors.grey[900],
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: spacing),
-                        // User
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.person_add_alt_1_outlined,
-                              color: Colors.grey[700],
-                            ),
-                            SizedBox(width: spacing),
-                            Text(
-                              lead.assignName?.name ?? 'No Assignee',
-                              style: TextStyle(
-                                fontSize: 13.sp,
-                                color: Colors.grey[900],
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: spacing),
-                        // Other details
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.more_horiz,
-                              color: Colors.grey[700],
-                            ),
-                            SizedBox(
-                              width: spacing,
-                            ),
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                  padding: EdgeInsets.zero,
-                                  minimumSize: const Size(50, 30),
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                  alignment: Alignment.centerLeft),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          LeadDetailsTabs(leadId: lead.id),
-                                    ));
-                              },
-                              child: Text(
-                                'More Details',
-                                style: TextStyle(
-                                  fontSize: 13.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.blue[600],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const Divider(
-          height: 3,
-          thickness: 0.2,
-          indent: 20, // empty space to the leading edge of divider.
-          endIndent: 20,
-        ),
-      ],
-    );
-  }
-
   Widget _createLead() {
     return Container(
-      child: FloatingActionButton(
-        backgroundColor: Colors.blue[400],
+      child: FloatingActionButton.extended(
+        heroTag: "Create Lead",
+        label: const Text('Create Lead'),
+        icon: const Icon(Icons.add),
+        backgroundColor: Colors.blue.shade400,
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const LeadCreateForm()),
           );
         },
-        heroTag: "CreateLead",
-        tooltip: 'Create Lead',
-        child: const Icon(Icons.add),
       ),
     );
   }
 
   Widget _viewLeads() {
     return Container(
-      child: FloatingActionButton(
-        backgroundColor: Colors.grey[300],
+      child: FloatingActionButton.extended(
+        heroTag: "View Leads",
+        label: const Text('View Leads'),
+        icon: const Icon(Icons.list),
+        backgroundColor: Colors.grey.shade300,
         onPressed: () {
-          // Add navigation to your view leads screen here
           Navigator.push(
             context,
-            MaterialPageRoute(
-                builder: (context) => const BottomNavigationPage()),
+            MaterialPageRoute(builder: (context) => const LeadListScreen()),
           );
         },
-        heroTag: "ViewLeads",
-        tooltip: 'View Leads',
-        child: const Icon(Icons.home),
       ),
     );
   }

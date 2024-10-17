@@ -152,23 +152,32 @@ class _TaskListScreenState extends State<TaskListScreen> {
                 right: 20,
                 bottom: 10,
               ),
-              child: TextFormField(
+              child: TextField(
                 controller: _searchController,
                 cursorColor: Colors.blue,
-                decoration: const InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.blue, width: 1.0),
+                decoration: InputDecoration(
+                  labelText: 'Search',
+                  labelStyle: const TextStyle(
+                    fontSize: 14,
                   ),
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        _searchController.clear();
+                      });
+                    },
+                  ),
                   border: OutlineInputBorder(
-                      borderSide: BorderSide(width: 0.2),
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10.0),
-                      )),
-                  labelText: "Search",
-                  floatingLabelStyle: TextStyle(color: Colors.grey),
-                  prefixIcon: Icon(Icons.search),
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 15.0),
+                  floatingLabelStyle: const TextStyle(color: Colors.grey),
+                  prefixIcon: const Icon(Icons.search),
                 ),
               ),
             ),
