@@ -106,6 +106,22 @@ flutter:
       fonts:
         - asset: assets/fonts/HindSiliguri-Bold.ttf
           weight: 700
+
+    - family: Inter18
+      fonts:
+        - asset: assets/fonts/Inter_18pt-Regular.ttf
+          weight: 700
+
+    - family: HindSiliguriBold
+      fonts:
+        - asset: assets/fonts/HindSiliguri-Bold.ttf
+          weight: 700
+    
+
+    - family: HindSiliguriBold
+      fonts:
+        - asset: assets/fonts/HindSiliguri-Bold.ttf
+          weight: 700
     
           
     

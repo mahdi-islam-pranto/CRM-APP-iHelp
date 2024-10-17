@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(
               seedColor: const Color.fromARGB(255, 68, 183, 58)),
           useMaterial3: true,
-          fontFamily: 'HindSiliguri',
+          fontFamily: 'Inter18',
         ),
         home: const SplashScreen(),
       ),

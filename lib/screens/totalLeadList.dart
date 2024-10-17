@@ -35,6 +35,9 @@ class _LeadListScreenState extends State<LeadListScreen> {
   List<LeadListModel> totalLeadList = [];
   bool hasMoreLeads = true; // Flag to check if more leads are available
 
+  // search functions
+  bool searchBar = false;
+
   @override
   void initState() {
     super.initState();
@@ -189,7 +192,11 @@ class _LeadListScreenState extends State<LeadListScreen> {
         automaticallyImplyLeading: true,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                searchBar = !searchBar;
+              });
+            },
             icon: const Icon(
               Icons.search_outlined,
               color: Colors.black87,
@@ -231,25 +238,62 @@ class _LeadListScreenState extends State<LeadListScreen> {
                     ),
                     onRefresh: refreshData,
                     controller: _refreshController,
-                    child: ListView.builder(
-                      itemCount: totalLeadList.length + (hasMoreLeads ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index == totalLeadList.length) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Center(
-                              child: LoadingAnimationWidget.staggeredDotsWave(
-                                color: Colors.blue,
-                                size: 50,
+                    child: Column(children: [
+                      // serach bar
+                      if (searchBar == true)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: 10,
+                            left: 20,
+                            right: 20,
+                            bottom: 10,
+                          ),
+                          child: TextFormField(
+                            cursorColor: Colors.blue,
+                            decoration: const InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.blue, width: 1.0),
                               ),
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 16, horizontal: 10),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide(width: 0.2),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10.0),
+                                  )),
+                              labelText: "Search",
+                              floatingLabelStyle: TextStyle(color: Colors.grey),
+                              prefixIcon: Icon(Icons.search),
                             ),
-                          );
-                        } else {
-                          final lead = totalLeadList[index];
-                          return _buildListItem(lead);
-                        }
-                      },
-                    ),
+                          ),
+                        ),
+
+                      // lead list showing
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount:
+                              totalLeadList.length + (hasMoreLeads ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index == totalLeadList.length) {
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child:
+                                      LoadingAnimationWidget.staggeredDotsWave(
+                                    color: Colors.blue,
+                                    size: 50,
+                                  ),
+                                ),
+                              );
+                            } else {
+                              final lead = totalLeadList[index];
+                              return _buildListItem(lead);
+                            }
+                          },
+                        ),
+                      ),
+                    ]),
                   ),
                 ),
     );
