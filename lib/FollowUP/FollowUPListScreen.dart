@@ -30,15 +30,49 @@ class _FollowUpListState extends State<FollowUpList> {
 
   bool isLoading = true;
   bool isLoadingMore = false;
+  // all follow ups list
   List followUpList = [];
   int pageNumber = 1;
   final int pageSize = 10;
   bool hasMoreData = true;
 
+// search controller
+  List filteredFollowUpList = [];
+
+  final TextEditingController _searchController = TextEditingController();
+  String searchQuery = "";
+  bool searchBar = false;
+
   @override
   void initState() {
     super.initState();
     getFollowUpList();
+
+    // Add listener to search controller
+    _searchController.addListener(() {
+      setState(() {
+        searchQuery = _searchController.text;
+        filterFollowUps();
+      });
+    });
+  }
+
+  // filter list for search
+  void filterFollowUps() {
+    setState(() {
+      if (searchQuery.isEmpty) {
+        filteredFollowUpList = followUpList;
+      } else {
+        filteredFollowUpList = followUpList.where((followUp) {
+          final companyName =
+              followUp['company_name']['company_name']?.toLowerCase() ?? '';
+          final subject = followUp['subject']?.toLowerCase() ?? '';
+          final query = searchQuery.toLowerCase();
+
+          return companyName.contains(query) || subject.contains(query);
+        }).toList();
+      }
+    });
   }
 
   // fetch leads from API with pagination
@@ -82,6 +116,8 @@ class _FollowUpListState extends State<FollowUpList> {
         } else {
           followUpList.addAll(data['data']);
         }
+
+        filteredFollowUpList = followUpList; // Add this line
 
         if (data['data'].length < pageSize) {
           hasMoreData = false;
@@ -194,7 +230,11 @@ class _FollowUpListState extends State<FollowUpList> {
         automaticallyImplyLeading: true,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              setState(() {
+                searchBar = !searchBar;
+              });
+            },
             icon: const Icon(
               Icons.search_outlined,
               color: Colors.black87,
@@ -218,6 +258,45 @@ class _FollowUpListState extends State<FollowUpList> {
                 )
               : Column(
                   children: [
+                    // search bar appears
+                    if (searchBar)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 10,
+                          left: 20,
+                          right: 20,
+                          bottom: 10,
+                        ),
+                        child: TextField(
+                          controller: _searchController,
+                          cursorColor: Colors.blue,
+                          decoration: InputDecoration(
+                            labelText: 'Search',
+                            labelStyle: const TextStyle(
+                              fontSize: 14,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: () {
+                                setState(() {
+                                  _searchController.clear();
+                                });
+                              },
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 15.0),
+                            floatingLabelStyle:
+                                const TextStyle(color: Colors.grey),
+                            prefixIcon: const Icon(Icons.search),
+                          ),
+                        ),
+                      ),
                     Expanded(
                       child: SmartRefresher(
                         onLoading: _onLoading,
@@ -229,9 +308,10 @@ class _FollowUpListState extends State<FollowUpList> {
                         onRefresh: refreshData,
                         controller: _refreshController,
                         child: ListView.builder(
-                          itemCount: followUpList.length + 1,
+                          itemCount: filteredFollowUpList.length +
+                              (hasMoreData ? 1 : 0),
                           itemBuilder: (context, index) {
-                            if (index == followUpList.length) {
+                            if (index == filteredFollowUpList.length) {
                               if (hasMoreData) {
                                 getFollowUpList();
                                 return Center(
@@ -242,294 +322,148 @@ class _FollowUpListState extends State<FollowUpList> {
                                   ),
                                 );
                               } else {
-                                return const Center(
-                                  child: Text('No more data'),
-                                );
+                                return const SizedBox.shrink();
                               }
                             }
 
                             return Column(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10.0, right: 10.0),
-                                  child: ExpansionTile(
-                                    childrenPadding: const EdgeInsets.only(
-                                        left: 15.0,
-                                        right: 15.0,
-                                        top: 0.0,
-                                        bottom: 0.0),
-                                    // leading: const Padding(
-                                    //   padding: EdgeInsets.only(right: 10),
-                                    //   child: CircleAvatar(
-                                    //     backgroundColor: Color(0x300D6EFD),
-                                    //     radius: 26,
-                                    //     child: Icon(
-                                    //       size: 26,
-                                    //       Icons.person_2_outlined,
-                                    //       color: Colors.blue,
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        // Icon(
-                                        //   Icons.remove_red_eye_rounded,
-                                        //   color: Colors.grey[400],
-                                        // ),
-                                        const SizedBox(width: 10),
-                                        Icon(
-                                          Icons.keyboard_arrow_down,
-                                          color: Colors.grey[600],
-                                        ),
-                                      ],
-                                    ),
-
-                                    //company name
-                                    title: Text(
-                                      followUpList[index]['company_name']
-                                              ['company_name'] ??
-                                          'Unknown',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16.sp,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0, vertical: 4.0),
+                                  child: Card(
+                                    color: Colors.white,
+                                    elevation: 2,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: ExpansionTile(
+                                      tilePadding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 0),
+                                      childrenPadding: const EdgeInsets.all(10),
+                                      leading: const CircleAvatar(
+                                        backgroundColor: Color(0x300D6EFD),
+                                        child: Icon(Icons.business,
+                                            color: Colors.blue),
                                       ),
-                                    ),
-                                    subtitle: Column(
+                                      trailing: const Icon(
+                                          Icons.keyboard_arrow_down,
+                                          color: Colors.blue),
+                                      title: Text(
+                                        filteredFollowUpList[index]
+                                                    ['company_name']
+                                                ['company_name'] ??
+                                            'Unknown',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 17),
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              const Icon(Icons.label_outline,
+                                                  size: 16, color: Colors.blue),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                "Status: ${getStatusText(filteredFollowUpList[index]['status'])}",
+                                                style: TextStyle(
+                                                    color: getStatusColor(
+                                                        filteredFollowUpList[
+                                                            index]['status'])),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              const Icon(Icons.calendar_today,
+                                                  size: 16, color: Colors.blue),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                filteredFollowUpList[index][
+                                                        'next_followup_date'] ??
+                                                    'No Next Follow Up Date',
+                                                style: TextStyle(
+                                                    color: Colors.grey[600]),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                       children: [
-                                        // status
                                         Row(
                                           children: [
-                                            const Text("Status: "),
-                                            const SizedBox(width: 5),
-                                            // status
-                                            Text(
-                                              followUpList[index]['status'] ==
-                                                      '1'
-                                                  ? 'Solved'
-                                                  : followUpList[index]
-                                                              ['status'] ==
-                                                          '2'
-                                                      ? 'Pending'
-                                                      : followUpList[index]
-                                                                  ['status'] ==
-                                                              '3'
-                                                          ? 'Working Progress'
-                                                          : 'Cancel' ??
-                                                              'Type Unknown',
-                                              style: TextStyle(
-                                                color: Colors.blue[600],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-                                        // next follow up date
-
-                                        Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.calendar_month_outlined,
-                                              color: Colors.blue,
-                                            ),
-                                            const SizedBox(width: 10),
-                                            // phone
-                                            Text(
-                                              followUpList[index]
-                                                      ['next_followup_date'] ??
-                                                  'No Next Follow Up Date',
-                                              style: TextStyle(
-                                                fontSize: 13.sp,
-                                                color: Colors.blue[400],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-
-                                    // inside tile datas
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            right: 8, top: 8, bottom: 8),
-                                        child: Row(
-                                          children: [
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                // follow up type
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.subject_outlined,
-                                                      color:
-                                                          Colors.grey.shade700,
-                                                    ),
-                                                    SizedBox(width: spacing),
-
-                                                    // follow up type
-                                                    Text(
-                                                      "${followUpList[index]['subject'] ?? 'No Subject'}",
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      maxLines: 2,
-                                                      style: TextStyle(
-                                                        fontSize: 13.sp,
-                                                        color: Colors.grey[900],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-
-                                                SizedBox(height: spacing),
-                                                // phone
-                                                Row(
-                                                  children: [
-                                                    Icon(
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  _buildInfoRow(
+                                                      Icons.subject,
+                                                      filteredFollowUpList[
+                                                                  index]
+                                                              ['subject'] ??
+                                                          'No Subject'),
+                                                  const SizedBox(height: 8),
+                                                  _buildInfoRow(
                                                       Icons.phone,
-                                                      color: Colors.grey[700],
-                                                    ),
-                                                    SizedBox(width: spacing),
-                                                    // phone
-                                                    Text(
-                                                      followUpList[index][
+                                                      filteredFollowUpList[
+                                                                  index][
                                                               'phone_number'] ??
-                                                          'No Phone No.',
-                                                      style: TextStyle(
-                                                        fontSize: 13.sp,
-                                                        color: Colors.grey[900],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-
-                                                SizedBox(
-                                                  height: spacing,
-                                                ),
-                                                // assign to
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons
-                                                          .person_add_alt_1_outlined,
-                                                      color: Colors.grey[700],
-                                                    ),
-                                                    SizedBox(width: spacing),
-                                                    Text(
-                                                      followUpList[index][
+                                                          'No Phone No.'),
+                                                  const SizedBox(height: 8),
+                                                  _buildInfoRow(
+                                                      Icons.person,
+                                                      filteredFollowUpList[
+                                                                      index][
                                                                   'assign_name']
                                                               ['name'] ??
-                                                          'No Assign',
-                                                      style: TextStyle(
-                                                          color:
-                                                              Colors.grey[900],
-                                                          fontSize: 13.sp),
-                                                    ),
-                                                  ],
-                                                ),
-
-                                                SizedBox(
-                                                  height: spacing,
-                                                ),
-
-                                                // Other details
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                      Icons.more_horiz,
-                                                      color: Colors.grey[700],
-                                                    ),
-                                                    SizedBox(
-                                                      width: spacing,
-                                                    ),
-                                                    TextButton(
-                                                      style: TextButton.styleFrom(
-                                                          padding:
-                                                              EdgeInsets.zero,
-                                                          minimumSize:
-                                                              Size(50, 30),
-                                                          tapTargetSize:
-                                                              MaterialTapTargetSize
-                                                                  .shrinkWrap,
-                                                          alignment: Alignment
-                                                              .centerLeft),
-                                                      onPressed: () {
-                                                        Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                                builder: (context) =>
-                                                                    FollowUpOverview(
-                                                                        followUpId:
-                                                                            followUpList[index]['id'])));
-                                                      },
-                                                      child: Text(
-                                                        'More Details',
-                                                        style: TextStyle(
-                                                          fontSize: 13.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          color:
-                                                              Colors.blue[600],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                          'No Assign'),
+                                                  const SizedBox(height: 8),
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                const Text("See Details"),
+                                                const SizedBox(height: 8),
+                                                _buildActionButton(
+                                                    Icons.visibility,
+                                                    Colors.blue,
+                                                    'View', () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            FollowUpOverview(
+                                                                followUpId:
+                                                                    filteredFollowUpList[
+                                                                            index]
+                                                                        [
+                                                                        'id'])),
+                                                  );
+                                                }),
                                               ],
                                             ),
-                                            // const Spacer(),
-                                            // Row(
-                                            //   mainAxisSize: MainAxisSize.min,
-                                            //   children: [
-                                            //     CircleAvatar(
-                                            //       radius: 20,
-                                            //       backgroundColor:
-                                            //           Colors.green[100],
-                                            //       child: IconButton(
-                                            //         onPressed: () {},
-                                            //         icon: const Icon(
-                                            //           Icons.call,
-                                            //           color: Colors.green,
-                                            //           size: 20,
-                                            //         ),
-                                            //       ),
-                                            //     ),
-                                            //     const SizedBox(width: 10),
-                                            //     CircleAvatar(
-                                            //       radius: 20,
-                                            //       backgroundColor:
-                                            //           Colors.blue[100],
-                                            //       child: IconButton(
-                                            //         onPressed: () {},
-                                            //         icon: const Icon(
-                                            //           Icons.dialer_sip_outlined,
-                                            //           color: Colors.blue,
-                                            //           size: 20,
-                                            //         ),
-                                            //       ),
-                                            //     ),
-                                            //   ],
-                                            // ),
                                           ],
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 // divider
 
-                                const Divider(
-                                  height: 3,
-                                  thickness: 0.2,
-                                  indent:
-                                      20, // empty space to the leading edge of divider.
-                                  endIndent: 20,
-                                ),
+                                // const Divider(
+                                //   height: 3,
+                                //   thickness: 0.2,
+                                //   indent:
+                                //       20, // empty space to the leading edge of divider.
+                                //   endIndent: 20,
+                                // ),
                               ],
                             );
                           },
@@ -539,6 +473,66 @@ class _FollowUpListState extends State<FollowUpList> {
                   ],
                 ),
     );
+  }
+
+  Widget _buildInfoRow(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: Colors.grey[600]),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            text,
+            style: TextStyle(fontSize: 14, color: Colors.grey[800]),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButton(
+      IconData icon, Color color, String tooltip, VoidCallback onPressed) {
+    return Tooltip(
+      message: tooltip,
+      child: InkWell(
+        onTap: onPressed,
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(icon, color: color, size: 24),
+        ),
+      ),
+    );
+  }
+
+  String getStatusText(String status) {
+    switch (status) {
+      case '1':
+        return 'Solved';
+      case '2':
+        return 'Pending';
+      case '3':
+        return 'Working Progress';
+      default:
+        return 'Cancel';
+    }
+  }
+
+  Color getStatusColor(String status) {
+    switch (status) {
+      case '1':
+        return Colors.green;
+      case '2':
+        return Colors.orange;
+      case '3':
+        return Colors.blue;
+      default:
+        return Colors.red;
+    }
   }
 
   Widget _createLead() {

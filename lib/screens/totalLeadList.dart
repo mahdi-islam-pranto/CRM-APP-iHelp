@@ -309,8 +309,9 @@ class _LeadListScreenState extends State<LeadListScreen> {
                               fillColor: Colors.grey[200],
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 10.0, horizontal: 15.0),
-                              floatingLabelStyle: TextStyle(color: Colors.grey),
-                              prefixIcon: Icon(Icons.search),
+                              floatingLabelStyle:
+                                  const TextStyle(color: Colors.grey),
+                              prefixIcon: const Icon(Icons.search),
                             ),
                           ),
                         ),
@@ -324,7 +325,8 @@ class _LeadListScreenState extends State<LeadListScreen> {
                             return Column(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  padding: const EdgeInsets.only(
+                                      top: 8, left: 10, right: 10),
                                   child: Card(
                                     color: Colors.white,
                                     margin: const EdgeInsets.symmetric(
@@ -336,9 +338,9 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                     child: ListTile(
                                       title: Text(
                                         lead.companyName ?? "",
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 15.sp),
+                                            fontSize: 17),
                                       ),
                                       subtitle: Column(
                                         crossAxisAlignment:
