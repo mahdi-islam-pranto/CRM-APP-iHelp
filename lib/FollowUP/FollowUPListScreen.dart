@@ -429,7 +429,7 @@ class _FollowUpListState extends State<FollowUpList> {
                                             ),
                                             Column(
                                               children: [
-                                                const Text("See Details"),
+                                                const Text("More Details"),
                                                 const SizedBox(height: 8),
                                                 _buildActionButton(
                                                     Icons.visibility,

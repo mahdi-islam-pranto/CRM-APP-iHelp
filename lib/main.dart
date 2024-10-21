@@ -62,7 +62,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           textTheme: GoogleFonts.interTextTheme(),
           colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color.fromARGB(255, 68, 183, 58)),
+              seedColor: Colors.blue, brightness: Brightness.light),
           useMaterial3: true,
           fontFamily: 'Inter18',
         ),

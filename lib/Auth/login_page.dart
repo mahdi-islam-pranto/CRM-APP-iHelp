@@ -75,6 +75,10 @@ class _loginPageState extends State<UserLoginScreen> {
   }
 
   Widget _buildContainer() {
+    // media query height and width
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -83,8 +87,8 @@ class _loginPageState extends State<UserLoginScreen> {
             Radius.circular(20),
           ),
           child: Container(
-            height: MediaQuery.of(context).size.height * 0.55,
-            width: MediaQuery.of(context).size.width * 0.8,
+            height: screenHeight * 0.55,
+            width: screenWidth * 0.8,
             decoration: BoxDecoration(
               color: backgroundColor,
             ),
@@ -98,7 +102,7 @@ class _loginPageState extends State<UserLoginScreen> {
                     Text(
                       "Login",
                       style: TextStyle(
-                        fontSize: MediaQuery.of(context).size.height / 30,
+                        fontSize: screenHeight / 30,
                         color: const Color(0xFF232440),
                       ),
                     ),
@@ -108,9 +112,9 @@ class _loginPageState extends State<UserLoginScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                _buildEmailRow(),
+                _buildEmailRow(screenWidth),
                 const SizedBox(height: 20),
-                _buildPasswordRow(),
+                _buildPasswordRow(screenWidth),
 
                 // save password & forget password
 
@@ -129,7 +133,7 @@ class _loginPageState extends State<UserLoginScreen> {
                   height: 20,
                 ),
 
-                _buildLoginButton(),
+                _buildLoginButton(screenWidth),
               ],
             ),
           ),
@@ -138,8 +142,9 @@ class _loginPageState extends State<UserLoginScreen> {
     );
   }
 
-  Widget _buildEmailRow() {
+  Widget _buildEmailRow(double screenWidth) {
     return Container(
+      width: screenWidth * 0.8,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -205,10 +210,10 @@ class _loginPageState extends State<UserLoginScreen> {
     );
   }
 
-  Widget _buildPasswordRow() {
+  Widget _buildPasswordRow(double screenWidth) {
     return Container(
       height: 88.32,
-      width: 380,
+      width: screenWidth * 0.8,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -327,13 +332,13 @@ class _loginPageState extends State<UserLoginScreen> {
     );
   }
 
-  Widget _buildLoginButton() {
+  Widget _buildLoginButton(double screenWidth) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
           height: 52,
-          width: 310,
+          width: screenWidth * 0.8,
           margin: const EdgeInsets.only(bottom: 20),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
