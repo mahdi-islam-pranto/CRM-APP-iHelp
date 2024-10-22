@@ -222,9 +222,13 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
             ),
           ),
           body: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            height: 784.8.h,
-            width: 400.w,
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.025),
+            // Responsive Form Container
+            height: MediaQuery.of(context).size.height * 0.85,
+            width: MediaQuery.of(context).size.width * 1,
+            // height: 784.8.h,
+            // width: 400.w,
             child: Form(
               key: _formKey,
               child: RawScrollbar(
@@ -266,7 +270,8 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                             child: startdateField(
                                 "Start Date", startDateTimeController),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.025),
                           Flexible(
                             flex: 1,
                             child: enddateField(
@@ -648,8 +653,10 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
         /// cancle button
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            minimumSize: const Size(164, 52),
-            maximumSize: const Size(181, 52),
+            minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 52),
+            maximumSize: Size(MediaQuery.of(context).size.width * 0.45, 52),
+            // minimumSize: const Size(164, 52),
+            // maximumSize: const Size(181, 52),
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               side: const BorderSide(color: Colors.blue, width: 2),
@@ -664,7 +671,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
             style: TextStyle(color: Colors.blue, fontSize: 16),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.03),
 
         //
         ElevatedButton(
@@ -695,8 +702,8 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
             }
           },
           style: ElevatedButton.styleFrom(
-            minimumSize: const Size(164, 52),
-            maximumSize: const Size(181, 52),
+            minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 52),
+            maximumSize: Size(MediaQuery.of(context).size.width * 0.45, 52),
             backgroundColor: buttonColor,
 
             // backgroundColor: const Color(0xFF007AFF),

@@ -427,36 +427,27 @@ class _LeadListScreenState extends State<LeadListScreen> {
   }
 
   Widget _createLead() {
-    return Container(
-      child: FloatingActionButton.extended(
-        heroTag: "Create Lead",
-        label: const Text('Create Lead'),
-        icon: const Icon(Icons.add),
-        backgroundColor: Colors.blue.shade400,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const LeadCreateForm()),
-          );
-        },
-      ),
+    return FloatingActionButton(
+      backgroundColor: Colors.blue[400],
+      heroTag: "btn1",
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const LeadCreateForm()),
+        );
+      },
+      tooltip: 'Create Task',
+      child: const Icon(Icons.add),
     );
   }
 
   Widget _viewLeads() {
-    return Container(
-      child: FloatingActionButton.extended(
-        heroTag: "View Leads",
-        label: const Text('View Leads'),
-        icon: const Icon(Icons.list),
-        backgroundColor: Colors.grey.shade300,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const LeadListScreen()),
-          );
-        },
-      ),
+    return FloatingActionButton(
+      backgroundColor: Colors.grey[300],
+      heroTag: "btn2",
+      onPressed: () {},
+      tooltip: 'View Tasks',
+      child: const Icon(Icons.visibility),
     );
   }
 }

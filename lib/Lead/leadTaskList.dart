@@ -412,7 +412,10 @@ class _LeadTaskListScreenState extends State<LeadTaskListScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => LeadTaskCreateForm(leadId: widget.leadId)),
+              builder: (context) => LeadTaskCreateForm(
+                    leadId: widget.leadId,
+                    // get company name
+                  )),
         );
       },
       tooltip: 'Create Task',
