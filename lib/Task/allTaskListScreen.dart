@@ -223,75 +223,101 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   Widget _buildTaskItem(Data task) {
     return InkWell(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TaskOverview(taskId: task.id!.toInt())));
-      },
-      child: Container(
-        padding: const EdgeInsets.only(
-          left: 20,
-          right: 20,
-        ),
-        child: Column(
-          children: [
-            // Each task row
-            Container(
-              padding: const EdgeInsets.only(bottom: 10, top: 10),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      TaskOverview(taskId: task.id!.toInt())));
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+          child: Card(
+            color: Colors.white,
+            elevation: 2,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 15, right: 15),
+              child: ListTile(
+                contentPadding: const EdgeInsets.only(bottom: 5, top: 5),
+                title: Text(
+                  task.companyName?.companyName ?? 'No Company',
+                  style: const TextStyle(
+                      color: Color(0xFF2C3131),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17),
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //subject
+                    // Text(
+                    //   task.subject ?? 'No Subject',
+                    //   style: TextStyle(
+                    //     fontSize: 13.sp,
+                    //     color: const Color(0xFF707070),
+                    //   ),
+                    // ),
+                    Text(
+                      task.taskName?.name ?? 'No Task Name',
+                      style: const TextStyle(
+                        color: Color(0xFF707070),
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Row(
                       children: [
-                        Text(
-                          task.companyName?.companyName ?? 'No Company',
-                          style: const TextStyle(fontSize: 17),
-                          overflow: TextOverflow.ellipsis,
+                        Icon(
+                          Icons.person_add_alt_1_outlined,
+                          size: 15.sp,
                         ),
-                        Text("Status: ${task.taskStatus?.name ?? 'Unknown'}"),
-                        Row(
-                          children: [
-                            const Icon(Icons.manage_accounts_rounded,
-                                color: Colors.blue, size: 16),
-                            const SizedBox(width: 5),
-                            Expanded(
-                              child: Text(
-                                task.assignName?.name ?? 'Unassigned',
-                                style: TextStyle(color: Colors.blue[400]),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
+                        const SizedBox(width: 5),
+                        Text(
+                          task.assignName?.name ?? 'No Assign Name',
+                          style: const TextStyle(
+                            color: Color(0xFF707070),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                  // right side column
-
-                  Column(
-                    children: [
-                      Text(task.taskName?.name ?? 'No Task Name'),
-                      Card(
-                        color: Colors.blue[100],
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(task.endTime ?? 'No End Time'),
-                        ),
+                  ],
+                ),
+                trailing: Column(
+                  children: [
+                    Text(
+                      task.taskStatus?.name ?? 'No status',
+                      style: TextStyle(color: Colors.blueGrey, fontSize: 12.sp),
+                    ),
+                    const SizedBox(width: 5.0),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(7.0),
                       ),
-                    ],
-                  ),
-                ],
+                      color: Colors.blue[100],
+                      child: Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Text(task.endTime ?? 'No End Time'),
+                      ),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          TaskOverview(taskId: task.id!.toInt()),
+                    ),
+                  );
+                },
               ),
             ),
-            const Divider(thickness: 0.5),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 
   Widget _createTask() {
