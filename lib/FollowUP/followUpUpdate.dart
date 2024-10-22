@@ -1,671 +1,731 @@
-// import 'dart:convert';
-// import 'package:awesome_dialog/awesome_dialog.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:untitled1/Lead/LeadAssociateDropdown.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
-// import 'package:untitled1/Models/followUpModel.dart';
+import 'dart:convert';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:untitled1/Lead/LeadAssociateDropdown.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
+import 'package:untitled1/Models/followUpModel.dart';
 
-// import 'package:untitled1/resourses/app_colors.dart';
+import 'package:untitled1/resourses/app_colors.dart';
 
-// import '../Lead/LeadAssociateDropdown.dart';
-// import '../Lead/LeadOwnerDropdown.dart';
-// import '../Models/followUpModel.dart';
-// import '../Notification/fcm_server.dart';
-// import '../components/CustomProgress.dart';
+import '../Lead/LeadOwnerDropdown.dart';
 
-// import '../components/Dropdowns/companyNameDropDown.dart';
+import '../Notification/fcm_server.dart';
+import '../components/CustomProgress.dart';
 
-// import 'FollowUPListScreen.dart';
-// import 'followUpType.dart';
+import '../components/Dropdowns/companyNameDropDown.dart';
 
-// class FollowUpUpdate extends StatefulWidget {
-//   final int leadId;
-//   final int followUpId;
-//   final Data followUpDetails;
-//   const FollowUpUpdate(
-//       {Key? key,
-//       required this.leadId,
-//       required this.followUpId,
-//       required this.followUpDetails})
-//       : super(key: key);
+import 'FollowUPListScreen.dart';
+import 'followUpType.dart';
 
-//   @override
-//   State<FollowUpUpdate> createState() => _FollowUpUpdateState();
-// }
+class FollowUpUpdate extends StatefulWidget {
+  final int leadId;
+  final int followUpId;
+  final Data followUpDetails;
+  const FollowUpUpdate(
+      {Key? key,
+      required this.leadId,
+      required this.followUpId,
+      required this.followUpDetails})
+      : super(key: key);
 
-// class _FollowUpUpdateState extends State<FollowUpUpdate> {
-//   final _formKey = GlobalKey<FormState>();
-//   late TextEditingController _company;
-//   late TextEditingController _subject;
-//   late TextEditingController _description;
-//   late TextEditingController _contactNumber;
-//   late TextEditingController dateTimeController;
-//   late String dateTimePicker;
+  @override
+  State<FollowUpUpdate> createState() => _FollowUpUpdateState();
+}
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     _subject = TextEditingController(text: widget.followUpDetails.subject);
-//     _description =
-//         TextEditingController(text: widget.followUpDetails.description);
-//     _contactNumber =
-//         TextEditingController(text: widget.followUpDetails.phoneNumber);
-//     dateTimeController =
-//         TextEditingController(text: widget.followUpDetails.nextFollowupDate);
+class _FollowUpUpdateState extends State<FollowUpUpdate> {
+  final _formKey = GlobalKey<FormState>();
+  late TextEditingController _company;
+  late TextEditingController _subject;
+  late TextEditingController _description;
+  late TextEditingController _contactNumber;
+  late TextEditingController dateTimeController;
+  late String dateTimePicker;
+  String? _selectedStatus;
 
-//     // Set initial values for dropdowns
-//     Owner.ownerId = widget.followUpDetails.creatorUserId;
-//     FollowupType.followUpType = widget.followUpDetails.followupTypeId;
-//     Associate.associateId = ;
-//   }
+  @override
+  void initState() {
+    super.initState();
+    _subject = TextEditingController(text: widget.followUpDetails.subject);
+    _description =
+        TextEditingController(text: widget.followUpDetails.description);
+    _contactNumber =
+        TextEditingController(text: widget.followUpDetails.phoneNumber);
+    dateTimeController =
+        TextEditingController(text: widget.followUpDetails.nextFollowupDate);
 
-//   bool validatePhoneNumber(String phoneNumber) {
-//     return RegExp(r'^[0-9]{11}$').hasMatch(phoneNumber);
-//   }
+    // Set initial values for dropdowns
 
-// // notification
-//   String selectedDeviceToken = "";
-//   String associateSelectedDeviceToken = "";
+    Owner.ownerId = widget.followUpDetails.assignName?.id;
+    FollowupType.followUpType = widget.followUpDetails.followupTypeId;
 
-//   // assign
-//   void handleDeviceToken(String deviceToken) {
-//     setState(() {
-//       selectedDeviceToken = deviceToken;
-//       print("selected token:$selectedDeviceToken");
-//     });
-//   }
+    // Convert the status name to the corresponding value
+    _selectedStatus =
+        _getStatusValue(widget.followUpDetails.followUpStatus?.name);
+  }
 
-//   void associateHandelDeviceToken(String assiciateDeviceToken) {
-//     setState(() {
-//       associateSelectedDeviceToken = assiciateDeviceToken;
-//     });
-//   }
+  // selected status
 
-//   // API call and send data to server
+  String? _getStatusValue(String? statusName) {
+    switch (statusName) {
+      case "Solved":
+        return "1";
+      case "Pending":
+        return "2";
+      case "Working in Progress":
+        return "3";
+      case "Canceled":
+        return "4";
+      default:
+        return null;
+    }
+  }
 
-//   Future sendDataToServer() async {
-//     CustomProgress customProgress = CustomProgress(context);
+  String _getStatusName(String value) {
+    switch (value) {
+      case "1":
+        return "Solved";
+      case "2":
+        return "Pending";
+      case "3":
+        return "Working in Progress";
+      case "4":
+        return "Canceled";
+      default:
+        return "Unknown";
+    }
+  }
 
-//     if (!validatePhoneNumber(_contactNumber.text)) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(
-//           content: Text('Phone number must be 11 digits.'),
-//           backgroundColor: Colors.red,
-//         ),
-//       );
-//       return;
-//     }
+  List<DropdownMenuItem<String>> get statusDropdownItems {
+    return [
+      const DropdownMenuItem(value: "1", child: Text("Solved")),
+      const DropdownMenuItem(value: "2", child: Text("Pending")),
+      const DropdownMenuItem(value: "3", child: Text("Working in Progress")),
+      const DropdownMenuItem(value: "4", child: Text("Canceled")),
+    ];
+  }
 
-//     customProgress.showDialog(
-//         "Please wait", SimpleFontelicoProgressDialogType.spinner);
+  bool validatePhoneNumber(String phoneNumber) {
+    return RegExp(r'^[0-9]{11}$').hasMatch(phoneNumber);
+  }
 
-//     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-//     String? token = sharedPreferences.getString("token");
-//     String userId = sharedPreferences.getString("id") ?? "";
+// notification
+  String selectedDeviceToken = "";
+  String associateSelectedDeviceToken = "";
 
-//     if (token == null || token.isEmpty) {
-//       customProgress.hideDialog();
-//       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-//         content: Text('Token not found. Please log in again.'),
-//       ));
-//       return;
-//     }
-//     print("Token: $token");
+  // assign
+  void handleDeviceToken(String deviceToken) {
+    setState(() {
+      selectedDeviceToken = deviceToken;
+      print("selected token:$selectedDeviceToken");
+    });
+  }
 
-//     String url = 'https://crm.ihelpbd.com/api/crm-create-follow-up';
+  void associateHandelDeviceToken(String assiciateDeviceToken) {
+    setState(() {
+      associateSelectedDeviceToken = assiciateDeviceToken;
+    });
+  }
 
-//     Map body = {
-//       "lead_id": leadId,
-//       "user_id": userId,
-//       "creator_user_id": userId,
-//       "followup_type_id": FollowupType.followUpType.toString(),
-//       "subject": _subject.text,
-//       "phone_number": _contactNumber.text,
-//       "next_followup_date": dateTimeController.text,
-//       "description": _description.text,
-//       "associate_user_id": Associate.associateId.toString(),
-//     };
+  // API call and send data to server
 
-//     print('Sending request with body: ${jsonEncode(body)}');
+  Future sendDataToServer() async {
+    CustomProgress customProgress = CustomProgress(context);
 
-//     var response = await http.post(
-//       Uri.parse(url),
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Authorization': 'Bearer $token',
-//       },
-//       body: jsonEncode(body),
-//     );
+    if (!validatePhoneNumber(_contactNumber.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Phone number must be 11 digits.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
-//     print('Request Headers: ${response.request?.headers}');
-//     print('Request URL: ${response.request?.url}');
-//     print('Response Status: ${response.statusCode}');
+    customProgress.showDialog(
+        "Please wait", SimpleFontelicoProgressDialogType.spinner);
 
-//     if (response.statusCode == 200) {
-//       customProgress.hideDialog();
-//       _companyName.clear();
-//       _subject.clear();
-//       _description.clear();
-//       _contactNumber.clear();
-//       dateTimeController.clear();
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? token = sharedPreferences.getString("token");
+    String userId = sharedPreferences.getString("id") ?? "";
 
-//       // Reset dropdowns to their initial state
-//       setState(() {
-//         FollowupType.followUpType =
-//             null; // Assuming this is the dropdown variable
-//         Owner.ownerId = null; // Assuming this is the dropdown
-//       });
+    if (token == null || token.isEmpty) {
+      customProgress.hideDialog();
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Token not found. Please log in again.'),
+      ));
+      return;
+    }
+    print("Token: $token");
 
-//       print('Response Body: ${response.body}');
+    String url = 'https://crm.ihelpbd.com/api/crm-update-follow-up';
 
-//       // send notification
-//       if (selectedDeviceToken.isNotEmpty) {
-//         FCMService.sendNotification(
-//             deviceToken: selectedDeviceToken,
-//             title: "Reminder",
-//             body: "FollowUp Available ! Please Solved FollowUp",
-//             storyId: "story_12345");
-//         print("selected device token: $selectedDeviceToken");
-//       } else {
-//         print("Device token is empty");
-//       }
-//       if (associateSelectedDeviceToken.isNotEmpty) {
-//         FCMService.sendNotification(
-//             deviceToken: associateSelectedDeviceToken,
-//             title: "Reminder",
-//             body: "FollowUp Available ! Please Solved FollowUp",
-//             storyId: "story_12345");
-//         print("selected associate device token: $associateSelectedDeviceToken");
-//       } else {
-//         print("Device token is empty");
-//       }
+    Map body = {
+      "id": widget.followUpId.toString(),
+      "user_id": userId,
+      "lead_id": widget.leadId.toString(),
+      "followup_type_id": FollowupType.followUpType.toString(),
+      "subject": _subject.text,
+      "phone_number": _contactNumber.text,
+      "next_followup_date": dateTimeController.text,
+      "description": _description.text,
+      "associate_user_id": "",
+      "followup_status": _selectedStatus.toString(),
+      "creator_user_id": userId,
+    };
 
-//       await AwesomeDialog(
-//         context: context,
-//         dialogType: DialogType.success,
-//         animType: AnimType.topSlide,
-//         showCloseIcon: true,
-//         title: "Success",
-//         desc: "Your follow up created successfully",
-//         customHeader: Container(
-//           padding: const EdgeInsets.all(20),
-//           decoration: BoxDecoration(
-//             shape: BoxShape.circle,
-//             color: Colors.blue[600],
-//           ),
-//           child: const Icon(
-//             Icons.check,
-//             color: Colors.white,
-//             size: 50,
-//           ),
-//         ),
-//         btnOkColor: Colors.blue[600],
-//         btnCancelOnPress: () {
-//           Navigator.of(context).pop();
-//         },
-//         btnOkOnPress: () {
-//           Navigator.push(
-//               context,
-//               MaterialPageRoute(
-//                 builder: (context) => const FollowUpList(),
-//               ));
-//         },
-//       ).show();
-//     } else {
-//       customProgress.hideDialog();
-//       await showDialog(
-//         context: context,
-//         builder: (context) => AlertDialog(
-//           title: const Column(
-//             children: [
-//               Text("Error", style: TextStyle(color: Colors.red)),
-//               Text("Please select Owner and Follow Up Type",
-//                   style: TextStyle(color: Colors.red, fontSize: 13)),
-//             ],
-//           ),
-//           actions: [
-//             TextButton(
-//               onPressed: () {
-//                 Navigator.of(context).pop();
-//               },
-//               child: const Text('Ok'),
-//             ),
-//           ],
-//         ),
-//       );
-//     }
-//   }
+    print('Sending request with body: ${jsonEncode(body)}');
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Scaffold(
-//           backgroundColor: backgroundColor,
-//           appBar: AppBar(
-//             backgroundColor: Colors.white,
-//             // toolbarHeight: 80,
-//             title: const Text(
-//               "CREATE  FOLLOW  UP",
-//               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-//             ),
-//             centerTitle: true,
-//             leading: IconButton(
-//               icon: const Icon(Icons.arrow_back_ios, size: 18),
-//               onPressed: () {
-//                 Navigator.pop(context);
-//               },
-//             ),
-//           ),
-//           body: Container(
-//             padding: const EdgeInsets.symmetric(horizontal: 10),
-//             height: 784.8.h,
-//             width: 400.w,
-//             child: Form(
-//               key: _formKey,
-//               child: RawScrollbar(
-//                 // thumbVisibility: true,
-//                 child: SingleChildScrollView(
-//                   padding: const EdgeInsets.all(16.0),
-//                   child: Column(
-//                     children: [
-//                       dropDownRow("Company Name", CompanyNameDropdown()),
-//                       const SizedBox(height: 10),
-//                       formField("Subject", _subject, 'Please enter subject'),
-//                       const SizedBox(height: 10),
-//                       Row(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         crossAxisAlignment: CrossAxisAlignment.center,
-//                         children: [
-//                           Flexible(
-//                             flex: 1,
-//                             child: dropDownRow(
-//                                 "Owner",
-//                                 LeadOwnerDropDown(
-//                                   onDeviceTokenReceived: handleDeviceToken,
-//                                 )),
-//                           ),
-//                           const SizedBox(width: 10),
-//                           Flexible(
-//                             flex: 1,
-//                             child: dropDownRow(
-//                                 "Associate",
-//                                 LeadAssociateDropDown(
-//                                   onDeviceTokenReceived:
-//                                       associateHandelDeviceToken,
-//                                 )),
-//                           ),
-//                         ],
-//                       ),
-//                       const SizedBox(height: 12),
-//                       dropDownRow(
-//                           "Follow Up Type", const FollowUpTypeDropdown()),
-//                       const SizedBox(height: 12),
-//                       dateField("Next Follow Up Date", dateTimeController),
-//                       const SizedBox(height: 10),
-//                       phoneNumberField(),
-//                       const SizedBox(height: 10),
-//                       descritionFormField("Description", _description,
-//                           'Please enter description'),
-//                       const SizedBox(height: 30),
-//                       buttonRow(),
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//             ),
-//           )),
-//     );
-//   }
+    var response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
 
-//   Widget formField(
-//       String label, TextEditingController controller, String errorText,
-//       {String hintText = ''}) {
-//     return Container(
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.start,
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.only(bottom: 8),
-//             child: Text(
-//               label,
-//               style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-//             ),
-//           ),
-//           Container(
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(8),
-//               boxShadow: [
-//                 BoxShadow(
-//                   color: Colors.grey.withOpacity(0.1),
-//                   spreadRadius: 0,
-//                   blurRadius: 3,
-//                   offset: const Offset(0, 1), // changes position of shadow
-//                 ),
-//               ],
-//             ),
-//             child: TextFormField(
-//               controller: controller,
-//               validator: (value) {
-//                 if (value == null || value.isEmpty) {
-//                   return errorText;
-//                 }
-//                 return null;
-//               },
-//               decoration: const InputDecoration(
-//                 border: InputBorder.none,
-//                 contentPadding:
-//                     EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-//                 fillColor: Color(0xFFF8F6F8),
-//               ),
-//             ),
-//           )
-//         ],
-//       ),
-//     );
-//   }
+    print('Request Headers: ${response.request?.headers}');
+    print('Request URL: ${response.request?.url}');
+    print('Response Status: ${response.statusCode}');
 
-//   Widget dropDownRow(String label, Widget dropDown) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Padding(
-//           padding: const EdgeInsets.only(bottom: 8),
-//           child: Text(
-//             label,
-//             style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-//           ),
-//         ),
-//         dropDown,
-//       ],
-//     );
-//   }
+    if (response.statusCode == 200) {
+      // hide progress dialog
+      customProgress.hideDialog();
 
-//   Widget dateField(String label, TextEditingController dateTimeController) {
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       mainAxisAlignment: MainAxisAlignment.start,
-//       children: [
-//         Padding(
-//           padding: const EdgeInsets.only(bottom: 8),
-//           child: Text(label,
-//               style:
-//                   const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-//         ),
-//         // const SizedBox(height: 10),
-//         InkWell(
-//           onTap: () async {
-//             DateTime? pickedDate = await showDatePicker(
-//               context: context,
-//               initialDate: DateTime.now(),
-//               firstDate: DateTime(2000),
-//               lastDate: DateTime(2101),
-//             );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            backgroundColor: Colors.blue,
+            animation: AlwaysStoppedAnimation(BorderSide.strokeAlignCenter),
+            content: Text('Follow-up updated successfully')),
+      );
+      Navigator.pop(context, true); // Return true to indicate successful update
 
-//             if (pickedDate != null) {
-//               setState(() {
-//                 dateTimeController.text =
-//                     "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-//               });
-//             }
-//           },
-//           child: Container(
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(8),
-//               boxShadow: [
-//                 BoxShadow(
-//                   color: Colors.grey.withOpacity(0.1),
-//                   spreadRadius: 0,
-//                   blurRadius: 3,
-//                   offset: const Offset(0, 1), // changes position of shadow
-//                 ),
-//               ],
-//             ),
-//             // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-//             child: TextFormField(
-//               readOnly: true,
-//               controller: dateTimeController,
-//               validator: (value) {
-//                 if (value == null || value.isEmpty) {
-//                   return "Next Follow up date is required";
-//                 }
-//                 return null;
-//               },
-//               enabled: false,
-//               decoration: const InputDecoration(
-//                 border: InputBorder.none,
-//                 contentPadding:
-//                     EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-//                 fillColor: Color(0xFFF8F6F8),
-//                 hintText: 'Select Date',
-//               ),
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
+      print('Response Body: ${response.body}');
 
-//   Widget phoneNumberField() {
-//     return Padding(
-//       padding: const EdgeInsets.symmetric(vertical: 8.0),
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           const Padding(
-//             padding: const EdgeInsets.only(bottom: 8),
-//             child: Text(
-//               'Contact Number',
-//               style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-//             ),
-//           ),
-//           Container(
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(8),
-//               boxShadow: [
-//                 BoxShadow(
-//                   color: Colors.grey.withOpacity(0.1),
-//                   spreadRadius: 0,
-//                   blurRadius: 3,
-//                   offset: const Offset(0, 1), // changes position of shadow
-//                 ),
-//               ],
-//             ),
-//             child: TextFormField(
-//               controller: _contactNumber,
-//               keyboardType: TextInputType.phone,
-//               // validator: (value) {
-//               //   if (value == null || value.isEmpty) {
-//               //     return 'Please enter phone number';
-//               //   }
-//               //   if (!validatePhoneNumber(value)) {
-//               //     return 'Phone number must be 11 digits';
-//               //   }
-//               //   return null;
-//               // },
-//               decoration: InputDecoration(
-//                 contentPadding:
-//                     const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-//                 hintText: 'Ex: 01610-681903',
-//                 hintStyle: TextStyle(color: Colors.grey[400]),
-//                 border: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(8),
-//                   borderSide: BorderSide.none,
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
+      // send notification
+      if (selectedDeviceToken.isNotEmpty) {
+        FCMService.sendNotification(
+            deviceToken: selectedDeviceToken,
+            title: "Reminder",
+            body: "FollowUp Available ! Please Solved FollowUp",
+            storyId: "story_12345");
+        print("selected device token: $selectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
+      if (associateSelectedDeviceToken.isNotEmpty) {
+        FCMService.sendNotification(
+            deviceToken: associateSelectedDeviceToken,
+            title: "Reminder",
+            body: "FollowUp Available ! Please Solved FollowUp",
+            storyId: "story_12345");
+        print("selected associate device token: $associateSelectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              // 'Failed to update task. Error: ${response.body}'
+              "Failed to update follow-up. Check all fields"),
+          backgroundColor: Colors.blue,
+        ),
+      );
+    }
+  }
 
-//   Widget descritionFormField(
-//       String label, TextEditingController controller, String errorText,
-//       {String hintText = ''}) {
-//     return Container(
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.start,
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.only(bottom: 8),
-//             child: Text(
-//               label,
-//               style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-//             ),
-//           ),
-//           Container(
-//             decoration: BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.circular(8),
-//               boxShadow: [
-//                 BoxShadow(
-//                   color: Colors.grey.withOpacity(0.1),
-//                   spreadRadius: 0,
-//                   blurRadius: 3,
-//                   offset: const Offset(0, 1), // changes position of shadow
-//                 ),
-//               ],
-//             ),
-//             child: TextFormField(
-//               keyboardType: TextInputType.multiline,
-//               maxLines: 5,
-//               controller: controller,
-//               validator: (value) {
-//                 if (value == null || value.isEmpty) {
-//                   return errorText;
-//                 }
-//                 return null;
-//               },
-//               decoration: const InputDecoration(
-//                 border: InputBorder.none,
-//                 contentPadding:
-//                     EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-//                 fillColor: Color(0xFFF8F6F8),
-//               ),
-//             ),
-//           )
-//         ],
-//       ),
-//     );
-//   }
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+          backgroundColor: backgroundColor,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            // toolbarHeight: 80,
+            title: const Text(
+              "UPDATE  FOLLOW  UP",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios, size: 18),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          body: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            height: 784.8.h,
+            width: 400.w,
+            child: Form(
+              key: _formKey,
+              child: RawScrollbar(
+                // thumbVisibility: true,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      // all forms
 
-//   Widget buttonRow() {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: [
-//         /// cancle button
-//         ElevatedButton(
-//           style: ElevatedButton.styleFrom(
-//             minimumSize: const Size(164, 52),
-//             maximumSize: const Size(181, 52),
-//             backgroundColor: Colors.white,
-//             shape: RoundedRectangleBorder(
-//               side: const BorderSide(color: Colors.blue, width: 2),
-//               borderRadius: BorderRadius.circular(8),
-//             ),
-//           ),
-//           onPressed: () {
-//             Navigator.pop(context);
-//           },
-//           child: const Text(
-//             "Cancel",
-//             style: TextStyle(color: Colors.blue, fontSize: 16),
-//           ),
-//         ),
-//         const SizedBox(width: 12),
-//         ElevatedButton(
-//           onPressed: () {
-//             // if (selectedDeviceToken.isNotEmpty) {
-//             //   FCMService.sendNotification(
-//             //       deviceToken: selectedDeviceToken,
-//             //       title: "Reminder",
-//             //       body: "FollowUp Available ! Please Solved FollowUp",
-//             //       storyId: "story_12345");
-//             //   print("selected device token: $selectedDeviceToken");
-//             // } else {
-//             //   print("Device token is empty");
-//             // }
-//             // if (associateSelectedDeviceToken.isNotEmpty) {
-//             //   FCMService.sendNotification(
-//             //       deviceToken: associateSelectedDeviceToken,
-//             //       title: "Reminder",
-//             //       body: "FollowUp Available ! Please Solved FollowUp",
-//             //       storyId: "story_12345");
-//             //   print(
-//             //       "selected associate device token: $associateSelectedDeviceToken");
-//             // } else {
-//             //   print("Device token is empty");
-//             // }
+                      // task status field
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 8),
+                            child: Text(
+                              "Follow Up Status",
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 0,
+                                  blurRadius: 3,
+                                  offset: const Offset(
+                                      0, 1), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            child: DropdownButtonFormField<String>(
+                              dropdownColor: backgroundColor,
+                              value: _selectedStatus,
+                              items: statusDropdownItems,
+                              hint: Text(
+                                "task's current status",
+                                style: TextStyle(color: Colors.grey[400]),
+                              ),
+                              icon: const Icon(Icons.keyboard_arrow_down_sharp,
+                                  size: 30, color: Colors.blue),
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _selectedStatus = newValue;
+                                });
+                              },
+                              decoration: const InputDecoration(
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Color(0xFFF8F6F8)),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 10),
+                                fillColor: Color(0xFFF8F6F8),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
 
-//             if (_formKey.currentState?.validate() == true) {
-//               if (Owner.ownerId == null) {
-//                 ScaffoldMessenger.of(context).showSnackBar(
-//                   SnackBar(
-//                     dismissDirection: DismissDirection.endToStart,
-//                     elevation: 2,
-//                     backgroundColor: Colors.red,
-//                     behavior: SnackBarBehavior.floating, // Makes it floating
-//                     shape: RoundedRectangleBorder(
-//                       // Adds border radius
-//                       borderRadius: BorderRadius.circular(12),
-//                     ),
-//                     margin:
-//                         const EdgeInsets.all(10), // Margin around the SnackBar
-//                     content: const Text(
-//                       'Please Select Owner',
-//                       style:
-//                           TextStyle(color: Colors.white), // Custom text style
-//                     ),
-//                   ),
-//                 );
-//                 return;
-//               }
-//               if (FollowupType.followUpType == null) {
-//                 ScaffoldMessenger.of(context).showSnackBar(
-//                   SnackBar(
-//                     elevation: 2,
-//                     backgroundColor: Colors.red,
-//                     behavior: SnackBarBehavior.floating, // Makes it floating
-//                     shape: RoundedRectangleBorder(
-//                       // Adds border radius
-//                       borderRadius: BorderRadius.circular(12),
-//                     ),
-//                     margin:
-//                         const EdgeInsets.all(10), // Margin around the SnackBar
-//                     content: const Text(
-//                       'Please Select Follow Up Type',
-//                       style:
-//                           TextStyle(color: Colors.white), // Custom text style
-//                     ),
-//                   ),
-//                 );
-//                 return;
-//               }
-//               sendDataToServer();
-//             }
-//           },
-//           style: ElevatedButton.styleFrom(
-//             minimumSize: const Size(164, 52),
-//             maximumSize: const Size(181, 52),
-//             backgroundColor: buttonColor,
+                      const SizedBox(height: 16),
+                      const SizedBox(height: 10),
+                      formField("Subject", _subject, 'Please enter subject'),
+                      const SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            flex: 1,
+                            child: dropDownRow(
+                                "Owner",
+                                LeadOwnerDropDown(
+                                  initialValue:
+                                      widget.followUpDetails.assignName?.name,
+                                  onDeviceTokenReceived: handleDeviceToken,
+                                )),
+                          ),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            flex: 1,
+                            child: dropDownRow(
+                                "Associate",
+                                LeadAssociateDropDown(
+                                  // initialValue:
+                                  //     widget.followUpDetails.associates[].name,
+                                  onDeviceTokenReceived:
+                                      associateHandelDeviceToken,
+                                )),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      dropDownRow(
+                          "Follow Up Type", const FollowUpTypeDropdown()),
+                      const SizedBox(height: 12),
+                      dateField("Next Follow Up Date", dateTimeController),
+                      const SizedBox(height: 10),
+                      phoneNumberField(),
+                      const SizedBox(height: 10),
+                      descritionFormField("Description", _description,
+                          'Please enter description'),
+                      const SizedBox(height: 30),
+                      buttonRow(),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          )),
+    );
+  }
 
-//             // backgroundColor: const Color(0xFF007AFF),
-//             shape: RoundedRectangleBorder(
-//               borderRadius: BorderRadius.circular(8),
-//             ),
-//           ),
-//           child: const Text("Update",
-//               style: TextStyle(color: Colors.white, fontSize: 16)),
-//         ),
-//       ],
-//     );
-//   }
-// }
+  Widget formField(
+      String label, TextEditingController controller, String errorText,
+      {String hintText = ''}) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
+            ),
+            child: TextFormField(
+              controller: controller,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return errorText;
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                fillColor: Color(0xFFF8F6F8),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget dropDownRow(String label, Widget dropDown) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+          ),
+        ),
+        dropDown,
+      ],
+    );
+  }
+
+  Widget dateField(String label, TextEditingController dateTimeController) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(label,
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+        ),
+        // const SizedBox(height: 10),
+        InkWell(
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2101),
+            );
+
+            if (pickedDate != null) {
+              setState(() {
+                dateTimeController.text =
+                    "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+              });
+            }
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
+            ),
+            // padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+            child: TextFormField(
+              readOnly: true,
+              controller: dateTimeController,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Next Follow up date is required";
+                }
+                return null;
+              },
+              enabled: false,
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                fillColor: Color(0xFFF8F6F8),
+                hintText: 'Select Date',
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget phoneNumberField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              'Contact Number',
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
+            ),
+            child: TextFormField(
+              controller: _contactNumber,
+              keyboardType: TextInputType.phone,
+              // validator: (value) {
+              //   if (value == null || value.isEmpty) {
+              //     return 'Please enter phone number';
+              //   }
+              //   if (!validatePhoneNumber(value)) {
+              //     return 'Phone number must be 11 digits';
+              //   }
+              //   return null;
+              // },
+              decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                hintText: 'Ex: 01610-681903',
+                hintStyle: TextStyle(color: Colors.grey[400]),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget descritionFormField(
+      String label, TextEditingController controller, String errorText,
+      {String hintText = ''}) {
+    return Container(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 3,
+                  offset: const Offset(0, 1), // changes position of shadow
+                ),
+              ],
+            ),
+            child: TextFormField(
+              keyboardType: TextInputType.multiline,
+              maxLines: 5,
+              controller: controller,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return errorText;
+                }
+                return null;
+              },
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                fillColor: Color(0xFFF8F6F8),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buttonRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        /// cancle button
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(164, 52),
+            maximumSize: const Size(181, 52),
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(color: Colors.blue, width: 2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text(
+            "Cancel",
+            style: TextStyle(color: Colors.blue, fontSize: 16),
+          ),
+        ),
+        const SizedBox(width: 12),
+        ElevatedButton(
+          onPressed: () {
+            // if (selectedDeviceToken.isNotEmpty) {
+            //   FCMService.sendNotification(
+            //       deviceToken: selectedDeviceToken,
+            //       title: "Reminder",
+            //       body: "FollowUp Available ! Please Solved FollowUp",
+            //       storyId: "story_12345");
+            //   print("selected device token: $selectedDeviceToken");
+            // } else {
+            //   print("Device token is empty");
+            // }
+            // if (associateSelectedDeviceToken.isNotEmpty) {
+            //   FCMService.sendNotification(
+            //       deviceToken: associateSelectedDeviceToken,
+            //       title: "Reminder",
+            //       body: "FollowUp Available ! Please Solved FollowUp",
+            //       storyId: "story_12345");
+            //   print(
+            //       "selected associate device token: $associateSelectedDeviceToken");
+            // } else {
+            //   print("Device token is empty");
+            // }
+
+            if (_formKey.currentState?.validate() == true) {
+              if (Owner.ownerId == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    dismissDirection: DismissDirection.endToStart,
+                    elevation: 2,
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating, // Makes it floating
+                    shape: RoundedRectangleBorder(
+                      // Adds border radius
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin:
+                        const EdgeInsets.all(10), // Margin around the SnackBar
+                    content: const Text(
+                      'Please Select Owner',
+                      style:
+                          TextStyle(color: Colors.white), // Custom text style
+                    ),
+                  ),
+                );
+                return;
+              }
+              if (FollowupType.followUpType == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    elevation: 2,
+                    backgroundColor: Colors.red,
+                    behavior: SnackBarBehavior.floating, // Makes it floating
+                    shape: RoundedRectangleBorder(
+                      // Adds border radius
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin:
+                        const EdgeInsets.all(10), // Margin around the SnackBar
+                    content: const Text(
+                      'Please Select Follow Up Type',
+                      style:
+                          TextStyle(color: Colors.white), // Custom text style
+                    ),
+                  ),
+                );
+                return;
+              }
+              sendDataToServer();
+            }
+          },
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size(164, 52),
+            maximumSize: const Size(181, 52),
+            backgroundColor: buttonColor,
+
+            // backgroundColor: const Color(0xFF007AFF),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          child: const Text("Update",
+              style: TextStyle(color: Colors.white, fontSize: 16)),
+        ),
+      ],
+    );
+  }
+}

@@ -14,9 +14,13 @@ class Associate {
 
 class LeadAssociateDropDown extends StatefulWidget {
   final Function(String) onDeviceTokenReceived;
+  final String? initialValue;
 
-  const LeadAssociateDropDown({Key? key, required this.onDeviceTokenReceived})
-      : super(key: key);
+  const LeadAssociateDropDown({
+    Key? key,
+    required this.onDeviceTokenReceived,
+    this.initialValue,
+  }) : super(key: key);
 
   @override
   State<LeadAssociateDropDown> createState() => _LeadAssociateDropDownState();
@@ -53,6 +57,16 @@ class _LeadAssociateDropDownState extends State<LeadAssociateDropDown> {
       setState(() {
         _pipelineList = responseData['data'];
         // Associate.associateId = responseData['data'][0]['id'];
+
+        if (widget.initialValue != null) {
+          final initialOwner = _pipelineList.firstWhere(
+            (owner) => owner['name'] == widget.initialValue,
+            orElse: () => null,
+          );
+          if (initialOwner != null) {
+            _onPipelineSelected(initialOwner);
+          }
+        }
       });
     } else {
       print('Failed to fetch Owner');

@@ -11,7 +11,8 @@ class FollowupType {
 }
 
 class FollowUpTypeDropdown extends StatefulWidget {
-  const FollowUpTypeDropdown({Key? key}) : super(key: key);
+  final String? initialValue;
+  const FollowUpTypeDropdown({Key? key, this.initialValue}) : super(key: key);
 
   @override
   State<FollowUpTypeDropdown> createState() => _FollowUpTypeDropdownState();
@@ -44,6 +45,15 @@ class _FollowUpTypeDropdownState extends State<FollowUpTypeDropdown> {
       final responseData = json.decode(response.body);
       setState(() {
         _pipelineList = responseData['data'];
+        if (widget.initialValue != null) {
+          final initialPipeline = _pipelineList.firstWhere(
+            (pipeline) => pipeline['name'] == widget.initialValue,
+            orElse: () => null,
+          );
+          if (initialPipeline != null) {
+            _onPipelineSelected(initialPipeline);
+          }
+        }
       });
     } else {
       print('Failed to fetch lead pipeline');

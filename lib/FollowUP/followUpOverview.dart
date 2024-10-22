@@ -258,18 +258,18 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                           color: Colors.white, fontSize: 16)),
                                   onPressed: () {
                                     // Implement edit functionality
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) =>
-                                    //             FollowUpUpdate(
-                                    //                 leadId: followUpDetails
-                                    //                         ?.leadId ??
-                                    //                     0,
-                                    //                 followUpId:
-                                    //                     widget.followUpId,
-                                    //                 followUpDetails:
-                                    //                     followUpDetails!)));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                FollowUpUpdate(
+                                                    leadId: followUpDetails
+                                                            ?.leadId ??
+                                                        0,
+                                                    followUpId:
+                                                        widget.followUpId,
+                                                    followUpDetails:
+                                                        followUpDetails!)));
                                   },
                                 ),
                               ],

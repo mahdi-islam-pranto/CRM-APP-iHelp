@@ -233,9 +233,13 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
             ),
           ),
           body: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            height: 784.8.h,
-            width: 400.w,
+            // Responsive Container Padding
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.025),
+
+// Responsive Form Container
+            height: MediaQuery.of(context).size.height * 0.85,
+            width: MediaQuery.of(context).size.width * 1,
             child: Form(
               key: _formKey,
               child: RawScrollbar(
@@ -260,7 +264,8 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                                   onDeviceTokenReceived: handleDeviceToken,
                                 )),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.025),
                           Flexible(
                             flex: 1,
                             child: dropDownRow(
@@ -560,8 +565,8 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
         /// cancle button
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            minimumSize: const Size(164, 52),
-            maximumSize: const Size(181, 52),
+            minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 52),
+            maximumSize: Size(MediaQuery.of(context).size.width * 0.45, 52),
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               side: const BorderSide(color: Colors.blue, width: 2),
@@ -576,7 +581,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
             style: TextStyle(color: Colors.blue, fontSize: 16),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.06),
         ElevatedButton(
           onPressed: () {
             // if (selectedDeviceToken.isNotEmpty) {
@@ -649,8 +654,8 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
             }
           },
           style: ElevatedButton.styleFrom(
-            minimumSize: const Size(164, 52),
-            maximumSize: const Size(181, 52),
+            minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 52),
+            maximumSize: Size(MediaQuery.of(context).size.width * 0.45, 52),
             backgroundColor: buttonColor,
 
             // backgroundColor: const Color(0xFF007AFF),
@@ -658,7 +663,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text("Save",
+          child: const Text("Create",
               style: TextStyle(color: Colors.white, fontSize: 16)),
         ),
       ],

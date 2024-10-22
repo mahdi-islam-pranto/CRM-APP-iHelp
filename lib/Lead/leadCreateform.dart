@@ -48,9 +48,13 @@ class _LeadCreateFormState extends State<LeadCreateForm> {
           ),
         ),
         body: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          height: 784.8.h,
-          width: 400.w,
+          // Responsive Container Padding
+          padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.025),
+
+// Responsive Form Container
+          height: MediaQuery.of(context).size.height * 0.85,
+          width: MediaQuery.of(context).size.width * 1,
           child: Form(
             key: _formKey,
             child: SingleChildScrollView(
@@ -1033,8 +1037,10 @@ class _LeadCreateFormState extends State<LeadCreateForm> {
                       // cancle
                       ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            minimumSize: const Size(164, 52),
-                            maximumSize: const Size(181, 52),
+                            minimumSize: Size(
+                                MediaQuery.of(context).size.width * 0.4, 52),
+                            maximumSize: Size(
+                                MediaQuery.of(context).size.width * 0.45, 52),
                             backgroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               side: const BorderSide(
@@ -1049,14 +1055,15 @@ class _LeadCreateFormState extends State<LeadCreateForm> {
                             "Cancel",
                             style: TextStyle(color: Colors.blue, fontSize: 16),
                           )),
-                      const SizedBox(
-                        width: 11,
-                      ),
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.065),
                       // save
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(164, 52),
-                          maximumSize: const Size(181, 52),
+                          minimumSize:
+                              Size(MediaQuery.of(context).size.width * 0.4, 52),
+                          maximumSize: Size(
+                              MediaQuery.of(context).size.width * 0.45, 52),
                           backgroundColor: buttonColor,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

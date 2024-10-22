@@ -8,16 +8,30 @@ class DashboardCounter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get screen width and height
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
+    // Define relative sizes based on screen dimensions
+    final double containerHeight1 = screenHeight * 0.2;
+    final double containerHeight2 = screenHeight * 0.14;
+    final double containerHeight3 = screenHeight * 0.14;
+    final double containerHeight4 = screenHeight * 0.2;
+    final double containerWidth = screenWidth * 0.43;
+    final double iconSize = screenHeight * 0.04;
+    final double textSize = screenHeight * 0.022;
+
     return Container(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
+      // color: Colors.yellow,
+      padding: EdgeInsets.symmetric(
+        horizontal: screenWidth * 0.05,
+        vertical: screenHeight * 0.02,
+      ),
       child: Row(
-        // flex containers
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // First Column with two containers
           Column(
             children: [
-              // lead container
               InkWell(
                 onTap: () {
                   Navigator.push(
@@ -28,20 +42,23 @@ class DashboardCounter extends StatelessWidget {
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [Color(0xFFA9FFEA), Color(0xFF00B388)])),
-                  height: 166,
-                  width: 180 - 10,
-                  child: const Padding(
-                    padding: EdgeInsets.all(16.0),
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFA9FFEA), Color(0xFF00B388)],
+                    ),
+                  ),
+                  height: containerHeight1,
+                  width: containerWidth,
+                  child: Padding(
+                    padding: EdgeInsets.all(screenWidth * 0.03),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(Icons.leaderboard, color: Colors.white, size: 30),
+                        Icon(Icons.leaderboard,
+                            color: Colors.white, size: iconSize),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -49,7 +66,7 @@ class DashboardCounter extends StatelessWidget {
                               "Lead",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: textSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -57,7 +74,7 @@ class DashboardCounter extends StatelessWidget {
                               "108",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: textSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -68,8 +85,7 @@ class DashboardCounter extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
-
+              SizedBox(height: screenHeight * 0.015),
               InkWell(
                 onTap: () {
                   Navigator.push(
@@ -79,21 +95,24 @@ class DashboardCounter extends StatelessWidget {
                       ));
                 },
                 child: Container(
-                  height: 117,
-                  width: 180 - 10,
+                  height: containerHeight2,
+                  width: containerWidth,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [Color(0xFFFFA0BC), Color(0xFFFF1B5E)])),
-                  child: const Padding(
-                    padding: EdgeInsets.all(12.0),
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFFFA0BC), Color(0xFFFF1B5E)],
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(screenWidth * 0.03),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(Icons.leaderboard, color: Colors.white, size: 28),
+                        Icon(Icons.leaderboard,
+                            color: Colors.white, size: iconSize),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -101,7 +120,7 @@ class DashboardCounter extends StatelessWidget {
                               "Task",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: textSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -109,7 +128,7 @@ class DashboardCounter extends StatelessWidget {
                               "100",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: textSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -119,13 +138,10 @@ class DashboardCounter extends StatelessWidget {
                     ),
                   ),
                 ),
-              )
+              ),
             ],
           ),
-
-          const SizedBox(width: 10),
-
-          // Second Column with two containers
+          // SizedBox(width: screenWidth * 0.05),
           Column(
             children: [
               InkWell(
@@ -137,22 +153,24 @@ class DashboardCounter extends StatelessWidget {
                       ));
                 },
                 child: Container(
-                  height: 117,
-                  width: 179 - 10,
+                  height: containerHeight3,
+                  width: containerWidth,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [Color(0xFFFFD29D), Color(0xFFFF9E2D)])),
-                  child: const Padding(
-                    padding: EdgeInsets.all(12.0),
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFFFD29D), Color(0xFFFF9E2D)],
+                    ),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(screenWidth * 0.03),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(Icons.follow_the_signs_outlined,
-                            color: Colors.white, size: 28),
+                            color: Colors.white, size: iconSize),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -160,7 +178,7 @@ class DashboardCounter extends StatelessWidget {
                               "Follow Up",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: textSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -168,7 +186,7 @@ class DashboardCounter extends StatelessWidget {
                               "86",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 20,
+                                fontSize: textSize,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -179,23 +197,25 @@ class DashboardCounter extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 15),
+              SizedBox(height: screenHeight * 0.015),
               Container(
-                height: 165,
-                width: 179 - 10,
+                height: containerHeight4,
+                width: containerWidth,
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xFFB1EEFF), Color(0xFF29BAE2)])),
-                child: const Padding(
-                  padding: EdgeInsets.all(16.0),
+                  borderRadius: BorderRadius.circular(15),
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Color(0xFFB1EEFF), Color(0xFF29BAE2)],
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(screenWidth * 0.03),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(Icons.task, color: Colors.white, size: 30),
+                      Icon(Icons.task, color: Colors.white, size: iconSize),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -203,7 +223,7 @@ class DashboardCounter extends StatelessWidget {
                             "Pending Task",
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20,
+                              fontSize: textSize,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -211,7 +231,7 @@ class DashboardCounter extends StatelessWidget {
                             "28",
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20,
+                              fontSize: textSize,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -222,7 +242,7 @@ class DashboardCounter extends StatelessWidget {
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );
