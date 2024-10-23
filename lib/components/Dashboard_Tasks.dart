@@ -78,7 +78,8 @@ class _DashboardTasksState extends State<DashboardTasks> {
               size: 40,
             ));
           } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            // return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('Fetching tasks failed'));
           } else if (snapshot.hasData &&
               snapshot.data!.data != null &&
               snapshot.data!.data!.isNotEmpty) {

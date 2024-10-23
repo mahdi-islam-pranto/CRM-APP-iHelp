@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Notification/notification_handler.dart';
+import 'dependency_injection.dart';
 import 'splash_screen.dart';
 
 class MyHttpOverrides extends HttpOverrides {
@@ -41,6 +42,7 @@ void main() async {
   }
 
   runApp(const MyApp());
+  DependencyInjection.init();
 }
 
 Future<void> _firebaseMassageingBackgroundHandeler(
