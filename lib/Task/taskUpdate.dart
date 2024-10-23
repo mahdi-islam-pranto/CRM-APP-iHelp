@@ -536,8 +536,10 @@ class _TaskUpdateFormState extends State<TaskUpdateForm> {
                     /// cancle button
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(164, 52),
-                        maximumSize: const Size(181, 52),
+                        minimumSize:
+                            Size(MediaQuery.of(context).size.width * 0.4, 52),
+                        maximumSize:
+                            Size(MediaQuery.of(context).size.width * 0.45, 52),
                         backgroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           side: const BorderSide(color: Colors.blue, width: 2),
@@ -561,8 +563,10 @@ class _TaskUpdateFormState extends State<TaskUpdateForm> {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        minimumSize: const Size(164, 52),
-                        maximumSize: const Size(181, 52),
+                        minimumSize:
+                            Size(MediaQuery.of(context).size.width * 0.4, 52),
+                        maximumSize:
+                            Size(MediaQuery.of(context).size.width * 0.45, 52),
                         backgroundColor: buttonColor,
 
                         // backgroundColor: const Color(0xFF007AFF),

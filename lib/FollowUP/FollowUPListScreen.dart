@@ -362,7 +362,6 @@ class _FollowUpListState extends State<FollowUpList> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          const SizedBox(height: 8),
                                           Row(
                                             children: [
                                               const Icon(Icons.label_outline,

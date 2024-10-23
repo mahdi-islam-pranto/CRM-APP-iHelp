@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:untitled1/Lead/LeadAssociateDropdown.dart';
+import 'package:untitled1/Lead/LeadAssociateDropdown.dart' as Associates;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
@@ -10,6 +10,7 @@ import 'package:untitled1/Models/followUpModel.dart';
 
 import 'package:untitled1/resourses/app_colors.dart';
 
+import '../Lead/LeadAssociateDropdown.dart';
 import '../Lead/LeadOwnerDropdown.dart';
 
 import '../Notification/fcm_server.dart';
@@ -18,6 +19,7 @@ import '../components/CustomProgress.dart';
 import '../components/Dropdowns/companyNameDropDown.dart';
 
 import 'FollowUPListScreen.dart';
+import 'followUpOverview.dart';
 import 'followUpType.dart';
 
 class FollowUpUpdate extends StatefulWidget {
@@ -59,6 +61,8 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
     // Set initial values for dropdowns
 
     Owner.ownerId = widget.followUpDetails.assignName?.id;
+    // associate
+    // Associates.Associate.associateId = widget.followUpDetails.associates;
     FollowupType.followUpType = widget.followUpDetails.followupTypeId;
 
     // Convert the status name to the corresponding value
@@ -134,15 +138,15 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
   Future sendDataToServer() async {
     CustomProgress customProgress = CustomProgress(context);
 
-    if (!validatePhoneNumber(_contactNumber.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Phone number must be 11 digits.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
+    // if (!validatePhoneNumber(_contactNumber.text)) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text('Phone number must be 11 digits.'),
+    //       backgroundColor: Colors.red,
+    //     ),
+    //   );
+    //   return;
+    // }
 
     customProgress.showDialog(
         "Please wait", SimpleFontelicoProgressDialogType.spinner);
@@ -171,7 +175,7 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
       "phone_number": _contactNumber.text,
       "next_followup_date": dateTimeController.text,
       "description": _description.text,
-      "associate_user_id": "",
+      "associate_user_id": Associates.Associate.associateId.toString(),
       "followup_status": _selectedStatus.toString(),
       "creator_user_id": userId,
     };
@@ -201,7 +205,17 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
             animation: AlwaysStoppedAnimation(BorderSide.strokeAlignCenter),
             content: Text('Follow-up updated successfully')),
       );
-      Navigator.pop(context, true); // Return true to indicate successful update
+
+      // go back to the follow up overview page with updated data
+
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => FollowUpOverview(
+                    followUpId: widget.followUpId,
+                  )));
+
+      // Navigator.pop(context, true); // Return true to indicate successful update
 
       print('Response Body: ${response.body}');
 
@@ -259,9 +273,13 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
             ),
           ),
           body: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            height: 784.8.h,
-            width: 400.w,
+            // Responsive Container Padding
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.025),
+
+// Responsive Form Container
+            height: MediaQuery.of(context).size.height * 0.85,
+            width: MediaQuery.of(context).size.width * 1,
             child: Form(
               key: _formKey,
               child: RawScrollbar(
@@ -303,7 +321,7 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
                               value: _selectedStatus,
                               items: statusDropdownItems,
                               hint: Text(
-                                "task's current status",
+                                "current follow-up status",
                                 style: TextStyle(color: Colors.grey[400]),
                               ),
                               icon: const Icon(Icons.keyboard_arrow_down_sharp,
@@ -345,7 +363,8 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
                                   onDeviceTokenReceived: handleDeviceToken,
                                 )),
                           ),
-                          const SizedBox(width: 10),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.025),
                           Flexible(
                             flex: 1,
                             child: dropDownRow(
@@ -361,7 +380,11 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
                       ),
                       const SizedBox(height: 12),
                       dropDownRow(
-                          "Follow Up Type", const FollowUpTypeDropdown()),
+                          "Follow Up Type",
+                          FollowUpTypeDropdown(
+                            initialValue:
+                                widget.followUpDetails.followUpName?.name,
+                          )),
                       const SizedBox(height: 12),
                       dateField("Next Follow Up Date", dateTimeController),
                       const SizedBox(height: 10),
@@ -713,8 +736,8 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
             }
           },
           style: ElevatedButton.styleFrom(
-            minimumSize: const Size(164, 52),
-            maximumSize: const Size(181, 52),
+            minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 52),
+            maximumSize: Size(MediaQuery.of(context).size.width * 0.45, 52),
             backgroundColor: buttonColor,
 
             // backgroundColor: const Color(0xFF007AFF),
