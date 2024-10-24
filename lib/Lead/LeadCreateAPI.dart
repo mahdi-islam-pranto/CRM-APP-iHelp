@@ -140,9 +140,11 @@ class LeadCreateAPI {
     print('Request URL: ${response.request?.url}');
     print('Request Body: ${jsonEncode(body)}');
     print('Response Status: ${response.statusCode}');
+    Map<String, dynamic> responseMessage = json.decode(response.body);
+    String responseStatus = responseMessage['status'].toString();
 
     // Handle the response
-    if (response.statusCode == 200) {
+    if (responseStatus == "200") {
       print('Response Body: ${response.body}');
       customProgress.hideDialog();
       await AwesomeDialog(
@@ -178,6 +180,8 @@ class LeadCreateAPI {
       ).show();
     } else {
       customProgress.hideDialog();
+      // show dialog with error message
+
       print('Failed to create lead: ${response.statusCode}');
       print('Response body: ${response}');
 
@@ -186,18 +190,40 @@ class LeadCreateAPI {
       String errorMessage =
           errorResponse['data']['message'] ?? 'Unknown error occurred';
 
-      SnackBar(
-        elevation: 2,
-        backgroundColor: R.appColors.red,
-        behavior: SnackBarBehavior.floating, // Makes it floating
-        shape: RoundedRectangleBorder(
-          // Adds border radius
-          borderRadius: BorderRadius.circular(12),
-        ),
-        margin: const EdgeInsets.all(10), // Margin around the SnackBar
-        content: Text(
-          'Failed to create lead: $errorMessage',
-          style: const TextStyle(color: Colors.white), // Custom text style
+      // if phone number is already taken,
+
+      String errorPhoneMessage =
+          errorResponse['data']['errors'].first ?? 'Unknown error occurred';
+
+      // AlertDialog(
+      //   title: const Text('Error'),
+      //   content: Text(errorPhoneMessage),
+      //   actions: [
+      //     TextButton(
+      //       child: const Text('OK'),
+      //       onPressed: () {
+      //         Navigator.of(context).pop();
+      //       },
+      //     ),
+      //   ],
+      // );
+
+      // Show a SnackBar with the error message
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          elevation: 2,
+          backgroundColor: R.appColors.red,
+          behavior: SnackBarBehavior.floating, // Makes it floating
+          shape: RoundedRectangleBorder(
+            // Adds border radius
+            borderRadius: BorderRadius.circular(12),
+          ),
+          margin: const EdgeInsets.all(10), // Margin around the SnackBar
+          content: Text(
+            'Failed to create lead: $errorPhoneMessage',
+            style: const TextStyle(color: Colors.white), // Custom text style
+          ),
         ),
       );
     }

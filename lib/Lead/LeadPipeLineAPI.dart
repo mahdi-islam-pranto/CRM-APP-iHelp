@@ -80,7 +80,12 @@ class _LeadPipelineScreenState extends State<LeadPipelineScreen> {
             ),
             child: DropdownButtonFormField<dynamic>(
               dropdownColor: backgroundColor,
-
+              validator: (value) {
+                if (value == null) {
+                  return 'Please select a lead pipeline';
+                }
+                return null;
+              },
               menuMaxHeight: 5000,
               isExpanded: true,
               hint: Text(
