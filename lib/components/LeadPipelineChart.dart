@@ -13,7 +13,7 @@ class LeadPipelineChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 400, // Adjust height as needed
+      height: 300, // Adjust height as needed
       child: Column(
         children: [
           Expanded(
@@ -30,7 +30,7 @@ class LeadPipelineChart extends StatelessWidget {
                         rod.toY.toString(),
                         const TextStyle(
                           color: Colors.white,
-                          fontSize: 10, // Smaller font size
+                          fontSize: 8, // Smaller font size
                           fontWeight: FontWeight.bold,
                         ),
                       );
@@ -53,17 +53,18 @@ class LeadPipelineChart extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 10),
           Container(
             padding: const EdgeInsets.only(
-              left: 10,
-              right: 10,
+              left: 20,
+              right: 20,
             ),
             child: Wrap(
               alignment: WrapAlignment.center,
-              spacing: 10.0,
+              spacing: 5.0,
               children: List.generate(categories.length, (index) {
-                return Text("${index + 1}. ${categories[index]}");
+                return Text("${index + 1}. ${categories[index]}",
+                    style: const TextStyle(fontSize: 12));
               }),
             ),
           ),

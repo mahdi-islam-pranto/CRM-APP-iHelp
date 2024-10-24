@@ -26,6 +26,7 @@ import '../components/Dashboard_Tasks.dart';
 import '../components/LeadPipelineChart.dart';
 
 import '../components/leadIndustryChart.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class NewDashboard extends StatefulWidget {
   const NewDashboard({Key? key}) : super(key: key);
@@ -41,6 +42,10 @@ class _NewDashboardState extends State<NewDashboard> {
   late Future<Map<String, dynamic>> futureLeadData;
 
   static NotificationServices notificationServices = NotificationServices();
+
+  // carousal controller
+  final CarouselController _carouselController = CarouselController();
+  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -287,6 +292,9 @@ class _NewDashboardState extends State<NewDashboard> {
     );
   }
 
+  CarouselSliderController carouselSliderController =
+      CarouselSliderController();
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -350,11 +358,142 @@ class _NewDashboardState extends State<NewDashboard> {
                   ),
                 ),
 
-                /// All Containers with Total lead number, Total user, etc
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 6),
-                  child: DashboardCounter(),
+                // Carousel with dashbpard counter & two charts (with dot indicator)
+                // Carousel Section
+
+                Container(
+                  child: Column(
+                    children: [
+                      CarouselSlider(
+                        carouselController: carouselSliderController,
+                        options: CarouselOptions(
+                          viewportFraction: 1,
+                          height: 360,
+                          autoPlayInterval: const Duration(seconds: 5),
+                          autoPlayAnimationDuration:
+                              const Duration(milliseconds: 800),
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          // enlargeCenterPage: true,
+                          // aspectRatio: 2.0,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              _currentIndex = index;
+                            });
+                          },
+                        ),
+                        items: [
+                          // Dashboard Counter Section
+                          const DashboardCounter(),
+
+                          // Lead Pipeline Chart Card
+                          // Lead Pipeline Chart Show
+
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 20,
+                              right: 20,
+                              top: 20,
+                            ),
+                            child: FutureBuilder<Map<String, dynamic>>(
+                              future: futureLeadData, // Use futureLeadData here
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  List<String> categories = List<String>.from(
+                                      snapshot.data!['categories']);
+                                  List<int> values =
+                                      List<int>.from(snapshot.data!['data']);
+                                  List<LeadPipelineData> leadData =
+                                      List.generate(
+                                    categories.length,
+                                    (index) => LeadPipelineData(
+                                      orderNo: index + 1,
+                                      value: values[index].toDouble(),
+                                    ),
+                                  );
+
+                                  return Column(
+                                    children: [
+                                      const Center(
+                                        child: Text(
+                                          "Lead Pipeline",
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            color: Color(0xFF2C3131),
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      LeadPipelineChart(
+                                          data: leadData,
+                                          categories: categories),
+                                    ],
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return const Text("Couldn't Generate Chart");
+                                  // return Text("${snapshot.error}");
+                                }
+                                return Center(
+                                    child: LoadingAnimationWidget
+                                        .staggeredDotsWave(
+                                  color: Colors.blue,
+                                  size: 40,
+                                ));
+                              },
+                            ),
+                          ),
+
+                          // Lead Industry Chart Card
+
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 20, top: 15),
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Lead Industry",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 10.h),
+                                LeadIndustryChart(),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Dot Indicators
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          3,
+                          (index) => Container(
+                            width: 8.0,
+                            height: 8.0,
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 10.0,
+                              horizontal: 4.0,
+                            ),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: _currentIndex == index
+                                  ? Colors.blue
+                                  : Colors.grey.withOpacity(0.5),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+
+                /// All Containers with Total lead number, Total user, etc
+                // const Padding(
+                //   padding: EdgeInsets.only(bottom: 6),
+                //   child: DashboardCounter(),
+                // ),
 
                 /// Today Task
                 Row(
