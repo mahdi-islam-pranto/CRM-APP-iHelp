@@ -48,7 +48,7 @@ class FCMService {
   // }
 
   static const String _serverKey =
-      'ya29.a0AcM612x23_ZZ3o_4Jd2Tn0RGImGtEY9NNoYP-SJ0Szdy2SAgTFa4HoPyYQTJ-vkseRGGqG5qvoIYZ3L4V797_uaTpxRLpxxqRG9IXkBWYbUXr-ocY1hkX9K9-x5s497spgWBk7TLl1e4K8fzMgnNJ6RSysPl7ritVKJhmaFBaCgYKASwSARISFQHGX2Mi14L8LMhOJsxa_un9WGesKg0175';
+      'ya29.a0AcM612x3XzjeYcsIDwfd113AF5nS3JkGzKiBaNuWufZ6652kIlJ4fnjT1hOjH8YGs9Rc5KeSmoFqVB7ucpXSG71Ai76PVG72cOPSaSqvXlXpI2hkkw57dc3MjVEijM_xUNuWnx5vsbTsW9H68Ifj-62pD0LS7vFfiujQWB6IaCgYKAc8SARISFQHGX2MipabRzwzhLrZPOdgnrQ0vdg0175';
   static Future<void> sendNotification({
     required String title, // Notification title
     required String body, // Notification body

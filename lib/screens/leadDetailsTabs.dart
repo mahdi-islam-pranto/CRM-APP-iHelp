@@ -20,14 +20,14 @@ class _LeadDetailsTabsState extends State<LeadDetailsTabs> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 6,
+      length: 3,
       initialIndex: 0,
       child: Scaffold(
         backgroundColor: backgroundColor,
         appBar: AppBar(
           bottom: const TabBar(
-              tabAlignment: TabAlignment.start,
-              isScrollable: true,
+              // tabAlignment: TabAlignment.start,
+              // isScrollable: true,
               dividerHeight: 0,
               dividerColor: Colors.blue,
               indicatorPadding: EdgeInsets.only(bottom: 10),
@@ -56,26 +56,26 @@ class _LeadDetailsTabsState extends State<LeadDetailsTabs> {
                   ),
                 ),
                 // lead note
-                Tab(
-                  child: Text(
-                    "Note",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                  ),
-                ),
-                // checklist
-                Tab(
-                  child: Text(
-                    "Check List",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                  ),
-                ),
-                // history
-                Tab(
-                  child: Text(
-                    "History",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
-                  ),
-                ),
+                // Tab(
+                //   child: Text(
+                //     "Note",
+                //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                //   ),
+                // ),
+                // // checklist
+                // Tab(
+                //   child: Text(
+                //     "Check List",
+                //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                //   ),
+                // ),
+                // // history
+                // Tab(
+                //   child: Text(
+                //     "History",
+                //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                //   ),
+                // ),
               ]),
           backgroundColor: Colors.white,
           // toolbarHeight: 112.62,
@@ -112,28 +112,28 @@ class _LeadDetailsTabsState extends State<LeadDetailsTabs> {
             LeadTaskListScreen(leadId: widget.leadId),
 
             // Note
-            Container(
-              color: Colors.white,
-              child: const Center(
-                child: Text("note"),
-              ),
-            ),
+            // Container(
+            //   color: Colors.white,
+            //   child: const Center(
+            //     child: Text("note"),
+            //   ),
+            // ),
 
-            // Checklist
-            Container(
-              color: Colors.white,
-              child: const Center(
-                child: Text("checklist"),
-              ),
-            ),
+            // // Checklist
+            // Container(
+            //   color: Colors.white,
+            //   child: const Center(
+            //     child: Text("checklist"),
+            //   ),
+            // ),
 
-            // History
-            Container(
-              color: Colors.white,
-              child: const Center(
-                child: Text("History"),
-              ),
-            )
+            // // History
+            // Container(
+            //   color: Colors.white,
+            //   child: const Center(
+            //     child: Text("History"),
+            //   ),
+            // )
           ],
         ),
       ),
