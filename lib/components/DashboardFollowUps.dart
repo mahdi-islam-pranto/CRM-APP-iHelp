@@ -5,27 +5,29 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../Models/taskListModel.dart';
+import '../FollowUP/followUpOverview.dart';
+
 import '../Task/taskDetailsPage.dart';
 import 'package:http/http.dart' as http;
 
-class DashboardTasks extends StatefulWidget {
-  const DashboardTasks({Key? key}) : super(key: key);
+class DashboardFollowUps extends StatefulWidget {
+  const DashboardFollowUps({Key? key}) : super(key: key);
 
   @override
-  State<DashboardTasks> createState() => _DashboardTasksState();
+  State<DashboardFollowUps> createState() => _DashboardFollowUpsState();
 }
 
-class _DashboardTasksState extends State<DashboardTasks> {
-  late Future<TaskListModel> _taskListFuture;
+class _DashboardFollowUpsState extends State<DashboardFollowUps> {
+  // all follow ups list
+  List followUpList = [];
 
   @override
   void initState() {
     super.initState();
-    _taskListFuture = getTaskList();
+    getFollowUpList();
   }
 
-  Future<TaskListModel> getTaskList() async {
+  getFollowUpList() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString("token");
     String? userId = sharedPreferences.getString("id");
@@ -39,28 +41,29 @@ class _DashboardTasksState extends State<DashboardTasks> {
     print("Start date task $startDate");
 
     final response = await http.post(
-      Uri.parse("https://crm.ihelpbd.com/api/crm-lead-task-list"),
+      Uri.parse("https://crm.ihelpbd.com/api/crm-follow-up-list"),
       headers: {
         'Authorization': 'Bearer $token',
         'user_id': '$userId',
       },
       body: {
-        'start_date': startDate, // var statDate
-        'end_date': endDate,
+        'start_date': '',
+        'end_date': '',
         'user_id': userId,
-        'session_user_id': '',
+        'session_user_id': userId,
+        'followup_type_id': '',
         'status': '',
-        'next_task_start_time': '',
         'lead_id': '',
-        'task_type_id': '',
+        'next_followup_date': '',
       },
     );
 
+    var data = jsonDecode(response.body.toString());
+
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      return TaskListModel.fromJson(data);
+      return followUpList = data['data'];
     } else {
-      throw Exception('Failed to load tasks');
+      throw Exception('Failed to load follow ups');
     }
   }
 
@@ -68,8 +71,8 @@ class _DashboardTasksState extends State<DashboardTasks> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 240.h,
-      child: FutureBuilder<TaskListModel>(
-        future: _taskListFuture,
+      child: FutureBuilder(
+        future: getFollowUpList(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -79,25 +82,21 @@ class _DashboardTasksState extends State<DashboardTasks> {
             ));
           } else if (snapshot.hasError) {
             // return Center(child: Text('Error: ${snapshot.error}'));
-            return Center(child: Text('Fetching tasks failed'));
-          } else if (snapshot.hasData &&
-              snapshot.data!.data != null &&
-              snapshot.data!.data!.isNotEmpty) {
+            return const Center(child: Text('Fetching follow ups failed'));
+          } else if (snapshot.hasData && snapshot.data != null) {
             return Scrollbar(
               thickness: 10,
               trackVisibility: true,
               child: ListView.builder(
-                itemCount: snapshot.data!.data!.length > 5
-                    ? 5
-                    : snapshot.data!.data!.length,
+                itemCount: followUpList.length > 5 ? 5 : followUpList.length,
                 itemBuilder: (context, index) {
-                  var task = snapshot.data!.data![index];
+                  print(followUpList.length);
                   return Padding(
                     padding:
                         const EdgeInsets.only(left: 20, right: 20, bottom: 5),
                     child: Card(
                       color: Colors.white,
-                      elevation: 4,
+                      elevation: 2,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
                           Radius.circular(15),
@@ -109,7 +108,9 @@ class _DashboardTasksState extends State<DashboardTasks> {
                           contentPadding:
                               const EdgeInsets.only(bottom: 5, top: 5),
                           title: Text(
-                            task.companyName?.companyName ?? 'No Company',
+                            followUpList[index]['company_name']
+                                    ['company_name'] ??
+                                'Unknown',
                             style: TextStyle(
                               color: const Color(0xFF2C3131),
                               fontSize: 16.sp,
@@ -120,7 +121,8 @@ class _DashboardTasksState extends State<DashboardTasks> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                task.taskName?.name ?? 'No Task Name',
+                                "subject: " + followUpList[index]['subject'] ??
+                                    'No Subject',
                                 style: TextStyle(
                                   fontSize: 13.sp,
                                   color: const Color(0xFF707070),
@@ -134,7 +136,9 @@ class _DashboardTasksState extends State<DashboardTasks> {
                                   ),
                                   SizedBox(width: 5.w),
                                   Text(
-                                    task.assignName?.name ?? 'No Assign Name',
+                                    followUpList[index]['assign_name']
+                                            ['name'] ??
+                                        'No Assign',
                                     style: TextStyle(
                                         color: const Color(0xFF707070),
                                         fontSize: 13.sp),
@@ -146,10 +150,10 @@ class _DashboardTasksState extends State<DashboardTasks> {
                           trailing: Column(
                             children: [
                               Text(
-                                task.taskStatus?.name ?? 'No status',
+                                getStatusText(followUpList[index]['status']),
                                 style: TextStyle(
                                     color: getStatusColor(
-                                        task.taskStatus!.name.toString()),
+                                        followUpList[index]['status']),
                                     fontSize: 12.sp),
                               ),
                               Card(
@@ -159,7 +163,9 @@ class _DashboardTasksState extends State<DashboardTasks> {
                                 color: Colors.blue[100],
                                 child: Padding(
                                   padding: const EdgeInsets.all(3.0),
-                                  child: Text(task.endTime ?? 'No End Time'),
+                                  child: Text(followUpList[index]
+                                          ['next_followup_date'] ??
+                                      'No Next Follow Up Date'),
                                 ),
                               ),
                             ],
@@ -168,9 +174,8 @@ class _DashboardTasksState extends State<DashboardTasks> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    TaskOverview(taskId: task.id!.toInt()),
-                              ),
+                                  builder: (context) => FollowUpOverview(
+                                      followUpId: followUpList[index]['id'])),
                             );
                           },
                         ),
@@ -192,7 +197,7 @@ class _DashboardTasksState extends State<DashboardTasks> {
                   ),
                   SizedBox(height: 10.h),
                   Text(
-                    'No tasks for today',
+                    'No follow ups for today',
                     style: TextStyle(
                       fontSize: 18.sp,
                       color: Colors.blueGrey[200],
@@ -201,7 +206,7 @@ class _DashboardTasksState extends State<DashboardTasks> {
                   ),
                   SizedBox(height: 5.h),
                   Text(
-                    'Enjoy your free time!',
+                    'Create a new follow up!',
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: Colors.blueGrey[200],
@@ -215,17 +220,30 @@ class _DashboardTasksState extends State<DashboardTasks> {
       ),
     );
   }
+}
 
-  Color getStatusColor(String status) {
-    switch (status) {
-      case '1':
-        return Colors.green;
-      case '2':
-        return Colors.orange;
-      case '3':
-        return Colors.blue;
-      default:
-        return Colors.red;
-    }
+String getStatusText(String status) {
+  switch (status) {
+    case '1':
+      return 'Solved';
+    case '2':
+      return 'Pending';
+    case '3':
+      return 'Working Progress';
+    default:
+      return 'Cancel';
+  }
+}
+
+Color getStatusColor(String status) {
+  switch (status) {
+    case '1':
+      return Colors.green;
+    case '2':
+      return Colors.orange;
+    case '3':
+      return Colors.blue;
+    default:
+      return Colors.red;
   }
 }

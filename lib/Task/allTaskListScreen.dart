@@ -290,7 +290,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
                   children: [
                     Text(
                       task.taskStatus?.name ?? 'No status',
-                      style: TextStyle(color: Colors.blueGrey, fontSize: 12.sp),
+                      style: TextStyle(
+                          color:
+                              getStatusColor(task.taskStatus!.name.toString()),
+                          fontSize: 12.sp),
                     ),
                     const SizedBox(width: 5.0),
                     Card(
@@ -343,5 +346,18 @@ class _TaskListScreenState extends State<TaskListScreen> {
       tooltip: 'View Tasks',
       child: const Icon(Icons.visibility),
     );
+  }
+
+  Color getStatusColor(String status) {
+    switch (status) {
+      case 'Solved':
+        return Colors.green;
+      case 'Pending':
+        return Colors.orange;
+      case 'Working Process':
+        return Colors.blue;
+      default:
+        return Colors.red;
+    }
   }
 }

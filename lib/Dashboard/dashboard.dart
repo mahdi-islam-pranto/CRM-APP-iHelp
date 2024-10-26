@@ -1,4 +1,5 @@
 import 'package:animated_floating_buttons/widgets/animated_floating_action_button.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +22,7 @@ import '../Models/menuItems.dart';
 import '../Notification/notification_service.dart';
 import '../Task/todayTaskList.dart';
 import '../components/DashboardCounter.dart';
+import '../components/DashboardFollowUps.dart';
 import '../components/Dashboard_Tasks.dart';
 
 import '../components/LeadPipelineChart.dart';
@@ -295,6 +297,9 @@ class _NewDashboardState extends State<NewDashboard> {
   CarouselSliderController carouselSliderController =
       CarouselSliderController();
 
+  // today value
+  Object todayValue = '1';
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -499,52 +504,125 @@ class _NewDashboardState extends State<NewDashboard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 22),
-                      child: Text(
-                        "Today's Tasks",
-                        style: TextStyle(
-                            fontSize: 20.sp,
-                            color: const Color(0xFF2C3131),
-                            fontWeight: FontWeight.bold),
+                    // if today value is 1
+                    if (todayValue == '1')
+                      Padding(
+                        padding: const EdgeInsets.only(left: 22),
+                        child: Text(
+                          "Today's Tasks",
+                          style: TextStyle(
+                              fontSize: 20.sp,
+                              color: const Color(0xFF2C3131),
+                              fontWeight: FontWeight.bold),
+                        ),
                       ),
-                    ),
+
+                    // if today value is 2
+                    if (todayValue == '2')
+                      Padding(
+                        padding: const EdgeInsets.only(left: 22),
+                        child: Text(
+                          "Today's Follow Ups",
+                          style: TextStyle(
+                              fontSize: 20.sp,
+                              color: const Color(0xFF2C3131),
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+
+                    // drop down button
                     Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Row(
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const TodayTaskListScreen()));
-                            },
-                            child: Row(
-                              children: [
-                                Text(
-                                  "See All",
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 12.sp),
-                                ),
-                                Icon(
-                                  Icons.chevron_right,
-                                  color: Colors.grey,
-                                  size: 25.sp,
-                                )
-                              ],
+                      padding: const EdgeInsets.only(right: 22),
+                      child: DropdownButtonHideUnderline(
+                          child: DropdownButton2(
+                        customButton: const Icon(
+                          Icons.menu_open_outlined,
+                          size: 46,
+                          color: Colors.blueAccent,
+                        ),
+                        items: const [
+                          DropdownMenuItem<String>(
+                            value: '1',
+                            child: Text(
+                              "Today Tasks",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                          // divider
+                          DropdownMenuItem<Divider>(
+                            enabled: false,
+                            child: Divider(),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: '2',
+                            child: Text(
+                              "Today Follow Ups",
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ],
-                      ),
+                        onChanged: (value) {
+                          setState(() {
+                            todayValue = value!;
+                          });
+
+                          print(todayValue);
+                        },
+
+                        // dropdown style
+                        dropdownStyleData: DropdownStyleData(
+                          width: 160,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 6, horizontal: 6),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                          ),
+                          offset: const Offset(0, 8),
+                        ),
+                      )),
                     )
+
+                    // see all task button
+                    // Padding(
+                    //   padding: const EdgeInsets.all(10.0),
+                    //   child: Row(
+                    //     children: [
+                    //       TextButton(
+                    //         onPressed: () {
+                    //           Navigator.push(
+                    //               context,
+                    //               MaterialPageRoute(
+                    //                   builder: (context) =>
+                    //                       const TodayTaskListScreen()));
+                    //         },
+                    //         child: Row(
+                    //           children: [
+                    //             Text(
+                    //               "See All",
+                    //               style: TextStyle(
+                    //                   color: Colors.grey, fontSize: 12.sp),
+                    //             ),
+                    //             Icon(
+                    //               Icons.chevron_right,
+                    //               color: Colors.grey,
+                    //               size: 25.sp,
+                    //             )
+                    //           ],
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // )
                   ],
                 ),
 
                 /// Show Tasks as a List of data and Contact
 
-                const DashboardTasks(),
+                // if today value is 1
+                if (todayValue == '1') const DashboardTasks(),
+
+                if (todayValue == '2') const DashboardFollowUps(),
 
                 SizedBox(
                   height: 28.h,
