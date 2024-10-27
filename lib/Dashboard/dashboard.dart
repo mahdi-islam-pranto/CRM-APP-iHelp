@@ -324,7 +324,11 @@ class _NewDashboardState extends State<NewDashboard> {
                         // User Name and user detail in APP top section
                         Expanded(
                           child: ListTile(
-                            contentPadding: const EdgeInsets.all(8),
+                            contentPadding: const EdgeInsets.only(
+                              top: 8,
+                              left: 8,
+                              right: 8,
+                            ),
                             title: Text(
                               "Hi, ${username?.split(' ')[0]}",
                               style: TextStyle(
@@ -373,7 +377,7 @@ class _NewDashboardState extends State<NewDashboard> {
                         carouselController: carouselSliderController,
                         options: CarouselOptions(
                           viewportFraction: 1,
-                          height: 360,
+                          height: 330,
                           autoPlayInterval: const Duration(seconds: 5),
                           autoPlayAnimationDuration:
                               const Duration(milliseconds: 800),
@@ -397,7 +401,6 @@ class _NewDashboardState extends State<NewDashboard> {
                             padding: const EdgeInsets.only(
                               left: 20,
                               right: 20,
-                              top: 20,
                             ),
                             child: FutureBuilder<Map<String, dynamic>>(
                               future: futureLeadData, // Use futureLeadData here
@@ -451,7 +454,9 @@ class _NewDashboardState extends State<NewDashboard> {
 
                           Padding(
                             padding: const EdgeInsets.only(
-                                left: 20, right: 20, top: 15),
+                              left: 20,
+                              right: 20,
+                            ),
                             child: Column(
                               children: [
                                 const Text(
@@ -501,120 +506,123 @@ class _NewDashboardState extends State<NewDashboard> {
                 // ),
 
                 /// Today Task
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // if today value is 1
-                    if (todayValue == '1')
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // if today value is 1
+                      if (todayValue == '1')
+                        Padding(
+                          padding: const EdgeInsets.only(left: 22),
+                          child: Text(
+                            "Today's Tasks",
+                            style: TextStyle(
+                                fontSize: 20.sp,
+                                color: const Color(0xFF2C3131),
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+
+                      // if today value is 2
+                      if (todayValue == '2')
+                        Padding(
+                          padding: const EdgeInsets.only(left: 22),
+                          child: Text(
+                            "Today's Follow Ups",
+                            style: TextStyle(
+                                fontSize: 20.sp,
+                                color: const Color(0xFF2C3131),
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+
+                      // drop down button
                       Padding(
-                        padding: const EdgeInsets.only(left: 22),
-                        child: Text(
-                          "Today's Tasks",
-                          style: TextStyle(
-                              fontSize: 20.sp,
-                              color: const Color(0xFF2C3131),
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-
-                    // if today value is 2
-                    if (todayValue == '2')
-                      Padding(
-                        padding: const EdgeInsets.only(left: 22),
-                        child: Text(
-                          "Today's Follow Ups",
-                          style: TextStyle(
-                              fontSize: 20.sp,
-                              color: const Color(0xFF2C3131),
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-
-                    // drop down button
-                    Padding(
-                      padding: const EdgeInsets.only(right: 22),
-                      child: DropdownButtonHideUnderline(
-                          child: DropdownButton2(
-                        customButton: const Icon(
-                          Icons.menu_open_outlined,
-                          size: 46,
-                          color: Colors.blueAccent,
-                        ),
-                        items: const [
-                          DropdownMenuItem<String>(
-                            value: '1',
-                            child: Text(
-                              "Today Tasks",
-                              style: TextStyle(color: Colors.black),
+                        padding: const EdgeInsets.only(right: 22),
+                        child: DropdownButtonHideUnderline(
+                            child: DropdownButton2(
+                          customButton: const Icon(
+                            Icons.grid_view,
+                            size: 28,
+                            color: Colors.blue,
+                          ),
+                          items: const [
+                            DropdownMenuItem<String>(
+                              value: '1',
+                              child: Text(
+                                "Today Tasks",
+                                style: TextStyle(color: Colors.black),
+                              ),
                             ),
-                          ),
-                          // divider
-                          DropdownMenuItem<Divider>(
-                            enabled: false,
-                            child: Divider(),
-                          ),
-                          DropdownMenuItem<String>(
-                            value: '2',
-                            child: Text(
-                              "Today Follow Ups",
-                              style: TextStyle(color: Colors.black),
+                            // divider
+                            DropdownMenuItem<Divider>(
+                              enabled: false,
+                              child: Divider(),
                             ),
+                            DropdownMenuItem<String>(
+                              value: '2',
+                              child: Text(
+                                "Today Follow Ups",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            setState(() {
+                              todayValue = value!;
+                            });
+
+                            print(todayValue);
+                          },
+
+                          // dropdown style
+                          dropdownStyleData: DropdownStyleData(
+                            width: 160,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 6, horizontal: 6),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                            ),
+                            offset: const Offset(0, 8),
                           ),
-                        ],
-                        onChanged: (value) {
-                          setState(() {
-                            todayValue = value!;
-                          });
+                        )),
+                      )
 
-                          print(todayValue);
-                        },
-
-                        // dropdown style
-                        dropdownStyleData: DropdownStyleData(
-                          width: 160,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6, horizontal: 6),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.white,
-                          ),
-                          offset: const Offset(0, 8),
-                        ),
-                      )),
-                    )
-
-                    // see all task button
-                    // Padding(
-                    //   padding: const EdgeInsets.all(10.0),
-                    //   child: Row(
-                    //     children: [
-                    //       TextButton(
-                    //         onPressed: () {
-                    //           Navigator.push(
-                    //               context,
-                    //               MaterialPageRoute(
-                    //                   builder: (context) =>
-                    //                       const TodayTaskListScreen()));
-                    //         },
-                    //         child: Row(
-                    //           children: [
-                    //             Text(
-                    //               "See All",
-                    //               style: TextStyle(
-                    //                   color: Colors.grey, fontSize: 12.sp),
-                    //             ),
-                    //             Icon(
-                    //               Icons.chevron_right,
-                    //               color: Colors.grey,
-                    //               size: 25.sp,
-                    //             )
-                    //           ],
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // )
-                  ],
+                      // see all task button
+                      // Padding(
+                      //   padding: const EdgeInsets.all(10.0),
+                      //   child: Row(
+                      //     children: [
+                      //       TextButton(
+                      //         onPressed: () {
+                      //           Navigator.push(
+                      //               context,
+                      //               MaterialPageRoute(
+                      //                   builder: (context) =>
+                      //                       const TodayTaskListScreen()));
+                      //         },
+                      //         child: Row(
+                      //           children: [
+                      //             Text(
+                      //               "See All",
+                      //               style: TextStyle(
+                      //                   color: Colors.grey, fontSize: 12.sp),
+                      //             ),
+                      //             Icon(
+                      //               Icons.chevron_right,
+                      //               color: Colors.grey,
+                      //               size: 25.sp,
+                      //             )
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // )
+                    ],
+                  ),
                 ),
 
                 /// Show Tasks as a List of data and Contact

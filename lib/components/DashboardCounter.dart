@@ -22,14 +22,14 @@ class DashboardCounter extends StatelessWidget {
     final double textSize = screenHeight * 0.022;
 
     return Container(
-      // color: Colors.yellow,
       padding: EdgeInsets.symmetric(
         horizontal: screenWidth * 0.05,
-        vertical: screenHeight * 0.02,
+        vertical: screenHeight * 0.00,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // 1st coloum
           Column(
             children: [
               InkWell(
@@ -142,6 +142,8 @@ class DashboardCounter extends StatelessWidget {
             ],
           ),
           // SizedBox(width: screenWidth * 0.05),
+
+          // 2nd col
           Column(
             children: [
               InkWell(
