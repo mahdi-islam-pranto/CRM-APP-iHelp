@@ -59,6 +59,7 @@ dependencies:
   pull_to_refresh_flutter3: ^2.0.2
   connectivity_plus: ^6.1.0
   carousel_slider: ^5.0.0
+  dropdown_button2: ^2.3.9
   # notification
   firebase_core: ^2.15.0
   firebase_auth:

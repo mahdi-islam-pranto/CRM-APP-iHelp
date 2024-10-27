@@ -51,12 +51,13 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         children: pages,
       ),
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.only(left: 20, right: 20, bottom: 30),
+        margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 10),
         height: 60,
         decoration: BoxDecoration(
+          color: Colors.red,
           boxShadow: [
             BoxShadow(
-              color: R.appColors.grey.withOpacity(0.3),
+              color: const Color.fromARGB(255, 234, 233, 233).withOpacity(0.7),
               spreadRadius: 5,
               blurRadius: 7,
               offset: const Offset(0, 3), // changes position of shadow
