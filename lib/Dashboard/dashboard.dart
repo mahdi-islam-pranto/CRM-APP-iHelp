@@ -316,8 +316,10 @@ class _NewDashboardState extends State<NewDashboard> {
                 Center(
                   child: Container(
                     padding: const EdgeInsets.only(left: 0, right: 0, top: 10),
-                    width: 330.w,
-                    height: 80.h,
+                    width: ScreenUtil().setWidth(330),
+                    height: ScreenUtil().setHeight(80),
+                    // width: 330.w,
+                    // height: 80.h,
                     color: backgroundColor,
                     child: Column(
                       children: [
@@ -377,7 +379,9 @@ class _NewDashboardState extends State<NewDashboard> {
                         carouselController: carouselSliderController,
                         options: CarouselOptions(
                           viewportFraction: 1,
-                          height: 330,
+                          // screenutil height
+
+                          height: 257.h,
                           autoPlayInterval: const Duration(seconds: 5),
                           autoPlayAnimationDuration:
                               const Duration(milliseconds: 800),
@@ -556,10 +560,10 @@ class _NewDashboardState extends State<NewDashboard> {
                               ),
                             ),
                             // divider
-                            DropdownMenuItem<Divider>(
-                              enabled: false,
-                              child: Divider(),
-                            ),
+                            // DropdownMenuItem<Divider>(
+                            //   enabled: false,
+                            //   child: Divider(),
+                            // ),
                             DropdownMenuItem<String>(
                               value: '2',
                               child: Text(
@@ -578,7 +582,8 @@ class _NewDashboardState extends State<NewDashboard> {
 
                           // dropdown style
                           dropdownStyleData: DropdownStyleData(
-                            width: 160,
+                            direction: DropdownDirection.left,
+                            width: 180,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 6, horizontal: 6),
                             decoration: BoxDecoration(
@@ -586,6 +591,11 @@ class _NewDashboardState extends State<NewDashboard> {
                               color: Colors.white,
                             ),
                             offset: const Offset(0, 8),
+                          ),
+
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 50,
+                            padding: const EdgeInsets.only(left: 16, right: 16),
                           ),
                         )),
                       )
