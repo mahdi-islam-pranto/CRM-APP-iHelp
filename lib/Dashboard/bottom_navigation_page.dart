@@ -8,7 +8,7 @@ import '../resourses/resourses.dart';
 
 import '../screens/totalLeadList.dart';
 
-import '../screens/settings.dart';
+import '../screens/menu_page.dart';
 import 'dashboard.dart';
 
 class BottomNavigationPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
 
   List<Widget> pages = [
     // const Settings(),
-    const Settings(),
+    const MenuPage(),
     const FollowUpList(),
     const NewDashboard(),
     const LeadListScreen(),

@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:untitled1/Models/taskListModel.dart';
-import 'package:untitled1/Task/allTaskListScreen.dart';
 import '../resourses/app_colors.dart';
 import 'taskUpdate.dart';
 
@@ -151,6 +149,7 @@ class _TaskOverviewState extends State<TaskOverview> {
                           const SizedBox(height: 20),
 
                           // Task Information Section
+
                           Card(
                             color: Colors.blue[100],
                             margin: const EdgeInsets.symmetric(vertical: 10),
