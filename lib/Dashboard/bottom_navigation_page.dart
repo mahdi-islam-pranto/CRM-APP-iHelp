@@ -80,8 +80,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
               });
             },
             items: const [
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.settings), label: "Settings"),
+              BottomNavigationBarItem(icon: Icon(Icons.menu), label: "Menu"),
               // BottomNavigationBarItem(
               //     icon: Icon(Icons.contacts), label: "Contacts"),
               BottomNavigationBarItem(
