@@ -305,7 +305,7 @@ class _NewDashboardState extends State<NewDashboard> {
     return WillPopScope(
       onWillPop: onBackPressed,
       child: Scaffold(
-        backgroundColor: backgroundColor,
+        backgroundColor: backgroundColor2,
         body: SingleChildScrollView(
           child: SafeArea(
             child: Column(
@@ -320,7 +320,7 @@ class _NewDashboardState extends State<NewDashboard> {
                     height: ScreenUtil().setHeight(80),
                     // width: 330.w,
                     // height: 80.h,
-                    color: backgroundColor,
+                    color: backgroundColor2,
                     child: Column(
                       children: [
                         // User Name and user detail in APP top section
