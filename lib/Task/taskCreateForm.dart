@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
@@ -13,7 +11,6 @@ import '../Lead/LeadOwnerDropdown.dart';
 import '../Notification/fcm_server.dart';
 import '../components/CustomProgress.dart';
 import '../components/Dropdowns/taskTypeDropdown.dart';
-import '../resourses/resourses.dart';
 import 'allTaskListScreen.dart';
 
 class TaskCreateForm extends StatefulWidget {
@@ -205,7 +202,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
     return SafeArea(
       child: Scaffold(
           resizeToAvoidBottomInset: true,
-          backgroundColor: backgroundColor,
+          backgroundColor: formBackgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.white,
             // toolbarHeight: 80,

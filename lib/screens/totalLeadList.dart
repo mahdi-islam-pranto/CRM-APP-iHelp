@@ -220,7 +220,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
           height: 35,
           padding: const EdgeInsets.only(left: 10, right: 10),
           decoration: BoxDecoration(
-            color: Colors.white70,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(5),
           ),
           child: const Text('ALL LEADS'),
