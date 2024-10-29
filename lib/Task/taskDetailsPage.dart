@@ -75,137 +75,246 @@ class _TaskOverviewState extends State<TaskOverview> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, size: 18),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        backgroundColor: Colors.white,
-        systemOverlayStyle:
-            const SystemUiOverlayStyle(statusBarColor: Colors.white),
-        title: Container(
-          height: 35,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            color: Colors.white70,
-            borderRadius: BorderRadius.circular(5),
+      // appBar: AppBar(
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back_ios, size: 18),
+      //     onPressed: () {
+      //       Navigator.of(context).pop();
+      //     },
+      //   ),
+      //   backgroundColor: Colors.white,
+      //   systemOverlayStyle:
+      //       const SystemUiOverlayStyle(statusBarColor: Colors.white),
+      //   title: Container(
+      //     height: 35,
+      //     padding: const EdgeInsets.symmetric(horizontal: 10),
+      //     decoration: BoxDecoration(
+      //       color: Colors.white70,
+      //       borderRadius: BorderRadius.circular(5),
+      //     ),
+      //     child: const Text('Task Details'),
+      //   ),
+      // ),
+      body: Stack(
+        children: [
+          // Background Image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/details.png', // Replace with your background image asset path
+              fit: BoxFit.cover,
+            ),
           ),
-          child: const Text('Task Details'),
-        ),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: isLoading
-            ? Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(
-                  color: Colors.blue,
-                  size: 50,
-                ),
-              )
-            : taskDetails == null
-                ? Center(
-                    child: Text(
-                    "Task not found",
-                    style: TextStyle(fontSize: 17.sp, color: Colors.grey),
-                  ))
-                : SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+          // Task Details Content
+          isLoading
+              ? Center(
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.white,
+                    size: 50,
+                  ),
+                )
+              : taskDetails == null
+                  ? Center(
+                      child: Text(
+                      "Task not found",
+                      style: TextStyle(fontSize: 17.sp, color: Colors.grey),
+                    ))
+                  : SingleChildScrollView(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Top Section
-                          Center(
-                            child: Column(
-                              children: [
-                                const CircleAvatar(
-                                  backgroundColor: Color(0x300D6EFD),
-                                  radius: 50,
-                                  child: Icon(
-                                    Icons.task_alt_outlined,
-                                    size: 50,
-                                    color: Colors.blue,
+                          // back button
+                          Padding(
+                            padding: const EdgeInsets.only(top: 50, left: 20),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Row(
+                                children: [
+                                  const CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    child: Icon(
+                                      Icons.arrow_back_ios,
+                                      color: Colors.blue,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  taskDetails?.companyName?.companyName ??
-                                      "No company name",
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  taskDetails?.taskName?.name ?? "No Task Type",
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                const SizedBox(height: 5),
-                              ],
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    "Task Details",
+                                    style: TextStyle(
+                                      fontSize: 17.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 20),
-
-                          // Task Information Section
-
-                          Card(
-                            color: Colors.blue[100],
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            child: ListTile(
-                              title: Text("Task Information",
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                          // Top Section
+                          Padding(
+                            padding: const EdgeInsets.only(top: 100),
+                            child: Center(
+                              child: Column(
                                 children: [
+                                  const CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    radius: 30,
+                                    child: Icon(
+                                      Icons.task_alt_outlined,
+                                      size: 50,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
                                   const SizedBox(height: 10),
                                   Text(
-                                      "Task Subject: ${taskDetails?.subject ?? 'N/A'}"),
+                                    taskDetails?.companyName?.companyName ??
+                                        "No company name",
+                                    style: const TextStyle(
+                                        fontSize: 28, color: Colors.white),
+                                  ),
+                                  const SizedBox(height: 5),
                                   Text(
-                                      "Task Status: ${taskDetails?.taskStatus?.name ?? 'N/A'}"),
-                                  Text(
-                                      "Task Start: ${taskDetails?.startTime ?? 'N/A'}"),
-                                  Text(
-                                      "Task End: ${taskDetails?.endTime ?? 'N/A'}"),
+                                      taskDetails?.taskName?.name ??
+                                          "No Task Type",
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                      )),
+                                  const SizedBox(height: 5),
                                 ],
                               ),
                             ),
                           ),
 
-                          // Assign Users Section
-                          Card(
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            child: ListTile(
-                              title: Text("Assigned Users",
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 10),
-                                  Text(
-                                      "Assign to: ${taskDetails?.assignName?.name ?? 'N/A'}"),
-                                  Text(
-                                      "Associates: ${taskDetails?.associates?.map((e) => e.name).join(', ') ?? 'N/A'}"),
-                                ],
-                              ),
+                          // task details contents
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
                             ),
-                          ),
+                            margin: const EdgeInsets.only(
+                                top: 10, left: 30, right: 30),
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 20),
 
-                          // Description Section
-                          Card(
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            child: ListTile(
-                              title: Text("Description",
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(top: 10.0),
-                                child: Text(
-                                  taskDetails?.description ??
-                                      "No description available",
+                                    // Task Information Section
+                                    Card(
+                                      elevation: 0.2,
+                                      color: Colors.white,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Row(
+                                        children: [
+                                          // blue line
+                                          Container(
+                                            width: 3,
+                                            height: 60,
+                                            color: Colors.blue,
+                                          ),
+                                          Expanded(
+                                            child: ListTile(
+                                              title: Text("Task Information",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge),
+                                              subtitle: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const SizedBox(height: 10),
+                                                  Text(
+                                                      "Task Subject: ${taskDetails?.subject ?? 'N/A'}"),
+                                                  Text(
+                                                      "Task Status: ${taskDetails?.taskStatus?.name ?? 'N/A'}"),
+                                                  Text(
+                                                      "Task Start: ${taskDetails?.startTime ?? 'N/A'}"),
+                                                  Text(
+                                                      "Task End: ${taskDetails?.endTime ?? 'N/A'}"),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    // Assign Users Section
+                                    Card(
+                                      elevation: 0.2,
+                                      color: Colors.white,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Row(
+                                        children: [
+                                          // blue line
+                                          Container(
+                                            width: 3,
+                                            height: 35,
+                                            color: Colors.blue,
+                                          ),
+
+                                          Expanded(
+                                            child: ListTile(
+                                              title: Text("Assigned Users",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge),
+                                              subtitle: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const SizedBox(height: 10),
+                                                  Text(
+                                                      "Assign to: ${taskDetails?.assignName?.name ?? 'N/A'}"),
+                                                  Text(
+                                                      "Associates: ${taskDetails?.associates?.map((e) => e.name).join(', ') ?? 'N/A'}"),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    // Description Section
+                                    Card(
+                                      elevation: 0.2,
+                                      color: Colors.white,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Row(
+                                        children: [
+                                          // blue line
+                                          Container(
+                                            width: 3,
+                                            height: 30,
+                                            color: Colors.blue,
+                                          ),
+
+                                          Expanded(
+                                            child: ListTile(
+                                              title: Text("Description",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge),
+                                              subtitle: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 10.0),
+                                                child: Text(taskDetails
+                                                        ?.description ??
+                                                    "No description available"),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -255,7 +364,6 @@ class _TaskOverviewState extends State<TaskOverview> {
                                           color: Colors.white, fontSize: 16)),
                                   onPressed: () {
                                     // Implement update task functionality
-
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -278,7 +386,7 @@ class _TaskOverviewState extends State<TaskOverview> {
                         ],
                       ),
                     ),
-                  ),
+        ],
       ),
     );
   }

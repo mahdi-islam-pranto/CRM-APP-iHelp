@@ -222,7 +222,7 @@ class _FollowUpListState extends State<FollowUpList> {
           height: 35,
           padding: const EdgeInsets.only(left: 10, right: 10),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.white70,
             borderRadius: BorderRadius.circular(5),
           ),
           child: const Text('ALL FOLLOW UPS'),
