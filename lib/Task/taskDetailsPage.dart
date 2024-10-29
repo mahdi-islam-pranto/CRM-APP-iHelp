@@ -131,6 +131,7 @@ class _TaskOverviewState extends State<TaskOverview> {
                               child: Row(
                                 children: [
                                   const CircleAvatar(
+                                    radius: 17,
                                     backgroundColor: Colors.white,
                                     child: Icon(
                                       Icons.arrow_back_ios,
