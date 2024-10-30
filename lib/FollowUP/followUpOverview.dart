@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -76,147 +77,263 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        // toolbarHeight: 112.62,
-        title: const Text(
-          "Follow Up Details",
-          style: TextStyle(fontSize: 20),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            size: 18,
-            color: Colors.blue,
+      // appBar: AppBar(
+      //   backgroundColor: Colors.white,
+      //   // toolbarHeight: 112.62,
+      //   title: const Text(
+      //     "Follow Up Details",
+      //     style: TextStyle(fontSize: 20),
+      //   ),
+      //   centerTitle: true,
+      //   leading: IconButton(
+      //     icon: const Icon(
+      //       Icons.arrow_back_ios,
+      //       size: 18,
+      //       color: Colors.blue,
+      //     ),
+      //     onPressed: () {
+      //       // got to previous screen
+      //       Navigator.push(context, MaterialPageRoute(builder: (context) {
+      //         return const FollowUpList();
+      //       }));
+      //     },
+      //   ),
+      // ),
+      body: Stack(
+        children: [
+          // Background Image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/details.png', // Replace with your background image asset path
+              fit: BoxFit.cover,
+            ),
           ),
-          onPressed: () {
-            // got to previous screen
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const FollowUpList();
-            }));
-          },
-        ),
-      ),
-      body: Container(
-        color: Colors.white,
-        child: isLoading
-            ? Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(
-                  color: Colors.blue,
-                  size: 50,
-                ),
-              )
-            : followUpDetails == null
-                ? const Center(child: Text("Follow-up not found"))
-                : SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+
+          // task contents
+
+          isLoading
+              ? Center(
+                  child: LoadingAnimationWidget.staggeredDotsWave(
+                    color: Colors.white,
+                    size: 50,
+                  ),
+                )
+              : followUpDetails == null
+                  ? const Center(child: Text("Follow-up not found"))
+                  : SingleChildScrollView(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // top section
-                          Center(
-                            child: Column(
-                              children: [
-                                const CircleAvatar(
-                                  backgroundColor: Color(0x300D6EFD),
-                                  radius: 50,
-                                  child: Icon(
-                                    Icons.follow_the_signs_rounded,
-                                    size: 50,
-                                    color: Colors.blue,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  followUpDetails?.companyName?.companyName ??
-                                      "N/A",
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  followUpDetails?.subject ?? "No subject",
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  "Phone: ${followUpDetails?.phoneNumber ?? "N/A"}",
-                                  style: Theme.of(context).textTheme.titleSmall,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          // follow up info section
-                          Card(
-                            color: Colors.blue[100],
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            child: ListTile(
-                              title: Text("Follow-up Information",
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                          // back button
+                          Padding(
+                            padding: const EdgeInsets.only(top: 50, left: 20),
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Row(
                                 children: [
-                                  const SizedBox(height: 10),
-                                  Text(
-                                      "Follow-up Type: ${followUpDetails?.followUpName?.name ?? "N/A"}"),
-                                  Text(
-                                      "Status: ${followUpDetails?.followUpStatus?.name ?? "N/A"}"),
-                                  Text(
-                                      "Next Follow-up Date: ${followUpDetails?.nextFollowupDate ?? "N/A"}"),
-                                  Text(
-                                    "Created At: ${DateFormat.yMd().add_jm().format(DateTime.parse(followUpDetails?.createdAt ?? "N/A"))}",
+                                  const CircleAvatar(
+                                    radius: 17,
+                                    backgroundColor: Colors.white,
+                                    child: Icon(
+                                      Icons.arrow_back_ios,
+                                      color: Colors.blue,
+                                    ),
                                   ),
-                                  // Text(
-                                  //     "Created At: ${followUpDetails?.createdAt ?? "N/A"}"),
-                                  // returns: 2024-02-29T12:49:43.000000Z
-                                ],
-                              ),
-                            ),
-                          ),
-                          // assigned users section
-                          Card(
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            child: ListTile(
-                              title: Text("Assigned Users",
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 10),
+                                  const SizedBox(width: 10),
                                   Text(
-                                      "Assign to: ${followUpDetails?.assignName?.name ?? "N/A"}"),
-                                  Text(
-                                      "Creator: ${followUpDetails?.creatorName?.name ?? "N/A"}"),
-                                  Text(
-                                      "Associates: ${followUpDetails?.associates?.map((e) => e.name).join(", ") ?? "N/A"}"),
+                                    "Follow Up Details",
+                                    style: TextStyle(
+                                      fontSize: 17.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
                           ),
 
-                          const SizedBox(height: 20),
-                          // description section
-                          Card(
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            child: ListTile(
-                              title: Text("Description",
-                                  style:
-                                      Theme.of(context).textTheme.titleLarge),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(top: 10.0),
-                                child: Text(
-                                  followUpDetails?.description ??
-                                      "No description available",
+                          // top section
+                          Padding(
+                            padding: const EdgeInsets.only(top: 100),
+                            child: Center(
+                              child: Column(
+                                children: [
+                                  const CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    radius: 30,
+                                    child: Icon(
+                                      Icons.arrow_circle_right_outlined,
+                                      size: 50,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                      followUpDetails
+                                              ?.companyName?.companyName ??
+                                          "N/A",
+                                      style: const TextStyle(
+                                          fontSize: 28, color: Colors.white)),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    followUpDetails?.subject ?? "No subject",
+                                    style: const TextStyle(
+                                        fontSize: 16, color: Colors.white),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    "Phone: ${followUpDetails?.phoneNumber ?? "N/A"}",
+                                    style: const TextStyle(
+                                        fontSize: 16, color: Colors.white),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          // follow up info section
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                            ),
+                            margin: const EdgeInsets.only(
+                                top: 10, left: 30, right: 30),
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: 20),
+
+                                    // Folow-up Information Section
+                                    Card(
+                                      elevation: 0.2,
+                                      color: Colors.white,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Row(
+                                        children: [
+                                          // blue line
+                                          Container(
+                                            width: 3,
+                                            height: 60,
+                                            color: Colors.blue,
+                                          ),
+                                          Expanded(
+                                            child: ListTile(
+                                              title: Text(
+                                                  "Follow-up Information",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge),
+                                              subtitle: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const SizedBox(height: 10),
+                                                  Text(
+                                                      "Follow-up Type: ${followUpDetails?.followUpName?.name ?? "N/A"}"),
+                                                  Text(
+                                                      "Status: ${followUpDetails?.followUpStatus?.name ?? "N/A"}"),
+                                                  Text(
+                                                      "Next Follow-up Date: ${followUpDetails?.nextFollowupDate ?? "N/A"}"),
+                                                  Text(
+                                                    "Created At: ${DateFormat.yMd().add_jm().format(DateTime.parse(followUpDetails?.createdAt ?? "N/A"))}",
+                                                  ),
+                                                  // Text(
+                                                  //     "Created At: ${followUpDetails?.createdAt ?? "N/A"}"),
+                                                  // returns: 2024-02-29T12:49:43.000000Z
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    // assigned users section
+                                    Card(
+                                      elevation: 0.2,
+                                      color: Colors.white,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Row(
+                                        children: [
+                                          // blue line
+                                          Container(
+                                            width: 3,
+                                            height: 35,
+                                            color: Colors.blue,
+                                          ),
+                                          Expanded(
+                                            child: ListTile(
+                                              title: Text("Assigned Users",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge),
+                                              subtitle: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const SizedBox(height: 10),
+                                                  Text(
+                                                      "Assign to: ${followUpDetails?.assignName?.name ?? "N/A"}"),
+                                                  Text(
+                                                      "Creator: ${followUpDetails?.creatorName?.name ?? "N/A"}"),
+                                                  Text(
+                                                      "Associates: ${followUpDetails?.associates?.map((e) => e.name).join(", ") ?? "N/A"}"),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    // description section
+                                    Card(
+                                      elevation: 0.2,
+                                      color: Colors.white,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Row(
+                                        children: [
+                                          // blue line
+                                          Container(
+                                            width: 3,
+                                            height: 30,
+                                            color: Colors.blue,
+                                          ),
+
+                                          Expanded(
+                                            child: ListTile(
+                                              title: Text("Description",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge),
+                                              subtitle: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 10.0),
+                                                child: Text(
+                                                  followUpDetails
+                                                          ?.description ??
+                                                      "No description available",
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
+
                           // buttons
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -236,6 +353,8 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                   ),
                                   onPressed: () {
                                     // Implement delete functionality
+                                    // back to previous screen
+                                    Navigator.pop(context);
                                   },
                                   child: const Text(
                                     "DELETE ",
@@ -278,7 +397,7 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                         ],
                       ),
                     ),
-                  ),
+        ],
       ),
     );
   }
