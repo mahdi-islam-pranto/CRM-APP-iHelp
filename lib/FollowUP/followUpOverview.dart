@@ -236,14 +236,25 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                                 children: [
                                                   const SizedBox(height: 10),
                                                   Text(
-                                                      "Follow-up Type: ${followUpDetails?.followUpName?.name ?? "N/A"}"),
+                                                      "Follow-up Type: ${followUpDetails?.followUpName?.name ?? "N/A"}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                   Text(
-                                                      "Status: ${followUpDetails?.followUpStatus?.name ?? "N/A"}"),
+                                                      "Status: ${followUpDetails?.followUpStatus?.name ?? "N/A"}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                   Text(
-                                                      "Next Follow-up Date: ${followUpDetails?.nextFollowupDate ?? "N/A"}"),
+                                                      "Next Follow-up Date: ${followUpDetails?.nextFollowupDate ?? "N/A"}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                   Text(
-                                                    "Created At: ${DateFormat.yMd().add_jm().format(DateTime.parse(followUpDetails?.createdAt ?? "N/A"))}",
-                                                  ),
+                                                      "Created At: ${DateFormat.yMd().add_jm().format(DateTime.parse(followUpDetails?.createdAt ?? "N/A"))}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                   // Text(
                                                   //     "Created At: ${followUpDetails?.createdAt ?? "N/A"}"),
                                                   // returns: 2024-02-29T12:49:43.000000Z
@@ -280,11 +291,20 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                                 children: [
                                                   const SizedBox(height: 10),
                                                   Text(
-                                                      "Assign to: ${followUpDetails?.assignName?.name ?? "N/A"}"),
+                                                      "Assign to: ${followUpDetails?.assignName?.name ?? "N/A"}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                   Text(
-                                                      "Creator: ${followUpDetails?.creatorName?.name ?? "N/A"}"),
+                                                      "Creator: ${followUpDetails?.creatorName?.name ?? "N/A"}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                   Text(
-                                                      "Associates: ${followUpDetails?.associates?.map((e) => e.name).join(", ") ?? "N/A"}"),
+                                                      "Associates: ${followUpDetails?.associates?.map((e) => e.name).join(", ") ?? "N/A"}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                 ],
                                               ),
                                             ),
@@ -318,10 +338,12 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                                 padding: const EdgeInsets.only(
                                                     top: 10.0),
                                                 child: Text(
-                                                  followUpDetails
-                                                          ?.description ??
-                                                      "No description available",
-                                                ),
+                                                    followUpDetails
+                                                            ?.description ??
+                                                        "No description available",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Colors.grey[700])),
                                               ),
                                             ),
                                           ),
@@ -335,41 +357,64 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                           ),
 
                           // buttons
+                          // Bottom Section (Optional actions or additional info)
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20.0),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 20.0, horizontal: 15),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
+                                // Delete task
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    minimumSize: const Size(164, 52),
-                                    maximumSize: const Size(181, 52),
                                     backgroundColor: Colors.redAccent,
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: MediaQuery.of(context)
+                                              .size
+                                              .height *
+                                          0.018, // Adjust the vertical padding as needed
+                                      horizontal: MediaQuery.of(context)
+                                              .size
+                                              .width *
+                                          0.12, // Adjust the horizontal padding as needed
+                                    ),
                                     shape: RoundedRectangleBorder(
-                                      side: const BorderSide(
-                                          color: Colors.redAccent, width: 2),
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(
+                                        MediaQuery.of(context).size.width *
+                                            0.03, // Adjust the border radius as needed
+                                      ),
                                     ),
                                   ),
                                   onPressed: () {
-                                    // Implement delete functionality
-                                    // back to previous screen
                                     Navigator.pop(context);
                                   },
                                   child: const Text(
-                                    "DELETE ",
+                                    "DELETE",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16),
                                   ),
                                 ),
                                 const SizedBox(width: 11),
+
+                                // update task
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    minimumSize: const Size(164, 52),
-                                    maximumSize: const Size(181, 52),
                                     backgroundColor: buttonColor,
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: MediaQuery.of(context)
+                                              .size
+                                              .height *
+                                          0.018, // Adjust the vertical padding as needed
+                                      horizontal: MediaQuery.of(context)
+                                              .size
+                                              .width *
+                                          0.12, // Adjust the horizontal padding as needed
+                                    ),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(
+                                        MediaQuery.of(context).size.width *
+                                            0.03, // Adjust the border radius as needed
+                                      ),
                                     ),
                                   ),
                                   child: const Text("UPDATE",

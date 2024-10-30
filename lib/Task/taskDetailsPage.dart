@@ -229,13 +229,26 @@ class _TaskOverviewState extends State<TaskOverview> {
                                                 children: [
                                                   const SizedBox(height: 10),
                                                   Text(
-                                                      "Task Subject: ${taskDetails?.subject ?? 'N/A'}"),
+                                                    "Task Subject: ${taskDetails?.subject ?? 'N/A'}",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Colors.grey[700]),
+                                                  ),
                                                   Text(
-                                                      "Task Status: ${taskDetails?.taskStatus?.name ?? 'N/A'}"),
+                                                      "Task Status: ${taskDetails?.taskStatus?.name ?? 'N/A'}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                   Text(
-                                                      "Task Start: ${taskDetails?.startTime ?? 'N/A'}"),
+                                                      "Task Start: ${taskDetails?.startTime ?? 'N/A'}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                   Text(
-                                                      "Task End: ${taskDetails?.endTime ?? 'N/A'}"),
+                                                      "Task End: ${taskDetails?.endTime ?? 'N/A'}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                 ],
                                               ),
                                             ),
@@ -271,9 +284,15 @@ class _TaskOverviewState extends State<TaskOverview> {
                                                 children: [
                                                   const SizedBox(height: 10),
                                                   Text(
-                                                      "Assign to: ${taskDetails?.assignName?.name ?? 'N/A'}"),
+                                                      "Assign to: ${taskDetails?.assignName?.name ?? 'N/A'}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                   Text(
-                                                      "Associates: ${taskDetails?.associates?.map((e) => e.name).join(', ') ?? 'N/A'}"),
+                                                      "Associates: ${taskDetails?.associates?.map((e) => e.name).join(', ') ?? 'N/A'}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
                                                 ],
                                               ),
                                             ),
@@ -306,9 +325,12 @@ class _TaskOverviewState extends State<TaskOverview> {
                                               subtitle: Padding(
                                                 padding: const EdgeInsets.only(
                                                     top: 10.0),
-                                                child: Text(taskDetails
-                                                        ?.description ??
-                                                    "No description available"),
+                                                child: Text(
+                                                    taskDetails?.description ??
+                                                        "No description available",
+                                                    style: TextStyle(
+                                                        color:
+                                                            Colors.grey[700])),
                                               ),
                                             ),
                                           ),
@@ -323,20 +345,30 @@ class _TaskOverviewState extends State<TaskOverview> {
 
                           // Bottom Section (Optional actions or additional info)
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 20.0),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 20.0, horizontal: 15),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 // Delete task
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    minimumSize: const Size(164, 52),
-                                    maximumSize: const Size(181, 52),
                                     backgroundColor: Colors.redAccent,
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: MediaQuery.of(context)
+                                              .size
+                                              .height *
+                                          0.018, // Adjust the vertical padding as needed
+                                      horizontal: MediaQuery.of(context)
+                                              .size
+                                              .width *
+                                          0.08, // Adjust the horizontal padding as needed
+                                    ),
                                     shape: RoundedRectangleBorder(
-                                      side: const BorderSide(
-                                          color: Colors.redAccent, width: 2),
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(
+                                        MediaQuery.of(context).size.width *
+                                            0.03, // Adjust the border radius as needed
+                                      ),
                                     ),
                                   ),
                                   onPressed: () {
@@ -353,11 +385,22 @@ class _TaskOverviewState extends State<TaskOverview> {
                                 // update task
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    minimumSize: const Size(164, 52),
-                                    maximumSize: const Size(181, 52),
                                     backgroundColor: buttonColor,
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: MediaQuery.of(context)
+                                              .size
+                                              .height *
+                                          0.018, // Adjust the vertical padding as needed
+                                      horizontal: MediaQuery.of(context)
+                                              .size
+                                              .width *
+                                          0.08, // Adjust the horizontal padding as needed
+                                    ),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
+                                      borderRadius: BorderRadius.circular(
+                                        MediaQuery.of(context).size.width *
+                                            0.03, // Adjust the border radius as needed
+                                      ),
                                     ),
                                   ),
                                   child: const Text("UPDATE TASK",

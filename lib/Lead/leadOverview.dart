@@ -102,7 +102,7 @@ class _LeadOverviewState extends State<LeadOverview> {
                             children: [
                               const CircleAvatar(
                                 backgroundColor: Color(0x300D6EFD),
-                                radius: 50,
+                                radius: 40,
                                 child: Icon(
                                   Icons.person_2_outlined,
                                   size: 50,
@@ -112,8 +112,10 @@ class _LeadOverviewState extends State<LeadOverview> {
                               const SizedBox(height: 10),
                               Text(
                                 leadDetails?.companyName ?? "N/A",
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
+                                style: TextStyle(
+                                    fontSize: 28,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500),
                               ),
                               const SizedBox(height: 5),
                               Text(
