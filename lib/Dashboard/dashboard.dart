@@ -786,27 +786,27 @@ class _NewDashboardState extends State<NewDashboard> {
         ),
 
         // floating action button
-        floatingActionButton: Stack(
-          children: [
-            Positioned(
-              // left: 25,
-              //  bottom: 650,
-              // bottom: 30,
-              child: AnimatedFloatingActionButton(
-                key: key,
-                fabButtons: <Widget>[
-                  add(),
-                  sipDailpad(),
-                  Contacts(),
-                  notifications(),
-                ],
-                colorStartAnimation: Colors.white,
-                colorEndAnimation: Colors.red,
-                animatedIconData: AnimatedIcons.menu_close,
-              ),
-            ),
-          ],
-        ),
+        // floatingActionButton: Stack(
+        //   children: [
+        //     Positioned(
+        //       // left: 25,
+        //       //  bottom: 650,
+        //       // bottom: 30,
+        //       child: AnimatedFloatingActionButton(
+        //         key: key,
+        //         fabButtons: <Widget>[
+        //           add(),
+        //           sipDailpad(),
+        //           Contacts(),
+        //           notifications(),
+        //         ],
+        //         colorStartAnimation: Colors.white,
+        //         colorEndAnimation: Colors.red,
+        //         animatedIconData: AnimatedIcons.menu_close,
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }
