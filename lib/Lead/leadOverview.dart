@@ -106,12 +106,12 @@ class _LeadOverviewState extends State<LeadOverview> {
                           child: Center(
                             child: Column(
                               children: [
-                                const CircleAvatar(
-                                  backgroundColor: Colors.white,
+                                CircleAvatar(
+                                  backgroundColor: Colors.blue[100],
                                   radius: 30,
-                                  child: Icon(
+                                  child: const Icon(
                                     Icons.person_2_outlined,
-                                    size: 50,
+                                    size: 40,
                                     color: Colors.blue,
                                   ),
                                 ),

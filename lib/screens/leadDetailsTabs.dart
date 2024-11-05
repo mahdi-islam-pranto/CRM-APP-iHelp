@@ -21,7 +21,8 @@ class _LeadDetailsTabsState extends State<LeadDetailsTabs> {
       length: 3,
       initialIndex: 0,
       child: Scaffold(
-        backgroundColor: Colors.grey[50],
+        // backgroundColor: Colors.grey[50],
+        backgroundColor: Colors.white,
         appBar: AppBar(
           bottom: const TabBar(
               // tabAlignment: TabAlignment.start,
