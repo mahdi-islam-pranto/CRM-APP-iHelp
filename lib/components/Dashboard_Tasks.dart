@@ -67,7 +67,7 @@ class _DashboardTasksState extends State<DashboardTasks> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 240.h,
+      height: 250.h,
       child: FutureBuilder<TaskListModel>(
         future: _taskListFuture,
         builder: (context, snapshot) {
@@ -79,7 +79,7 @@ class _DashboardTasksState extends State<DashboardTasks> {
             ));
           } else if (snapshot.hasError) {
             // return Center(child: Text('Error: ${snapshot.error}'));
-            return Center(child: Text('Fetching tasks failed'));
+            return const Center(child: Text('Fetching tasks failed'));
           } else if (snapshot.hasData &&
               snapshot.data!.data != null &&
               snapshot.data!.data!.isNotEmpty) {

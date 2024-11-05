@@ -646,119 +646,119 @@ class _NewDashboardState extends State<NewDashboard> {
                   height: 28.h,
                 ),
 
-                /// Analaytic
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 22),
-                      child: Text(
-                        "Analytics",
-                        style: TextStyle(
-                            fontSize: 20.sp,
-                            color: const Color(0xFF2C3131),
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
+                // /// Analaytic
+                // Row(
+                //   children: [
+                //     Padding(
+                //       padding: const EdgeInsets.only(left: 22),
+                //       child: Text(
+                //         "Analytics",
+                //         style: TextStyle(
+                //             fontSize: 20.sp,
+                //             color: const Color(0xFF2C3131),
+                //             fontWeight: FontWeight.bold),
+                //       ),
+                //     ),
+                //   ],
+                // ),
 
-                SizedBox(
-                  height: 22.h,
-                ),
+                // SizedBox(
+                //   height: 22.h,
+                // ),
 
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 22),
-                      child: Text(
-                        "Lead PipeLine ",
-                        style: TextStyle(
-                            fontSize: 17.sp,
-                            color: const Color(0xFF2C3131),
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     Padding(
+                //       padding: const EdgeInsets.only(left: 22),
+                //       child: Text(
+                //         "Lead PipeLine ",
+                //         style: TextStyle(
+                //             fontSize: 17.sp,
+                //             color: const Color(0xFF2C3131),
+                //             fontWeight: FontWeight.bold),
+                //       ),
+                //     ),
+                //   ],
+                // ),
 
-                SizedBox(
-                  height: 40.h,
-                ),
+                // SizedBox(
+                //   height: 40.h,
+                // ),
 
-                // Lead Pipeline Chart Show
+                // // Lead Pipeline Chart Show
 
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: FutureBuilder<Map<String, dynamic>>(
-                    future: futureLeadData, // Use futureLeadData here
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<String> categories =
-                            List<String>.from(snapshot.data!['categories']);
-                        List<int> values =
-                            List<int>.from(snapshot.data!['data']);
-                        List<LeadPipelineData> leadData = List.generate(
-                          categories.length,
-                          (index) => LeadPipelineData(
-                            orderNo: index + 1,
-                            value: values[index].toDouble(),
-                          ),
-                        );
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 20),
+                //   child: FutureBuilder<Map<String, dynamic>>(
+                //     future: futureLeadData, // Use futureLeadData here
+                //     builder: (context, snapshot) {
+                //       if (snapshot.hasData) {
+                //         List<String> categories =
+                //             List<String>.from(snapshot.data!['categories']);
+                //         List<int> values =
+                //             List<int>.from(snapshot.data!['data']);
+                //         List<LeadPipelineData> leadData = List.generate(
+                //           categories.length,
+                //           (index) => LeadPipelineData(
+                //             orderNo: index + 1,
+                //             value: values[index].toDouble(),
+                //           ),
+                //         );
 
-                        return Column(
-                          children: [
-                            LeadPipelineChart(
-                                data: leadData, categories: categories),
-                          ],
-                        );
-                      } else if (snapshot.hasError) {
-                        return const Text("Couldn't Generate Chart");
-                        // return Text("${snapshot.error}");
-                      }
-                      return Center(
-                          child: LoadingAnimationWidget.staggeredDotsWave(
-                        color: Colors.blue,
-                        size: 40,
-                      ));
-                    },
-                  ),
-                ),
+                //         return Column(
+                //           children: [
+                //             LeadPipelineChart(
+                //                 data: leadData, categories: categories),
+                //           ],
+                //         );
+                //       } else if (snapshot.hasError) {
+                //         return const Text("Couldn't Generate Chart");
+                //         // return Text("${snapshot.error}");
+                //       }
+                //       return Center(
+                //           child: LoadingAnimationWidget.staggeredDotsWave(
+                //         color: Colors.blue,
+                //         size: 40,
+                //       ));
+                //     },
+                //   ),
+                // ),
 
-                SizedBox(
-                  height: 20.h,
-                ),
+                // SizedBox(
+                //   height: 20.h,
+                // ),
 
-                // Lead Industry Chart Show
+                // // Lead Industry Chart Show
 
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20, top: 10),
-                      child: Text(
-                        "Lead Industry: ",
-                        style: TextStyle(
-                            fontSize: 17.sp,
-                            color: const Color(0xFF2C3131),
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     Padding(
+                //       padding: const EdgeInsets.only(left: 20, top: 10),
+                //       child: Text(
+                //         "Lead Industry: ",
+                //         style: TextStyle(
+                //             fontSize: 17.sp,
+                //             color: const Color(0xFF2C3131),
+                //             fontWeight: FontWeight.bold),
+                //       ),
+                //     ),
+                //   ],
+                // ),
 
-                SizedBox(
-                  height: 20.h,
-                ),
+                // SizedBox(
+                //   height: 20.h,
+                // ),
 
-                //Lead Industry Chart
+                // //Lead Industry Chart
 
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: LeadIndustryChart(),
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.all(20.0),
+                //   child: LeadIndustryChart(),
+                // ),
 
-                SizedBox(
-                  height: 40.h,
-                ),
+                // SizedBox(
+                //   height: 40.h,
+                // ),
 
                 // Lead Source Chart
 

@@ -7,7 +7,6 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../FollowUP/followUpOverview.dart';
 
-import '../Task/taskDetailsPage.dart';
 import 'package:http/http.dart' as http;
 
 class DashboardFollowUps extends StatefulWidget {
@@ -70,7 +69,7 @@ class _DashboardFollowUpsState extends State<DashboardFollowUps> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 240.h,
+      height: 250.h,
       child: FutureBuilder(
         future: getFollowUpList(),
         builder: (context, snapshot) {
