@@ -1,11 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-
 import '../Models/LeadListModel.dart';
 import '../resourses/app_colors.dart';
 
@@ -28,7 +26,6 @@ class _LeadOverviewState extends State<LeadOverview> {
     getLeadDetails();
   }
 
-  // fetch specific lead details
   Future<void> getLeadDetails() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString("token");
@@ -56,7 +53,6 @@ class _LeadOverviewState extends State<LeadOverview> {
       var data = jsonDecode(response.body.toString());
       List<dynamic> leadJsonList = data['data'];
 
-      // Find the specific lead that matches the leadId
       var matchingLead = leadJsonList.firstWhere(
         (lead) => lead['id'] == widget.leadId,
         orElse: () => null,
@@ -69,148 +65,266 @@ class _LeadOverviewState extends State<LeadOverview> {
         isLoading = false;
       });
     } else {
-      // Handle error
       setState(() {
         isLoading = false;
       });
-      // You can also show an error message if needed
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: isLoading
-          ? Center(
-              child: LoadingAnimationWidget.staggeredDotsWave(
-                color: Colors.blue,
-                size: 50,
-              ),
-            )
-          : leadDetails == null
-              ? const Center(child: Text("Lead not found"))
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+    return Stack(
+      children: [
+        // Background Image
+        // Positioned.fill(
+        //   child: Image.asset(
+        //     'assets/images/details.png',
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
+        // Content
+        isLoading
+            ? Center(
+                child: LoadingAnimationWidget.staggeredDotsWave(
+                  color: Colors.blue,
+                  size: 50,
+                ),
+              )
+            : leadDetails == null
+                ? const Center(
+                    child: Text(
+                      "Lead not found",
+                      style: TextStyle(fontSize: 17, color: Colors.grey),
+                    ),
+                  )
+                : SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Top Section
-                        Center(
-                          child: Column(
-                            children: [
-                              const CircleAvatar(
-                                backgroundColor: Color(0x300D6EFD),
-                                radius: 40,
-                                child: Icon(
-                                  Icons.person_2_outlined,
-                                  size: 50,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                leadDetails?.companyName ?? "N/A",
-                                style: TextStyle(
-                                    fontSize: 28,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                leadDetails?.name ?? "No lead name",
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                "Phone: ${leadDetails?.phoneNumber ?? "N/A"}",
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
-                              const SizedBox(height: 5),
-                              Text(
-                                "Email: ${leadDetails?.email ?? "N/A"}",
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Lead Information Section
-                        Card(
-                          color: Colors.blue[100],
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          child: ListTile(
-                            title: Text("Lead Information",
-                                style: Theme.of(context).textTheme.titleLarge),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 10),
-                                Text(
-                                    "Lead Pipeline: ${leadDetails?.leadPipelineName?.name ?? "N/A"}"),
-                                Text(
-                                    "Lead Area: ${leadDetails?.leadAreasName?['name'] ?? "N/A"}"),
-                                Text(
-                                    "Lead Source: ${leadDetails?.leadSourceName?['name'] ?? "N/A"}"),
-                                Text(
-                                    "Created At: ${DateFormat.yMd().add_jm().format(DateTime.parse(leadDetails?.leadPipelineName?.createdAt ?? "N/A"))} "),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        // Assign Users Section
-                        Card(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          child: ListTile(
-                            title: Text("Assigned Users",
-                                style: Theme.of(context).textTheme.titleLarge),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 10),
-                                Text(
-                                    "Assign to: ${leadDetails?.assignName?.name ?? "N/A"}"),
-                                Text(
-                                    "Associates: ${leadDetails?.associates?.isNotEmpty == true ? leadDetails!.associates!.map((e) => e.name).join(", ") : "N/A"}"),
-                              ],
-                            ),
-                          ),
-                        ),
-
-                        // Description Section
-                        // Card(
-                        //   margin: const EdgeInsets.symmetric(vertical: 10),
-                        //   child: ListTile(
-                        //     title: Text("Description",
-                        //         style: Theme.of(context).textTheme.titleLarge),
-                        //     subtitle: const Padding(
-                        //       padding: EdgeInsets.only(top: 10.0),
-                        //       child: Text(
-                        //         "This is a detailed description of the lead. Here you can provide more information about the lead and any other relevant details that might be useful.",
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-
-                        // Bottom Section (Optional actions or additional info)
+                        // Top Section with profile
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 20.0),
+                          padding: const EdgeInsets.only(top: 30),
+                          child: Center(
+                            child: Column(
+                              children: [
+                                const CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: 30,
+                                  child: Icon(
+                                    Icons.person_2_outlined,
+                                    size: 50,
+                                    color: Colors.blue,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  leadDetails?.companyName ?? "N/A",
+                                  style: const TextStyle(
+                                    fontSize: 28,
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  leadDetails?.name ?? "No lead name",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // Details Container
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.white,
+                          ),
+                          margin: const EdgeInsets.only(
+                            top: 10,
+                            left: 30,
+                            right: 30,
+                            bottom: 20,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Contact Information Section
+                                Card(
+                                  elevation: 0.2,
+                                  color: Colors.white,
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 3,
+                                        height: 60,
+                                        color: Colors.blue,
+                                      ),
+                                      Expanded(
+                                        child: ListTile(
+                                          title: Text(
+                                            "Contact Information",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge,
+                                          ),
+                                          subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                "Phone: ${leadDetails?.phoneNumber ?? 'N/A'}",
+                                                style: TextStyle(
+                                                    color: Colors.grey[700]),
+                                              ),
+                                              Text(
+                                                "Email: ${leadDetails?.email ?? 'N/A'}",
+                                                style: TextStyle(
+                                                    color: Colors.grey[700]),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // Lead Information Section
+                                Card(
+                                  elevation: 0.2,
+                                  color: Colors.white,
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 3,
+                                        height: 90,
+                                        color: Colors.blue,
+                                      ),
+                                      Expanded(
+                                        child: ListTile(
+                                          title: Text(
+                                            "Lead Information",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge,
+                                          ),
+                                          subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                "Pipeline: ${leadDetails?.leadPipelineName?.name ?? 'N/A'}",
+                                                style: TextStyle(
+                                                    color: Colors.grey[700]),
+                                              ),
+                                              Text(
+                                                "Area: ${leadDetails?.leadAreasName?['name'] ?? 'N/A'}",
+                                                style: TextStyle(
+                                                    color: Colors.grey[700]),
+                                              ),
+                                              Text(
+                                                "Source: ${leadDetails?.leadSourceName?['name'] ?? 'N/A'}",
+                                                style: TextStyle(
+                                                    color: Colors.grey[700]),
+                                              ),
+                                              Text(
+                                                "Created: ${DateFormat.yMd().add_jm().format(DateTime.parse(leadDetails?.leadPipelineName?.createdAt ?? DateTime.now().toString()))}",
+                                                style: TextStyle(
+                                                    color: Colors.grey[700]),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // Assigned Users Section
+                                Card(
+                                  elevation: 0.2,
+                                  color: Colors.white,
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 3,
+                                        height: 60,
+                                        color: Colors.blue,
+                                      ),
+                                      Expanded(
+                                        child: ListTile(
+                                          title: Text(
+                                            "Assigned Users",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge,
+                                          ),
+                                          subtitle: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                "Assigned to: ${leadDetails?.assignName?.name ?? 'N/A'}",
+                                                style: TextStyle(
+                                                    color: Colors.grey[700]),
+                                              ),
+                                              Text(
+                                                "Associates: ${leadDetails?.associates?.isNotEmpty == true ? leadDetails!.associates!.map((e) => e.name).join(", ") : "N/A"}",
+                                                style: TextStyle(
+                                                    color: Colors.grey[700]),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        // Bottom Buttons
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              // Delete lead
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(164, 52),
-                                  maximumSize: const Size(181, 52),
                                   backgroundColor: Colors.redAccent,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical:
+                                        MediaQuery.of(context).size.height *
+                                            0.018,
+                                    horizontal:
+                                        MediaQuery.of(context).size.width *
+                                            0.08,
+                                  ),
                                   shape: RoundedRectangleBorder(
-                                    side: const BorderSide(
-                                        color: Colors.redAccent, width: 2),
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(
+                                      MediaQuery.of(context).size.width * 0.03,
+                                    ),
                                   ),
                                 ),
                                 onPressed: () {
@@ -219,25 +333,37 @@ class _LeadOverviewState extends State<LeadOverview> {
                                 child: const Text(
                                   "DELETE LEAD",
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ),
                               const SizedBox(width: 11),
-
-                              // update lead
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size(164, 52),
-                                  maximumSize: const Size(181, 52),
                                   backgroundColor: buttonColor,
+                                  padding: EdgeInsets.symmetric(
+                                    vertical:
+                                        MediaQuery.of(context).size.height *
+                                            0.018,
+                                    horizontal:
+                                        MediaQuery.of(context).size.width *
+                                            0.08,
+                                  ),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(
+                                      MediaQuery.of(context).size.width * 0.03,
+                                    ),
                                   ),
                                 ),
-                                child: const Text("EDIT LEAD",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 16)),
                                 onPressed: () {},
+                                child: const Text(
+                                  "EDIT LEAD",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -245,7 +371,7 @@ class _LeadOverviewState extends State<LeadOverview> {
                       ],
                     ),
                   ),
-                ),
+      ],
     );
   }
 }

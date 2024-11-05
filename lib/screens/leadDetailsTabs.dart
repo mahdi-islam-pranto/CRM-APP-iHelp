@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:untitled1/screens/totalLeadList.dart';
-
 import '../FollowUP/leadFollowUpList.dart';
 import '../Lead/leadOverview.dart';
 import '../Lead/leadTaskList.dart';
@@ -23,7 +21,7 @@ class _LeadDetailsTabsState extends State<LeadDetailsTabs> {
       length: 3,
       initialIndex: 0,
       child: Scaffold(
-        backgroundColor: backgroundColor,
+        backgroundColor: Colors.grey[50],
         appBar: AppBar(
           bottom: const TabBar(
               // tabAlignment: TabAlignment.start,
@@ -101,7 +99,10 @@ class _LeadDetailsTabsState extends State<LeadDetailsTabs> {
         body: TabBarView(
           children: [
             // overview
-            LeadOverview(leadId: widget.leadId),
+            Container(
+                margin: EdgeInsets.zero,
+                padding: EdgeInsets.zero,
+                child: LeadOverview(leadId: widget.leadId)),
 
             // Followup
 

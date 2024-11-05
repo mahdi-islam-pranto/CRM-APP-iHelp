@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../Models/followUpModel.dart';
 import '../resourses/app_colors.dart';
-import 'FollowUPListScreen.dart';
+
 import 'followUpUpdate.dart';
 
 // follow up details page
