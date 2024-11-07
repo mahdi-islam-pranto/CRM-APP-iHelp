@@ -46,14 +46,14 @@ class _DashboardFollowUpsState extends State<DashboardFollowUps> {
         'user_id': '$userId',
       },
       body: {
-        'start_date': '',
+        'start_date': startDate,
         'end_date': '',
         'user_id': userId,
         'session_user_id': userId,
         'followup_type_id': '',
         'status': '',
         'lead_id': '',
-        'next_followup_date': '',
+        'next_followup_date': endDate,
       },
     );
 
@@ -82,7 +82,9 @@ class _DashboardFollowUpsState extends State<DashboardFollowUps> {
           } else if (snapshot.hasError) {
             // return Center(child: Text('Error: ${snapshot.error}'));
             return const Center(child: Text('Fetching follow ups failed'));
-          } else if (snapshot.hasData && snapshot.data != null) {
+          } else if (snapshot.hasData &&
+              snapshot.data != null &&
+              followUpList.isNotEmpty) {
             return Scrollbar(
               thickness: 10,
               trackVisibility: true,

@@ -3,6 +3,8 @@ import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
 import 'package:untitled1/Task/allTaskListScreen.dart';
 import 'package:untitled1/screens/totalLeadList.dart';
 
+import '../Task/allPendingTask.dart';
+
 class DashboardCounter extends StatelessWidget {
   const DashboardCounter({super.key});
 
@@ -200,46 +202,55 @@ class DashboardCounter extends StatelessWidget {
                 ),
               ),
               SizedBox(height: screenHeight * 0.015),
-              Container(
-                height: containerHeight4,
-                width: containerWidth,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFFB1EEFF), Color(0xFF29BAE2)],
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PendingTaskListScreen(),
+                      ));
+                },
+                child: Container(
+                  height: containerHeight4,
+                  width: containerWidth,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFFB1EEFF), Color(0xFF29BAE2)],
+                    ),
                   ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(screenWidth * 0.03),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(Icons.task, color: Colors.white, size: iconSize),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Pending Task",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: textSize,
-                              fontWeight: FontWeight.bold,
+                  child: Padding(
+                    padding: EdgeInsets.all(screenWidth * 0.03),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(Icons.task, color: Colors.white, size: iconSize),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Pending Task",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: textSize,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          Text(
-                            "28",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: textSize,
-                              fontWeight: FontWeight.bold,
+                            Text(
+                              "28",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: textSize,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
