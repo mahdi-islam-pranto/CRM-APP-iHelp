@@ -2,9 +2,13 @@
 
 A Flutter project.
 
-## Getting Started
+## Key Features
 
-This project is a starting point for a Flutter application.
+1.
+2.
+3.
+4.
+5.
 
 A few resources to get you started if this is your first Flutter project:
 
