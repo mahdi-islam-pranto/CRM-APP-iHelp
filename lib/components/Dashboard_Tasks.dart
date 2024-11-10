@@ -218,11 +218,11 @@ class _DashboardTasksState extends State<DashboardTasks> {
 
   Color getStatusColor(String status) {
     switch (status) {
-      case '1':
+      case 'Solved':
         return Colors.green;
-      case '2':
+      case 'Pending':
         return Colors.orange;
-      case '3':
+      case 'Working Process':
         return Colors.blue;
       default:
         return Colors.red;

@@ -314,15 +314,13 @@ class _FollowUpListState extends State<FollowUpList> {
                             if (index == filteredFollowUpList.length) {
                               if (hasMoreData) {
                                 getFollowUpList();
-                                return Center(
-                                  child:
-                                      LoadingAnimationWidget.staggeredDotsWave(
-                                    color: Colors.blue,
-                                    size: 50,
-                                  ),
+                                return const Center(
+                                  child: Text('No more data'),
                                 );
                               } else {
-                                return const SizedBox.shrink();
+                                return const Center(
+                                  child: Text('No more data'),
+                                );
                               }
                             }
 

@@ -309,7 +309,9 @@ class _LeadTaskListScreenState extends State<LeadTaskListScreen> {
             );
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData && snapshot.data!.data != null) {
+          } else if (snapshot.hasData &&
+              snapshot.data!.data != null &&
+              snapshot.data!.data!.isNotEmpty) {
             return ListView.builder(
               itemCount: snapshot.data!.data!.length,
               itemBuilder: (context, index) {

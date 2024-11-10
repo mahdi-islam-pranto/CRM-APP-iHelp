@@ -111,12 +111,12 @@ class NotificationServices {
     return token!;
   }
 
-  void isTokenRefresh() async {
-    massing.onTokenRefresh.listen((event) {
-      event.toString();
-      print("refresh");
-    });
-  }
+  // void isTokenRefresh() async {
+  //   massing.onTokenRefresh.listen((event) {
+  //     event.toString();
+  //     print("refresh");
+  //   });
+  // }
 
   //
   void handleMessage(BuildContext context, RemoteMessage message) {

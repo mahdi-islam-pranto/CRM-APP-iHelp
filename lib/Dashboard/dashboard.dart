@@ -58,8 +58,8 @@ class _NewDashboardState extends State<NewDashboard> {
     notificationServices.requestNotificationPermissin();
     notificationServices.forgroundMessage();
     notificationServices.firebaseInit(context);
-    notificationServices.isTokenRefresh();
-    notificationServices.isTokenRefresh();
+    // notificationServices.isTokenRefresh();
+    // notificationServices.isTokenRefresh();
 
     /// Device Token
     notificationServices.getDeviceToken().then((value) {
