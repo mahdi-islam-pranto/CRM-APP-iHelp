@@ -438,7 +438,18 @@ class _loginPageState extends State<UserLoginScreen> {
       String url = 'https://crm.ihelpbd.com/api/crm-app-login';
 
       // For testing purposes, use a static device token
-      String deviceToken = NotificationService().getDeviceToken().toString();
+
+      // create notification service object
+      NotificationService notificationServices = NotificationService();
+
+      /// Device Token
+      // notificationServices.getDeviceToken().then((value) {
+      //   if (kDebugMode) {
+      //     print('device token : ${value}');
+      //     print(value);
+      //   }
+      // });
+      String deviceToken = await notificationServices.getDeviceToken();
 
       if (deviceToken.isEmpty) {
         // Handle the case where the token couldn't be fetched

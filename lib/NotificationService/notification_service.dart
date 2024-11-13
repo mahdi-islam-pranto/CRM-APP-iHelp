@@ -6,7 +6,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:untitled1/Dashboard/dashboard.dart';
+
+import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
+import 'package:untitled1/Task/allTaskListScreen.dart';
 
 import '../Dashboard/bottom_navigation_page.dart';
 
@@ -44,14 +46,27 @@ class NotificationService {
   }
 
   // get device token
-  Future<String?> getDeviceToken() async {
-    NotificationSettings settings = await messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-    String? deviceToken = await messaging.getToken();
-    return deviceToken!;
+  // get device token
+  Future<String> getDeviceToken() async {
+    try {
+      NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
+      String? deviceToken = await messaging.getToken();
+
+      if (deviceToken == null) {
+        throw Exception('Failed to get device token');
+      }
+
+      print('Device Token: $deviceToken'); // For debugging
+      return deviceToken;
+    } catch (e) {
+      print('Error getting device token: $e');
+      throw Exception('Failed to get device token: $e');
+    }
   }
 
   //function to initialise flutter local notification plugin to show notifications for android when app is active
@@ -181,27 +196,34 @@ class NotificationService {
     print(
         "Navigating to appointments screen. Hit here to handle the message. Message data: ${message.data}");
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BottomNavigationPage(),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => BottomNavigationPage(),
+    //   ),
+    // );
 
-    // if (message.data['screen'] == 'cart') {
-    //   Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => const CartScreen(),
-    //     ),
-    //   );
-    // } else {
-    //   Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => NotificationScreen(message: message),
-    //     ),
-    //   );
-    // }
+    if (message.data['screen'] == 'followup') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const FollowUpList(),
+        ),
+      );
+    } else if (message.data['screen'] == 'task') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const TaskListScreen(),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BottomNavigationPage(),
+        ),
+      );
+    }
   }
 }

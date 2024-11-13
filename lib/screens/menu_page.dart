@@ -12,6 +12,7 @@ import 'package:untitled1/screens/totalLeadList.dart';
 
 import '../Contacts/contact_services.dart';
 import '../NotificationService/getServerKey.dart';
+import '../NotificationService/sendNotification.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({super.key});
@@ -64,10 +65,19 @@ class MenuPage extends StatelessWidget {
                           child: InkWell(
                             onTap: () async {
                               // print server token
-                              GetServerKey getServerToken = GetServerKey();
-                              String FCMserverToken =
-                                  await getServerToken.getServerKey();
-                              print("FCM server token: $FCMserverToken");
+                              // GetServerKey getServerToken = GetServerKey();
+                              // String FCMserverToken =
+                              //     await getServerToken.getServerKey();
+                              // print("FCM server token: $FCMserverToken");
+
+                              // send notification
+                              SendNotificationService.sendNotificationUsingApi(
+                                token:
+                                    "cmMcGzngQAqUwrvVpHQVko:APA91bEwtTJpUJ4LKGJ1XJuhYqDpxJsx4ol4D17b4kDM7j2DrIik11xykg_2C6MCsl_td7mv-y8t6r-7sUxId46koQ_Iq4VvecMe7VlfL3wtgP9XaV-mXbk",
+                                title: "pranto test notification",
+                                body: "this is the notificationbody",
+                                data: {"screen": "followup"},
+                              );
                             },
                             child: Container(
                               // height: 167,
@@ -92,7 +102,7 @@ class MenuPage extends StatelessWidget {
                                       ),
                                       child: const Center(
                                         child: Icon(
-                                          Icons.supervised_user_circle_sharp,
+                                          Icons.notifications_outlined,
                                           color: Colors.white,
                                           size: 35,
                                         ),
