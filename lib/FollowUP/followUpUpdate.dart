@@ -220,26 +220,26 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
       print('Response Body: ${response.body}');
 
       // send notification
-      if (selectedDeviceToken.isNotEmpty) {
-        FCMService.sendNotification(
-            deviceToken: selectedDeviceToken,
-            title: "Reminder",
-            body: "FollowUp Available ! Please Solved FollowUp",
-            storyId: "story_12345");
-        print("selected device token: $selectedDeviceToken");
-      } else {
-        print("Device token is empty");
-      }
-      if (associateSelectedDeviceToken.isNotEmpty) {
-        FCMService.sendNotification(
-            deviceToken: associateSelectedDeviceToken,
-            title: "Reminder",
-            body: "FollowUp Available ! Please Solved FollowUp",
-            storyId: "story_12345");
-        print("selected associate device token: $associateSelectedDeviceToken");
-      } else {
-        print("Device token is empty");
-      }
+      // if (selectedDeviceToken.isNotEmpty) {
+      //   FCMService.sendNotification(
+      //       deviceToken: selectedDeviceToken,
+      //       title: "Reminder",
+      //       body: "FollowUp Available ! Please Solved FollowUp",
+      //       storyId: "story_12345");
+      //   print("selected device token: $selectedDeviceToken");
+      // } else {
+      //   print("Device token is empty");
+      // }
+      // if (associateSelectedDeviceToken.isNotEmpty) {
+      //   FCMService.sendNotification(
+      //       deviceToken: associateSelectedDeviceToken,
+      //       title: "Reminder",
+      //       body: "FollowUp Available ! Please Solved FollowUp",
+      //       storyId: "story_12345");
+      //   print("selected associate device token: $associateSelectedDeviceToken");
+      // } else {
+      //   print("Device token is empty");
+      // }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

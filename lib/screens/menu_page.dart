@@ -11,6 +11,7 @@ import 'package:untitled1/Task/taskCreateForm.dart';
 import 'package:untitled1/screens/totalLeadList.dart';
 
 import '../Contacts/contact_services.dart';
+import '../NotificationService/getServerKey.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({super.key});
@@ -57,11 +58,17 @@ class MenuPage extends StatelessWidget {
 
                     Column(
                       children: [
-                        // Employees
+                        // Notifications
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () async {
+                              // print server token
+                              GetServerKey getServerToken = GetServerKey();
+                              String FCMserverToken =
+                                  await getServerToken.getServerKey();
+                              print("FCM server token: $FCMserverToken");
+                            },
                             child: Container(
                               // height: 167,
                               // width: 170,
@@ -92,7 +99,7 @@ class MenuPage extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 10),
-                                    const Text("Employees",
+                                    const Text("Notifications",
                                         style: TextStyle(fontSize: 14))
                                   ],
                                 ),
