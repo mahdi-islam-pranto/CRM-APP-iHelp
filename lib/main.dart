@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:untitled1/firebase_options.dart';
 import 'Notification/notification_handler.dart';
 import 'dependency_injection.dart';
 import 'splash_screen.dart';
@@ -20,8 +21,8 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 @pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
+Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
 void main() async {
@@ -32,10 +33,10 @@ void main() async {
 
   try {
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
-    FirebaseMessaging.onBackgroundMessage(
-        _firebaseMassageingBackgroundHandeler);
-    NotificationHandler.initialize();
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+    FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
+    // NotificationHandler.initialize();
   } catch (e, tr) {
     log("Error :::: => ${e.toString()}");
     tr.printError();

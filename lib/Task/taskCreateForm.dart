@@ -114,26 +114,26 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       startDateTimeController.clear();
 
       // send notification
-      if (selectedDeviceToken.isNotEmpty) {
-        FCMService.sendNotification(
-            deviceToken: selectedDeviceToken,
-            title: "Reminder",
-            body: "New Task Created ! Please Check",
-            storyId: "story_12345");
-        print("selected device token: $selectedDeviceToken");
-      } else {
-        print("Device token is empty");
-      }
-      if (associateSelectedDeviceToken.isNotEmpty) {
-        FCMService.sendNotification(
-            deviceToken: associateSelectedDeviceToken,
-            title: "Reminder",
-            body: "New Follow Up Created ! Please Check",
-            storyId: "story_12345");
-        print("selected associate device token: $associateSelectedDeviceToken");
-      } else {
-        print("Device token is empty");
-      }
+      // if (selectedDeviceToken.isNotEmpty) {
+      //   FCMService.sendNotification(
+      //       deviceToken: selectedDeviceToken,
+      //       title: "Reminder",
+      //       body: "New Task Created ! Please Check",
+      //       storyId: "story_12345");
+      //   print("selected device token: $selectedDeviceToken");
+      // } else {
+      //   print("Device token is empty");
+      // }
+      // if (associateSelectedDeviceToken.isNotEmpty) {
+      //   FCMService.sendNotification(
+      //       deviceToken: associateSelectedDeviceToken,
+      //       title: "Reminder",
+      //       body: "New Follow Up Created ! Please Check",
+      //       storyId: "story_12345");
+      //   print("selected associate device token: $associateSelectedDeviceToken");
+      // } else {
+      //   print("Device token is empty");
+      // }
 
       // Reset dropdowns to their initial state
       setState(() {
@@ -484,19 +484,19 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                 print("Date selected: $date");
 
                 // Send notification to assigned member
-                if (selectedDeviceToken.isNotEmpty) {
-                  FCMService.sendNotification(
-                      deviceToken: selectedDeviceToken,
-                      title: "Task Deadline Set",
-                      body:
-                          "A task has been assigned to you with a deadline of $date",
-                      storyId:
-                          "story_${DateTime.now().millisecondsSinceEpoch}");
-                  print(
-                      "Notification sent to device token: $selectedDeviceToken");
-                } else {
-                  print("No device token available for notification");
-                }
+                // if (selectedDeviceToken.isNotEmpty) {
+                //   FCMService.sendNotification(
+                //       deviceToken: selectedDeviceToken,
+                //       title: "Task Deadline Set",
+                //       body:
+                //           "A task has been assigned to you with a deadline of $date",
+                //       storyId:
+                //           "story_${DateTime.now().millisecondsSinceEpoch}");
+                //   print(
+                //       "Notification sent to device token: $selectedDeviceToken");
+                // } else {
+                //   print("No device token available for notification");
+                // }
               });
             }
           },

@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/Auth/login_page.dart';
 import 'package:untitled1/FollowUP/followUpCreateForm.dart';
 import 'package:untitled1/Lead/leadCreateform.dart';
+import 'package:untitled1/NotificationService/notification_service.dart';
 import 'package:untitled1/Task/taskCreateForm.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import 'package:untitled1/sip_account/SipAccountSetting.dart';
@@ -19,7 +20,8 @@ import '../Contacts/contact_services.dart';
 import '../Models/leadPipeline.dart';
 import '../Models/menuItem.dart';
 import '../Models/menuItems.dart';
-import '../Notification/notification_service.dart';
+
+import '../NotificationService/fcm_service.dart';
 import '../Task/todayTaskList.dart';
 import '../components/DashboardCounter.dart';
 import '../components/DashboardFollowUps.dart';
@@ -43,7 +45,8 @@ class _NewDashboardState extends State<NewDashboard> {
 
   late Future<Map<String, dynamic>> futureLeadData;
 
-  static NotificationServices notificationServices = NotificationServices();
+// create notification service object
+  NotificationService notificationServices = NotificationService();
 
   // carousal controller
   final CarouselController _carouselController = CarouselController();
@@ -55,9 +58,12 @@ class _NewDashboardState extends State<NewDashboard> {
     _loadUserInfo();
     futureLeadData = fetchLeadPipelineData();
     //notification
-    notificationServices.requestNotificationPermissin();
-    notificationServices.forgroundMessage();
-    notificationServices.firebaseInit(context);
+// request notification permission
+    notificationServices.requestNotificationPermission();
+
+    // notificationServices.requestNotificationPermissin();
+    // notificationServices.forgroundMessage();
+    // notificationServices.firebaseInit(context);
     // notificationServices.isTokenRefresh();
     // notificationServices.isTokenRefresh();
 
@@ -68,6 +74,12 @@ class _NewDashboardState extends State<NewDashboard> {
         print(value);
       }
     });
+
+    notificationServices.firebaseInit(context);
+
+    notificationServices.setupInteractMessage(context);
+
+    FCMService.firebaseInit();
   }
 
   String? username;
