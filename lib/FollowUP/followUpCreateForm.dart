@@ -11,6 +11,7 @@ import 'package:untitled1/resourses/app_colors.dart';
 import '../Lead/LeadAssociateDropdown.dart';
 import '../Lead/LeadOwnerDropdown.dart';
 import '../Notification/fcm_server.dart';
+import '../NotificationService/sendNotification.dart';
 import '../components/CustomProgress.dart';
 
 import '../components/Dropdowns/companyNameDropDown.dart';
@@ -134,26 +135,31 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
       print('Response Body: ${response.body}');
 
       // send notification
-      // if (selectedDeviceToken.isNotEmpty) {
-      //   FCMService.sendNotification(
-      //       deviceToken: selectedDeviceToken,
-      //       title: "Reminder",
-      //       body: "FollowUp Available ! Please Solved FollowUp",
-      //       storyId: "story_12345");
-      //   print("selected device token: $selectedDeviceToken");
-      // } else {
-      //   print("Device token is empty");
-      // }
-      // if (associateSelectedDeviceToken.isNotEmpty) {
-      //   FCMService.sendNotification(
-      //       deviceToken: associateSelectedDeviceToken,
-      //       title: "Reminder",
-      //       body: "FollowUp Available ! Please Solved FollowUp",
-      //       storyId: "story_12345");
-      //   print("selected associate device token: $associateSelectedDeviceToken");
-      // } else {
-      //   print("Device token is empty");
-      // }
+      // send notification
+      if (selectedDeviceToken.isNotEmpty) {
+        SendNotificationService.sendNotificationUsingApi(
+            token: selectedDeviceToken,
+            title: "New Follow Up Created",
+            body: "You are assigned to a new follow up! Please check",
+            data: {
+              'screen': 'followup',
+            });
+        print("selected device token: $selectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
+      if (associateSelectedDeviceToken.isNotEmpty) {
+        SendNotificationService.sendNotificationUsingApi(
+            token: selectedDeviceToken,
+            title: "New Follow Up Created",
+            body: "You are associated to a new follow up! Please check",
+            data: {
+              'screen': 'followup',
+            });
+        print("selected associate device token: $associateSelectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
 
       await AwesomeDialog(
         context: context,

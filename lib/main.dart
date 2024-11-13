@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:untitled1/firebase_options.dart';
-import 'Notification/notification_handler.dart';
 import 'dependency_injection.dart';
 import 'splash_screen.dart';
 
