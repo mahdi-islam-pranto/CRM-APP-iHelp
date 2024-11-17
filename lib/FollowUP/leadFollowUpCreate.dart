@@ -221,7 +221,7 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          backgroundColor: backgroundColor,
+          backgroundColor: formBackgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.white,
             // toolbarHeight: 80,

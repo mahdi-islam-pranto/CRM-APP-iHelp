@@ -199,6 +199,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
           icon: const Icon(
             Icons.arrow_back_ios,
             size: 18,
+            color: Colors.blue,
           ),
           onPressed: () {
             showAnimatedDialog(
@@ -208,7 +209,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                 return const BottomNavigationPage();
               },
               curve: Curves.fastOutSlowIn,
-              duration: const Duration(seconds: 1),
+              duration: const Duration(milliseconds: 700),
             );
           },
         ),
@@ -216,15 +217,11 @@ class _LeadListScreenState extends State<LeadListScreen> {
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.white,
         ),
-        title: Container(
-          height: 35,
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: const Text('ALL LEADS'),
+        title: const Text(
+          "All Leads",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
+        centerTitle: true,
         automaticallyImplyLeading: true,
         actions: [
           IconButton(

@@ -201,8 +201,12 @@ class _FollowUpListState extends State<FollowUpList> {
           icon: const Icon(
             Icons.arrow_back_ios,
             size: 18,
+            color: Colors.blue,
           ),
           onPressed: () {
+            // go back
+            // Navigator.pop(context);
+            // go to dashboard
             showAnimatedDialog(
               context: context,
               barrierDismissible: true,
@@ -210,7 +214,7 @@ class _FollowUpListState extends State<FollowUpList> {
                 return const BottomNavigationPage();
               },
               curve: Curves.fastOutSlowIn,
-              duration: const Duration(seconds: 1),
+              duration: const Duration(milliseconds: 700),
             );
           },
         ),
@@ -218,15 +222,11 @@ class _FollowUpListState extends State<FollowUpList> {
         systemOverlayStyle: const SystemUiOverlayStyle(
           statusBarColor: Colors.white,
         ),
-        title: Container(
-          height: 35,
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          decoration: BoxDecoration(
-            color: Colors.white70,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: const Text('ALL FOLLOW UPS'),
+        title: const Text(
+          "All Follow Ups",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
+        centerTitle: true,
         automaticallyImplyLeading: true,
         actions: [
           IconButton(

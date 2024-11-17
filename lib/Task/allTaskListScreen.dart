@@ -106,29 +106,25 @@ class _TaskListScreenState extends State<TaskListScreen> {
       ),
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, size: 18),
+          icon: const Icon(Icons.arrow_back_ios, size: 18, color: Colors.blue),
           onPressed: () {
             showAnimatedDialog(
               context: context,
               barrierDismissible: true,
               builder: (BuildContext context) => const BottomNavigationPage(),
               curve: Curves.fastOutSlowIn,
-              duration: const Duration(seconds: 1),
+              duration: const Duration(milliseconds: 700),
             );
           },
         ),
         backgroundColor: Colors.white,
         systemOverlayStyle:
             const SystemUiOverlayStyle(statusBarColor: Colors.white),
-        title: Container(
-          height: 35,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            color: Colors.white70,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: const Text('All Tasks'),
+        title: Text(
+          "All Tasks",
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
+        centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {

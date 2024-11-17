@@ -302,72 +302,72 @@ class _LeadOverviewState extends State<LeadOverview> {
                         ),
 
                         // Bottom Buttons
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 10,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.redAccent,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical:
-                                        MediaQuery.of(context).size.height *
-                                            0.018,
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.08,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      MediaQuery.of(context).size.width * 0.03,
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text(
-                                  "DELETE LEAD",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 11),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: buttonColor,
-                                  padding: EdgeInsets.symmetric(
-                                    vertical:
-                                        MediaQuery.of(context).size.height *
-                                            0.018,
-                                    horizontal:
-                                        MediaQuery.of(context).size.width *
-                                            0.08,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                      MediaQuery.of(context).size.width * 0.03,
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {},
-                                child: const Text(
-                                  "EDIT LEAD",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.symmetric(
+                        //     horizontal: 15,
+                        //     vertical: 10,
+                        //   ),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        //     children: [
+                        //       ElevatedButton(
+                        //         style: ElevatedButton.styleFrom(
+                        //           backgroundColor: Colors.redAccent,
+                        //           padding: EdgeInsets.symmetric(
+                        //             vertical:
+                        //                 MediaQuery.of(context).size.height *
+                        //                     0.018,
+                        //             horizontal:
+                        //                 MediaQuery.of(context).size.width *
+                        //                     0.08,
+                        //           ),
+                        //           shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.circular(
+                        //               MediaQuery.of(context).size.width * 0.03,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         onPressed: () {
+                        //           Navigator.pop(context);
+                        //         },
+                        //         child: const Text(
+                        //           "DELETE LEAD",
+                        //           style: TextStyle(
+                        //             color: Colors.white,
+                        //             fontSize: 16,
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       const SizedBox(width: 11),
+                        //       ElevatedButton(
+                        //         style: ElevatedButton.styleFrom(
+                        //           backgroundColor: buttonColor,
+                        //           padding: EdgeInsets.symmetric(
+                        //             vertical:
+                        //                 MediaQuery.of(context).size.height *
+                        //                     0.018,
+                        //             horizontal:
+                        //                 MediaQuery.of(context).size.width *
+                        //                     0.08,
+                        //           ),
+                        //           shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.circular(
+                        //               MediaQuery.of(context).size.width * 0.03,
+                        //             ),
+                        //           ),
+                        //         ),
+                        //         onPressed: () {},
+                        //         child: const Text(
+                        //           "EDIT LEAD",
+                        //           style: TextStyle(
+                        //             color: Colors.white,
+                        //             fontSize: 16,
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
