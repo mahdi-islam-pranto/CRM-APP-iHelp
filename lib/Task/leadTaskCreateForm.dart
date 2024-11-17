@@ -211,7 +211,7 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
     return SafeArea(
       child: Scaffold(
           resizeToAvoidBottomInset: true,
-          backgroundColor: backgroundColor,
+          backgroundColor: formBackgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.white,
             // toolbarHeight: 80,

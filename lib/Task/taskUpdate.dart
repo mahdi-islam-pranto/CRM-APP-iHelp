@@ -168,7 +168,7 @@ class _TaskUpdateFormState extends State<TaskUpdateForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: formBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text('Update Task'),

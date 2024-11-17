@@ -43,6 +43,12 @@ class _LeadPipelineScreenState extends State<LeadPipelineScreen> {
       final responseData = json.decode(response.body);
       setState(() {
         _pipelineList = responseData['data'];
+        if (_pipelineList.isNotEmpty) {
+          // Set default selected pipeline
+          _selectedPipelineName = _pipelineList[0]['name'];
+          _selectedPipelineId = _pipelineList[0]['id'];
+          SelectedPipeline.pipelineId = _selectedPipelineId;
+        }
       });
     } else {
       print('Failed to fetch lead pipeline');

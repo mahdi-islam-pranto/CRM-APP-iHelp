@@ -353,31 +353,27 @@ class _TaskOverviewState extends State<TaskOverview> {
                                 // Delete task
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.redAccent,
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: MediaQuery.of(context)
-                                              .size
-                                              .height *
-                                          0.018, // Adjust the vertical padding as needed
-                                      horizontal: MediaQuery.of(context)
-                                              .size
-                                              .width *
-                                          0.08, // Adjust the horizontal padding as needed
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
+                                    minimumSize: Size(
+                                        MediaQuery.of(context).size.width * 0.4,
+                                        52),
+                                    maximumSize: Size(
                                         MediaQuery.of(context).size.width *
-                                            0.03, // Adjust the border radius as needed
-                                      ),
+                                            0.45,
+                                        52),
+                                    backgroundColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      side: const BorderSide(
+                                          color: Colors.blue, width: 2),
+                                      borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
                                   child: const Text(
-                                    "DELETE TASK",
+                                    "GO BACK",
                                     style: TextStyle(
-                                        color: Colors.white, fontSize: 16),
+                                        color: Colors.blue, fontSize: 16),
                                   ),
                                 ),
                                 const SizedBox(width: 11),
