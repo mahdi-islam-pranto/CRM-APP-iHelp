@@ -22,7 +22,8 @@ import 'followUpType.dart';
 import 'leadFollowUpList.dart';
 
 class LeadFollowUpCreate extends StatefulWidget {
-  const LeadFollowUpCreate({Key? key}) : super(key: key);
+  final int leadId;
+  const LeadFollowUpCreate({Key? key, required this.leadId}) : super(key: key);
 
   @override
   State<LeadFollowUpCreate> createState() => _LeadFollowUpCreateState();
@@ -253,7 +254,11 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      dropDownRow("Company Name", CompanyNameDropdown()),
+                      dropDownRow(
+                          "Company Name",
+                          CompanyNameDropdown(
+                            leadId: widget.leadId,
+                          )),
                       const SizedBox(height: 10),
                       formField("Subject", _subject, 'Please enter subject'),
                       const SizedBox(height: 10),

@@ -11,8 +11,13 @@ class CompanyName {
 
 class CompanyNameDropdown extends StatefulWidget {
   final String? initialValue;
+  final int? leadId;
 
-  const CompanyNameDropdown({Key? key, this.initialValue}) : super(key: key);
+  const CompanyNameDropdown({
+    Key? key,
+    this.initialValue,
+    this.leadId, // Add this to constructor
+  }) : super(key: key);
 
   @override
   _CompanyNameDropdownState createState() => _CompanyNameDropdownState();
@@ -60,7 +65,20 @@ class _CompanyNameDropdownState extends State<CompanyNameDropdown> {
         final responseData = json.decode(response.body);
         setState(() {
           _totalLeadList = responseData['data'];
-          if (widget.initialValue != null) {
+
+          // If leadId is provided, find and select the matching company
+          if (widget.leadId != null) {
+            final companyWithLeadId = _totalLeadList.firstWhere(
+              (company) => company['id'] == widget.leadId,
+              orElse: () => null,
+            );
+
+            if (companyWithLeadId != null) {
+              _onCompanySelected(companyWithLeadId);
+            }
+          }
+          // Fallback to initialValue if leadId doesn't match
+          else if (widget.initialValue != null) {
             final initialCompany = _totalLeadList.firstWhere(
               (company) => company['company_name'] == widget.initialValue,
               orElse: () => null,

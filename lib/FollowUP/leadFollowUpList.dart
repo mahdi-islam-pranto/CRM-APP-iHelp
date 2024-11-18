@@ -368,7 +368,10 @@ class _LeadFollowUpListState extends State<LeadFollowUpList> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const LeadFollowUpCreate()),
+            MaterialPageRoute(
+                builder: (context) => LeadFollowUpCreate(
+                      leadId: widget.leadId,
+                    )),
           );
         },
         heroTag: "Create Lead",
