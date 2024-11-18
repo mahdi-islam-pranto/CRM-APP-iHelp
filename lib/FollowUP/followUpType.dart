@@ -89,6 +89,8 @@ class _FollowUpTypeDropdownState extends State<FollowUpTypeDropdown> {
               ],
             ),
             child: DropdownButtonFormField<dynamic>(
+              validator: (value) =>
+                  value == null ? 'Follow up type is required' : null,
               dropdownColor: backgroundColor,
               menuMaxHeight: 500,
               hint: Text(

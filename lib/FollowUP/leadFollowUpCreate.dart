@@ -1,23 +1,16 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
-
 import 'package:untitled1/resourses/app_colors.dart';
-
+import 'package:untitled1/screens/leadDetailsTabs.dart';
 import '../Lead/LeadAssociateDropdown.dart';
 import '../Lead/LeadOwnerDropdown.dart';
-import '../Notification/fcm_server.dart';
 import '../components/CustomProgress.dart';
-
 import '../components/Dropdowns/companyNameDropDown.dart';
-import '../resourses/resourses.dart';
-import '../screens/leadDetailsTabs.dart';
-import 'FollowUPListScreen.dart';
+
 import 'followUpType.dart';
 import 'leadFollowUpList.dart';
 
@@ -65,16 +58,6 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
 
   Future sendDataToServer() async {
     CustomProgress customProgress = CustomProgress(context);
-
-    if (!validatePhoneNumber(_contactNumber.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Phone number must be 11 digits.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
 
     customProgress.showDialog(
         "Please wait", SimpleFontelicoProgressDialogType.spinner);
@@ -184,12 +167,18 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
           Navigator.of(context).pop();
         },
         btnOkOnPress: () {
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => LeadFollowUpList(
+          //         leadId: CompanyName.companyId!.toInt(),
+          //       ),
+          //     ));
           Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => LeadFollowUpList(
-                  leadId: CompanyName.companyId!.toInt(),
-                ),
+                builder: (context) =>
+                    LeadDetailsTabs(leadId: CompanyName.companyId!.toInt()),
               ));
         },
       ).show();
@@ -491,15 +480,6 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
             child: TextFormField(
               controller: _contactNumber,
               keyboardType: TextInputType.phone,
-              // validator: (value) {
-              //   if (value == null || value.isEmpty) {
-              //     return 'Please enter phone number';
-              //   }
-              //   if (!validatePhoneNumber(value)) {
-              //     return 'Phone number must be 11 digits';
-              //   }
-              //   return null;
-              // },
               decoration: InputDecoration(
                 contentPadding:
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
