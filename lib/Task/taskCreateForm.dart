@@ -36,12 +36,12 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
     return RegExp(r'^[0-9]{11}$').hasMatch(phoneNumber);
   }
 
-  // notification
+  // notification inits
 
   String selectedDeviceToken = "";
   String associateSelectedDeviceToken = "";
 
-  // assign
+  // assign member device token
   void handleDeviceToken(String deviceToken) {
     setState(() {
       selectedDeviceToken = deviceToken;

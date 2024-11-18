@@ -7,10 +7,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 import 'package:untitled1/components/Dropdowns/companyNameDropDown.dart';
 import 'package:untitled1/resourses/app_colors.dart';
+import 'package:untitled1/screens/leadDetailsTabs.dart';
 import '../FollowUP/followUpType.dart';
 import '../Lead/LeadOwnerDropdown.dart';
 import '../Lead/leadTaskList.dart';
 
+import '../NotificationService/sendNotification.dart';
 import '../components/CustomProgress.dart';
 import '../components/Dropdowns/taskTypeDropdown.dart';
 
@@ -116,26 +118,19 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
       startDateTimeController.clear();
 
       // send notification
-      // if (selectedDeviceToken.isNotEmpty) {
-      //   FCMService.sendNotification(
-      //       deviceToken: selectedDeviceToken,
-      //       title: "Reminder",
-      //       body: "New Task Created! Please Check",
-      //       storyId: "story_12345");
-      //   print("selected device token: $selectedDeviceToken");
-      // } else {
-      //   print("Device token is empty");
-      // }
-      // if (associateSelectedDeviceToken.isNotEmpty) {
-      //   FCMService.sendNotification(
-      //       deviceToken: associateSelectedDeviceToken,
-      //       title: "Reminder",
-      //       body: "New Follow Up Created ! Please Check",
-      //       storyId: "story_12345");
-      //   print("selected associate device token: $associateSelectedDeviceToken");
-      // } else {
-      //   print("Device token is empty");
-      // }
+      // send notification
+      if (selectedDeviceToken.isNotEmpty) {
+        SendNotificationService.sendNotificationUsingApi(
+            token: selectedDeviceToken,
+            title: "New Task Created",
+            body: "You are assigned to a new task! Please check",
+            data: {
+              'screen': 'task',
+            });
+        print("selected device token: $selectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
 
       // Reset dropdowns to their initial state
       setState(() {
@@ -173,7 +168,7 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => LeadTaskListScreen(
+                  builder: (context) => LeadDetailsTabs(
                         leadId: widget.leadId,
                       )));
         },

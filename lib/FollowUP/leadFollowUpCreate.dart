@@ -8,6 +8,7 @@ import 'package:untitled1/resourses/app_colors.dart';
 import 'package:untitled1/screens/leadDetailsTabs.dart';
 import '../Lead/LeadAssociateDropdown.dart';
 import '../Lead/LeadOwnerDropdown.dart';
+import '../NotificationService/sendNotification.dart';
 import '../components/CustomProgress.dart';
 import '../components/Dropdowns/companyNameDropDown.dart';
 
@@ -112,27 +113,33 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
       _contactNumber.clear();
       dateTimeController.clear();
 
-      // send notification
-      // if (selectedDeviceToken.isNotEmpty) {
-      //   FCMService.sendNotification(
-      //       deviceToken: selectedDeviceToken,
-      //       title: "Reminder",
-      //       body: "New Task Created! Please Check",
-      //       storyId: "story_12345");
-      //   print("selected device token: $selectedDeviceToken");
-      // } else {
-      //   print("Device token is empty");
-      // }
-      // if (associateSelectedDeviceToken.isNotEmpty) {
-      //   FCMService.sendNotification(
-      //       deviceToken: associateSelectedDeviceToken,
-      //       title: "Reminder",
-      //       body: "New Follow Up Created ! Please Check",
-      //       storyId: "story_12345");
-      //   print("selected associate device token: $associateSelectedDeviceToken");
-      // } else {
-      //   print("Device token is empty");
-      // }
+      // send notification to assigned user
+      if (selectedDeviceToken.isNotEmpty) {
+        SendNotificationService.sendNotificationUsingApi(
+            token: selectedDeviceToken,
+            title: "New Follow Up Created",
+            body: "You are assigned to a new follow up! Please check",
+            data: {
+              'screen': 'followup',
+            });
+        print("selected device token: $selectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
+
+      // send notification to accociate user
+      if (associateSelectedDeviceToken.isNotEmpty) {
+        SendNotificationService.sendNotificationUsingApi(
+            token: associateSelectedDeviceToken,
+            title: "New Follow Up Created",
+            body: "You are associated to a new follow up! Please check",
+            data: {
+              'screen': 'followup',
+            });
+        print("selected device token: $selectedDeviceToken");
+      } else {
+        print("Device token is empty");
+      }
 
       // Reset dropdowns to their initial state
       setState(() {
