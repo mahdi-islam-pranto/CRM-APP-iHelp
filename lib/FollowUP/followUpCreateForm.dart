@@ -62,16 +62,6 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
   Future sendDataToServer() async {
     CustomProgress customProgress = CustomProgress(context);
 
-    if (!validatePhoneNumber(_contactNumber.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Phone number must be 11 digits.'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
     customProgress.showDialog(
         "Please wait", SimpleFontelicoProgressDialogType.spinner);
 

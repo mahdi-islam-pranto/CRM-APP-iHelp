@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,11 +10,9 @@ import 'package:untitled1/resourses/app_colors.dart';
 import '../FollowUP/followUpType.dart';
 import '../Lead/LeadOwnerDropdown.dart';
 import '../Lead/leadTaskList.dart';
-import '../Notification/fcm_server.dart';
+
 import '../components/CustomProgress.dart';
 import '../components/Dropdowns/taskTypeDropdown.dart';
-import '../resourses/resourses.dart';
-import 'allTaskListScreen.dart';
 
 class LeadTaskCreateForm extends StatefulWidget {
   final int leadId;
@@ -28,7 +25,6 @@ class LeadTaskCreateForm extends StatefulWidget {
 class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
   final _formKey = GlobalKey<FormState>();
   final _companyName = TextEditingController();
-
   final _subject = TextEditingController();
   final _description = TextEditingController();
   final _contactNumber = TextEditingController();
@@ -78,6 +74,7 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
       ));
       return;
     }
+
     print("Token: $token");
 
     String url = 'https://crm.ihelpbd.com/api/crm-create-task';
@@ -243,7 +240,11 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
                   child: Column(
                     children: [
                       //company
-                      dropDownRow("Company Name", const CompanyNameDropdown()),
+                      dropDownRow(
+                          "Company Name",
+                          CompanyNameDropdown(
+                            leadId: widget.leadId,
+                          )),
                       const SizedBox(height: 10),
 
                       // task type
