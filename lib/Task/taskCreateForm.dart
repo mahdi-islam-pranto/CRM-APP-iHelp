@@ -8,7 +8,6 @@ import 'package:untitled1/components/Dropdowns/companyNameDropDown.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import '../FollowUP/followUpType.dart';
 import '../Lead/LeadOwnerDropdown.dart';
-
 import '../NotificationService/sendNotification.dart';
 import '../components/CustomProgress.dart';
 import '../components/Dropdowns/taskTypeDropdown.dart';
@@ -24,13 +23,34 @@ class TaskCreateForm extends StatefulWidget {
 class _TaskCreateFormState extends State<TaskCreateForm> {
   final _formKey = GlobalKey<FormState>();
   final _companyName = TextEditingController();
-
   final _subject = TextEditingController();
   final _description = TextEditingController();
   final _contactNumber = TextEditingController();
+
   TextEditingController startDateTimeController = TextEditingController();
   TextEditingController endDateTimeController = TextEditingController();
   late String dateTimePicker;
+
+  String? currentUserId; // Add this variable
+
+  @override
+  void initState() {
+    super.initState();
+
+    // set current date to start date
+    startDateTimeController.text =
+        "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
+    getCurrentUserId();
+  }
+
+  // method to get the current user ID
+  Future<void> getCurrentUserId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      currentUserId = sharedPreferences.getString("id");
+      print("Current User ID: $currentUserId");
+    });
+  }
 
   bool validatePhoneNumber(String phoneNumber) {
     return RegExp(r'^[0-9]{11}$').hasMatch(phoneNumber);
@@ -62,7 +82,6 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
 
     customProgress.showDialog(
         "Please wait", SimpleFontelicoProgressDialogType.spinner);
-
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString("token");
     String userId = sharedPreferences.getString("id") ?? "";
@@ -127,6 +146,9 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       } else {
         print("Device token is empty");
       }
+
+      // send notification
+
       // if (associateSelectedDeviceToken.isNotEmpty) {
       //   print("selected associate device token: $associateSelectedDeviceToken");
       // } else {
@@ -231,6 +253,8 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
+                    // get userid from shared preference
+
                     children: [
                       //company
                       dropDownRow("Company Name", const CompanyNameDropdown()),
@@ -251,6 +275,8 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                       dropDownRow(
                           "Assign Member",
                           LeadOwnerDropDown(
+                            // put user id from shared preference
+                            userId: currentUserId,
                             onDeviceTokenReceived: handleDeviceToken,
                           )),
                       const SizedBox(height: 12),

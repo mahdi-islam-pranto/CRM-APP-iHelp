@@ -13,11 +13,13 @@ class Owner {
 class LeadOwnerDropDown extends StatefulWidget {
   final Function(String) onDeviceTokenReceived;
   final String? initialValue;
+  final String? userId;
 
   const LeadOwnerDropDown({
     Key? key,
     required this.onDeviceTokenReceived,
     this.initialValue,
+    this.userId,
   }) : super(key: key);
 
   @override
@@ -33,6 +35,7 @@ class _LeadOwnerDropDownState extends State<LeadOwnerDropDown> {
   @override
   void initState() {
     super.initState();
+
     fetchLeadOwnerData();
   }
 
@@ -51,7 +54,20 @@ class _LeadOwnerDropDownState extends State<LeadOwnerDropDown> {
       final responseData = json.decode(response.body);
       setState(() {
         _pipelineList = responseData['data'];
-        if (widget.initialValue != null) {
+
+        // If userId is provided, find and select the matching member
+        if (widget.userId != null) {
+          final userWithId = _pipelineList.firstWhere(
+            (user) => user['id'].toString() == widget.userId,
+            orElse: () => null,
+          );
+
+          if (userWithId != null) {
+            _onPipelineSelected(userWithId);
+          }
+        }
+        // Fallback to initialValue if userId doesn't match
+        else if (widget.initialValue != null) {
           final initialOwner = _pipelineList.firstWhere(
             (owner) => owner['name'] == widget.initialValue,
             orElse: () => null,
