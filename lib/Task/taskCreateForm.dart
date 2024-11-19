@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -127,7 +129,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
 
     if (response.statusCode == 200) {
       customProgress.hideDialog();
-      _companyName.clear();
+
       _subject.clear();
       _description.clear();
       _contactNumber.clear();
@@ -137,7 +139,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       if (selectedDeviceToken.isNotEmpty) {
         SendNotificationService.sendNotificationUsingApi(
             token: selectedDeviceToken,
-            title: "New Task Created",
+            title: "New Task Created ${_companyName.text}",
             body: "You are assigned to a new task! Please check",
             data: {
               'screen': 'task',
@@ -146,6 +148,18 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       } else {
         print("Device token is empty");
       }
+
+      // save notification to Firebase Firestore database
+      await FirebaseFirestore.instance
+          .collection('notifications')
+          .doc(userId)
+          .collection('notification')
+          .doc()
+          .set({
+        'title': "New Task Created ${_companyName.text}",
+        'body': "You are assigned to a new task! Please check",
+        'creted_at': DateTime.now(),
+      });
 
       // send notification
 
@@ -215,6 +229,8 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
         ),
       );
     }
+
+    // save notification to Firebase Firestore database
   }
 
   @override
