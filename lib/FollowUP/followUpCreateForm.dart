@@ -10,7 +10,7 @@ import 'package:untitled1/resourses/app_colors.dart';
 
 import '../Lead/LeadAssociateDropdown.dart';
 import '../Lead/LeadOwnerDropdown.dart';
-import '../Notification/fcm_server.dart';
+
 import '../NotificationService/sendNotification.dart';
 import '../components/CustomProgress.dart';
 
@@ -34,6 +34,23 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
   final _contactNumber = TextEditingController();
   TextEditingController dateTimeController = TextEditingController();
   late String dateTimePicker;
+
+  String? currentUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUserId();
+  }
+
+  // method to get the current user ID
+  Future<void> getCurrentUserId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      currentUserId = sharedPreferences.getString("id");
+      print("Current User ID: $currentUserId");
+    });
+  }
 
   bool validatePhoneNumber(String phoneNumber) {
     return RegExp(r'^[0-9]{11}$').hasMatch(phoneNumber);
@@ -256,6 +273,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                             child: dropDownRow(
                                 "Owner",
                                 LeadOwnerDropDown(
+                                  userId: currentUserId,
                                   onDeviceTokenReceived: handleDeviceToken,
                                 )),
                           ),

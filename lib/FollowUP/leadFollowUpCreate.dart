@@ -32,6 +32,23 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
   TextEditingController dateTimeController = TextEditingController();
   late String dateTimePicker;
 
+  String? currentUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUserId();
+  }
+
+  // method to get the current user ID
+  Future<void> getCurrentUserId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      currentUserId = sharedPreferences.getString("id");
+      print("Current User ID: $currentUserId");
+    });
+  }
+
   bool validatePhoneNumber(String phoneNumber) {
     return RegExp(r'^[0-9]{11}$').hasMatch(phoneNumber);
   }
@@ -267,6 +284,7 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
                             child: dropDownRow(
                                 "Owner",
                                 LeadOwnerDropDown(
+                                  userId: currentUserId,
                                   onDeviceTokenReceived: handleDeviceToken,
                                 )),
                           ),

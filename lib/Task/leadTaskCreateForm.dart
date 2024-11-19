@@ -34,6 +34,27 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
   TextEditingController endDateTimeController = TextEditingController();
   late String dateTimePicker;
 
+  String? currentUserId; // Variable to store the current user ID
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUserId();
+    // set current date to start date
+    startDateTimeController.text =
+        "${DateTime.now().year}-${DateTime.now().month}-${DateTime.now().day}";
+    getCurrentUserId();
+  }
+
+  // method to get the current user ID
+  Future<void> getCurrentUserId() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    setState(() {
+      currentUserId = sharedPreferences.getString("id");
+      print("Current User ID: $currentUserId");
+    });
+  }
+
   bool validatePhoneNumber(String phoneNumber) {
     return RegExp(r'^[0-9]{11}$').hasMatch(phoneNumber);
   }
@@ -257,6 +278,7 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
                       dropDownRow(
                           "Assign Member",
                           LeadOwnerDropDown(
+                            userId: currentUserId,
                             onDeviceTokenReceived: handleDeviceToken,
                           )),
                       const SizedBox(height: 12),
