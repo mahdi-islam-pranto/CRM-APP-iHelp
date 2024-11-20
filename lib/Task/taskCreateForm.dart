@@ -156,8 +156,9 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
           .collection('notification')
           .doc()
           .set({
-        'title': "New Task Created ${_companyName.text}",
+        'title': "New Task Created ",
         'body': "You are assigned to a new task! Please check",
+        'isRead': false,
         'creted_at': DateTime.now(),
       });
 

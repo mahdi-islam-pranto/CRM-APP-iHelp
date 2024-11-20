@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/Auth/login_page.dart';
@@ -21,8 +22,10 @@ import '../Models/leadPipeline.dart';
 import '../Models/menuItem.dart';
 import '../Models/menuItems.dart';
 
+import '../NotificationService/countNotificationController.dart';
 import '../NotificationService/fcm_service.dart';
-import '../Task/todayTaskList.dart';
+import '../NotificationService/notificationPage.dart';
+
 import '../components/DashboardCounter.dart';
 import '../components/DashboardFollowUps.dart';
 import '../components/Dashboard_Tasks.dart';
@@ -31,6 +34,7 @@ import '../components/LeadPipelineChart.dart';
 
 import '../components/leadIndustryChart.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:badges/badges.dart' as badges;
 
 class NewDashboard extends StatefulWidget {
   const NewDashboard({Key? key}) : super(key: key);
@@ -60,12 +64,6 @@ class _NewDashboardState extends State<NewDashboard> {
     //notification
 // request notification permission
     notificationServices.requestNotificationPermission();
-
-    // notificationServices.requestNotificationPermissin();
-    // notificationServices.forgroundMessage();
-    // notificationServices.firebaseInit(context);
-    // notificationServices.isTokenRefresh();
-    // notificationServices.isTokenRefresh();
 
     /// Device Token
     notificationServices.getDeviceToken().then((value) {
@@ -312,6 +310,10 @@ class _NewDashboardState extends State<NewDashboard> {
   // today value
   Object todayValue = '1';
 
+  // Initialize the NotificationController
+  final NotificationController notificationController =
+      Get.put(NotificationController());
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -358,20 +360,60 @@ class _NewDashboardState extends State<NewDashboard> {
                               ),
                             ),
 
+                            // notification button
+
                             ///trailing
-                            trailing: PopupMenuButton<DropMenuItem>(
-                              color: Colors.blue[50],
-                              position: PopupMenuPosition.under,
-                              padding: const EdgeInsets.only(
-                                  right: 0, top: 10, bottom: 10),
-                              icon: Image.asset(
-                                "assets/images/person.png",
-                                color: Colors.blueGrey,
-                                fit: BoxFit.cover,
-                                width: 33.w,
-                              ),
-                              itemBuilder: (context) => [
-                                ...MenuItems.itemsFirst.map(buildItem).toList(),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                badges.Badge(
+                                  showBadge: notificationController
+                                          .notificationCount.value >
+                                      0,
+                                  badgeContent: Text(
+                                    '${notificationController.notificationCount.value}',
+                                  ),
+                                  badgeStyle: const badges.BadgeStyle(
+                                    badgeColor: Colors.redAccent,
+                                  ),
+                                  position: badges.BadgePosition.topEnd(
+                                      top: 0, end: 3),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.notifications_none_outlined,
+                                      color: Colors.blueGrey,
+                                      size: 30,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const NotificationPage(),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+
+                                // profile
+                                PopupMenuButton<DropMenuItem>(
+                                  color: Colors.blue[50],
+                                  position: PopupMenuPosition.under,
+                                  padding: const EdgeInsets.only(
+                                      right: 0, top: 10, bottom: 10),
+                                  icon: Image.asset(
+                                    "assets/images/person.png",
+                                    color: Colors.blueGrey,
+                                    fit: BoxFit.cover,
+                                    width: 30.w,
+                                  ),
+                                  itemBuilder: (context) => [
+                                    ...MenuItems.itemsFirst
+                                        .map(buildItem)
+                                        .toList(),
+                                  ],
+                                ),
                               ],
                             ),
                           ),

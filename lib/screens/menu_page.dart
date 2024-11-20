@@ -6,6 +6,7 @@ import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
 import 'package:untitled1/FollowUP/followUpCreateForm.dart';
 import 'package:untitled1/Lead/leadCreateform.dart';
+import 'package:untitled1/NotificationService/notificationPage.dart';
 import 'package:untitled1/Task/allTaskListScreen.dart';
 import 'package:untitled1/Task/taskCreateForm.dart';
 import 'package:untitled1/screens/totalLeadList.dart';
@@ -71,12 +72,20 @@ class MenuPage extends StatelessWidget {
                               // print("FCM server token: $FCMserverToken");
 
                               // send notification
-                              SendNotificationService.sendNotificationUsingApi(
-                                token:
-                                    "cmMcGzngQAqUwrvVpHQVko:APA91bEwtTJpUJ4LKGJ1XJuhYqDpxJsx4ol4D17b4kDM7j2DrIik11xykg_2C6MCsl_td7mv-y8t6r-7sUxId46koQ_Iq4VvecMe7VlfL3wtgP9XaV-mXbk",
-                                title: "pranto test notification",
-                                body: "this is the notificationbody",
-                                data: {"screen": "followup"},
+                              // SendNotificationService.sendNotificationUsingApi(
+                              //   token:
+                              //       "cmMcGzngQAqUwrvVpHQVko:APA91bEwtTJpUJ4LKGJ1XJuhYqDpxJsx4ol4D17b4kDM7j2DrIik11xykg_2C6MCsl_td7mv-y8t6r-7sUxId46koQ_Iq4VvecMe7VlfL3wtgP9XaV-mXbk",
+                              //   title: "pranto test notification",
+                              //   body: "this is the notificationbody",
+                              //   data: {"screen": "followup"},
+                              // );
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const NotificationPage(),
+                                ),
                               );
                             },
                             child: Container(

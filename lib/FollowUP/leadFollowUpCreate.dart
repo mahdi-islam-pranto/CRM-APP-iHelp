@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -157,6 +158,19 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
       } else {
         print("Device token is empty");
       }
+
+      // save notification to Firebase Firestore database
+      await FirebaseFirestore.instance
+          .collection('notifications')
+          .doc(userId)
+          .collection('notification')
+          .doc()
+          .set({
+        'title': "New Follow Up Created ",
+        'body': "You are assigned to a new follow up! Please check",
+        'isRead': false,
+        'creted_at': DateTime.now(),
+      });
 
       // Reset dropdowns to their initial state
       setState(() {
