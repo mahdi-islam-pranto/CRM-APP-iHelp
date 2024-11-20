@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -155,18 +156,19 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
       } else {
         print("Device token is empty");
       }
-      if (associateSelectedDeviceToken.isNotEmpty) {
-        SendNotificationService.sendNotificationUsingApi(
-            token: selectedDeviceToken,
-            title: "New Follow Up Created",
-            body: "You are associated to a new follow up! Please check",
-            data: {
-              'screen': 'followup',
-            });
-        print("selected associate device token: $associateSelectedDeviceToken");
-      } else {
-        print("Device token is empty");
-      }
+
+      // save notification to Firebase Firestore database
+      await FirebaseFirestore.instance
+          .collection('notifications')
+          .doc(userId)
+          .collection('notification')
+          .doc()
+          .set({
+        'title': "New Follow Up Created ",
+        'body': "You are assigned to a new follow up! Please check",
+        'isRead': false,
+        'creted_at': DateTime.now(),
+      });
 
       await AwesomeDialog(
         context: context,

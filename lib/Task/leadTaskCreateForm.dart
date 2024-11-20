@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -132,7 +133,7 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
 
     if (response.statusCode == 200) {
       customProgress.hideDialog();
-      _companyName.clear();
+
       _subject.clear();
       _description.clear();
       _contactNumber.clear();
@@ -152,6 +153,19 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
       } else {
         print("Device token is empty");
       }
+
+      // save notification to Firebase Firestore database
+      await FirebaseFirestore.instance
+          .collection('notifications')
+          .doc(userId)
+          .collection('notification')
+          .doc()
+          .set({
+        'title': "New Task Created ",
+        'body': "You are assigned to a new task! Please check",
+        'isRead': false,
+        'creted_at': DateTime.now(),
+      });
 
       // Reset dropdowns to their initial state
       setState(() {
