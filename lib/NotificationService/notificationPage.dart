@@ -3,6 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
+
+import '../Task/allTaskListScreen.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -49,6 +52,9 @@ class _NotificationPageState extends State<NotificationPage> {
             .doc(currentUserId)
             .collection('notification')
             // .where('isSale', isEqualTo: true)
+            .where('creted_at',
+                isGreaterThan: Timestamp.fromDate(
+                    DateTime.now().subtract(const Duration(days: 7))))
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -76,17 +82,34 @@ class _NotificationPageState extends State<NotificationPage> {
                 String docId = snapshot.data!.docs[index].id;
                 return GestureDetector(
                   onTap: () async {
+                    // update the isRead field and if followup to go follow up page, if task to go task page
+
                     print("Docid => $docId");
                     await FirebaseFirestore.instance
                         .collection('notifications')
                         .doc(currentUserId)
                         .collection('notifications')
-                        .doc(docId)
-                        .update(
-                      {
-                        "isSeen": true,
-                      },
-                    );
+                        .doc(docId);
+
+                    print("Title => ${snapshot.data!.docs[index]['title']}");
+                    if (snapshot.data!.docs[index]['title'] ==
+                        "New Task Created ") {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const TaskListScreen()));
+                    } else if (snapshot.data!.docs[index]['title'] ==
+                        "New Follow Up Created ") {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const FollowUpList()));
+                    }
+                    //     .update(
+                    //   {
+                    //     "isSeen": true,
+                    //   },
+                    // );
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(left: 15, right: 15),
