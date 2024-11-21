@@ -343,7 +343,7 @@ class _NewDashboardState extends State<NewDashboard> {
                             contentPadding: const EdgeInsets.only(
                               top: 8,
                               left: 8,
-                              right: 8,
+                              right: 0,
                             ),
                             title: Text(
                               "Hi, ${username?.split(' ')[0]}",
@@ -364,6 +364,7 @@ class _NewDashboardState extends State<NewDashboard> {
 
                             ///trailing
                             trailing: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 badges.Badge(
