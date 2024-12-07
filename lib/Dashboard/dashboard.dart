@@ -232,51 +232,6 @@ class _NewDashboardState extends State<NewDashboard> {
     );
   }
 
-  Widget sipDailpad() {
-    return FloatingActionButton(
-      backgroundColor: Colors.grey[300],
-      onPressed: () {
-        // Navigator.push(context, PageTransition(child: SipAccountSetting(),
-        //   type: PageTransitionType.leftToRight,
-        //   duration: Duration(milliseconds:400),
-        //   inheritTheme: true,
-        // ));
-
-        showAnimatedDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (BuildContext context) {
-            return const SipAccountSetting();
-          },
-          curve: Curves.fastOutSlowIn,
-          duration: const Duration(seconds: 1),
-        );
-      },
-      heroTag: "Sip Call",
-      tooltip: 'Sip Call',
-      child: const Icon(
-        Icons.dialer_sip_outlined,
-        color: Colors.black,
-      ),
-    );
-  }
-
-  Widget Contacts() {
-    return InkWell(
-      onTap: () => Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const ContactServices())),
-      child: FloatingActionButton(
-        backgroundColor: Colors.grey[300],
-        onPressed: null,
-        heroTag: "Clients",
-        tooltip: 'Clients',
-        child: const Icon(
-          Icons.contact_page,
-        ),
-      ),
-    );
-  }
-
   Widget notifications() {
     return InkWell(
       // onTap: () => Navigator.push(
@@ -287,19 +242,6 @@ class _NewDashboardState extends State<NewDashboard> {
         heroTag: "Opportunity",
         tooltip: 'Opportunity',
         child: const Icon(Icons.notifications),
-      ),
-    );
-  }
-
-  Widget repport() {
-    return const InkWell(
-      // onTap: () => Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => NewDashboard())),
-      child: FloatingActionButton(
-        onPressed: null,
-        heroTag: "Report",
-        tooltip: 'Report',
-        child: Icon(Icons.report),
       ),
     );
   }
