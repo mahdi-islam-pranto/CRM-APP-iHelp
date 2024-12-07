@@ -1,12 +1,66 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
-import 'package:untitled1/Task/allTaskListScreen.dart';
+
 import 'package:untitled1/screens/totalLeadList.dart';
+import 'package:http/http.dart' as http;
 
 import '../Task/allPendingTask.dart';
+import '../screens/opportunityList.dart';
 
-class DashboardCounter extends StatelessWidget {
+class DashboardCounter extends StatefulWidget {
   const DashboardCounter({super.key});
+
+  @override
+  State<DashboardCounter> createState() => _DashboardCounterState();
+}
+
+class _DashboardCounterState extends State<DashboardCounter> {
+  int totalLeadCount = 0;
+  int totalPendingFollowupCount = 0;
+  int totalPendingTaskCount = 0;
+  int totalOpportunityCount = 0;
+
+  // fetch counts from API
+  fetchCounts() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String? token = sharedPreferences.getString("token");
+    String? userId = sharedPreferences.getString("id");
+
+    final response = await http.post(
+      Uri.parse("https://crm.ihelpbd.com/api/crm-lead-task-followup-dashboard"),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'user_id': '$userId',
+      },
+      body: {
+        'user_id': userId,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+
+      setState(() {
+        totalLeadCount = data["data"][0]['count'];
+        totalOpportunityCount = data["data"][1]['count'];
+        totalPendingFollowupCount = data["data"][2]['count'];
+        totalPendingTaskCount = data["data"][3]['count'];
+      });
+      // print count data
+      print("counter data from API: ${data["data"][0]}");
+    } else {
+      throw Exception('Failed to load lead counts');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCounts();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +93,7 @@ class DashboardCounter extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LeadListScreen(),
+                        builder: (context) => const LeadListScreen(),
                       ));
                 },
                 child: Container(
@@ -65,7 +119,7 @@ class DashboardCounter extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Lead",
+                              "Total Leads",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: textSize,
@@ -73,7 +127,7 @@ class DashboardCounter extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "108",
+                              "$totalLeadCount",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: textSize,
@@ -93,7 +147,7 @@ class DashboardCounter extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => TaskListScreen(),
+                        builder: (context) => const FollowUpList(),
                       ));
                 },
                 child: Container(
@@ -119,7 +173,7 @@ class DashboardCounter extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Task",
+                              "Follow Ups",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: textSize,
@@ -127,7 +181,7 @@ class DashboardCounter extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "100",
+                              "$totalPendingFollowupCount",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: textSize,
@@ -153,7 +207,7 @@ class DashboardCounter extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FollowUpList(),
+                        builder: (context) => const OpportunityListScreen(),
                       ));
                 },
                 child: Container(
@@ -179,7 +233,7 @@ class DashboardCounter extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Follow Up",
+                              "Opportunities",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: textSize,
@@ -187,7 +241,7 @@ class DashboardCounter extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "86",
+                              "$totalOpportunityCount",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: textSize,
@@ -207,7 +261,7 @@ class DashboardCounter extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PendingTaskListScreen(),
+                        builder: (context) => const PendingTaskListScreen(),
                       ));
                 },
                 child: Container(
@@ -232,7 +286,8 @@ class DashboardCounter extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Pending Task",
+                              "Pending Tasks",
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: textSize,
@@ -240,7 +295,7 @@ class DashboardCounter extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              "28",
+                              "$totalPendingTaskCount",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: textSize,
