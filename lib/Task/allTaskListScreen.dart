@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled1/API/api_url.dart';
 import '../Dashboard/bottom_navigation_page.dart';
 import '../Models/taskListModel.dart';
 import 'taskCreateForm.dart';
@@ -59,7 +60,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
     String? userId = sharedPreferences.getString("id");
 
     final response = await http.post(
-      Uri.parse("https://crm.ihelpbd.com/api/crm-lead-task-list"),
+      Uri.parse(ApiUrls.taskListUrl),
       headers: {
         'Authorization': 'Bearer $token',
         'user_id': '$userId',
