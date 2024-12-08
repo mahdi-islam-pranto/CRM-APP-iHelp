@@ -7,7 +7,8 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled1/Dashboard/dashboard.dart';
+import 'package:untitled1/API/api_url.dart';
+
 import 'package:untitled1/screens/leadDetailsTabs.dart';
 import 'package:http/http.dart' as http;
 import '../Dashboard/bottom_navigation_page.dart';
@@ -80,7 +81,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
     if (!isLoadingMore) setState(() => isLoadingMore = true);
 
     final response = await http.post(
-      Uri.parse("https://crm.ihelpbd.com/api/crm-lead-data-show"),
+      Uri.parse(ApiUrls.leadListUrl),
       headers: {
         'Authorization': 'Bearer $token',
         'user_id': '$userId',

@@ -8,12 +8,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:untitled1/FollowUP/followUpDetailsTab.dart';
+import 'package:untitled1/API/api_url.dart';
+
 import 'package:untitled1/FollowUP/followUpOverview.dart';
-import 'package:untitled1/Models/followUpModel.dart';
-import 'package:untitled1/resourses/app_colors.dart';
+
 import '../Dashboard/bottom_navigation_page.dart';
-import '../resourses/resourses.dart';
+
 import 'followUpCreateForm.dart';
 import 'package:http/http.dart' as http;
 
@@ -88,7 +88,7 @@ class _FollowUpListState extends State<FollowUpList> {
     String? userId = sharedPreferences.getString("id");
 
     final response = await http.post(
-      Uri.parse("https://crm.ihelpbd.com/api/crm-follow-up-list"),
+      Uri.parse(ApiUrls.followUpListUrl),
       headers: {
         'Authorization': 'Bearer $token',
         'user_id': '$userId',

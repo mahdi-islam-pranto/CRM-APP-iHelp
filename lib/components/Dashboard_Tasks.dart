@@ -79,7 +79,14 @@ class _DashboardTasksState extends State<DashboardTasks> {
             ));
           } else if (snapshot.hasError) {
             // return Center(child: Text('Error: ${snapshot.error}'));
-            return const Center(child: Text('Fetching tasks failed'));
+            return const Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Fetching tasks failed"),
+                Text("Check your internet connection"),
+              ],
+            ));
           } else if (snapshot.hasData &&
               snapshot.data!.data != null &&
               snapshot.data!.data!.isNotEmpty) {

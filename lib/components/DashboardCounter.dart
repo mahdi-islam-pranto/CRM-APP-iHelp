@@ -7,6 +7,7 @@ import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
 import 'package:untitled1/screens/totalLeadList.dart';
 import 'package:http/http.dart' as http;
 
+import '../API/api_url.dart';
 import '../Task/allPendingTask.dart';
 import '../screens/opportunityList.dart';
 
@@ -30,7 +31,7 @@ class _DashboardCounterState extends State<DashboardCounter> {
     String? userId = sharedPreferences.getString("id");
 
     final response = await http.post(
-      Uri.parse("https://crm.ihelpbd.com/api/crm-lead-task-followup-dashboard"),
+      Uri.parse(ApiUrls.dashboardCounterUrl),
       headers: {
         'Authorization': 'Bearer $token',
         'user_id': '$userId',
