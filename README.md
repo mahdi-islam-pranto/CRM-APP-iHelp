@@ -4,11 +4,11 @@ A Flutter project.
 
 ## Key Features
 
-1.
-2.
-3.
-4.
-5.
+1. Manage Leads
+2. Follow ups
+3. Tasks
+4. Notification
+5. Home screen widget
 
 A few resources to get you started if this is your first Flutter project:
 
