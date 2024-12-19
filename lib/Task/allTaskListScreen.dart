@@ -25,8 +25,11 @@ class _TaskListScreenState extends State<TaskListScreen> {
 
   // search function starts
   TextEditingController _searchController = TextEditingController();
+  List<Data>? _oldPendingTasks; // New list for old pending tasks
   List<Data>? _filteredTasks;
   List<Data>? _allTasks; // To store all tasks
+
+  var _isExpanded = false;
 
   @override
   void initState() {
@@ -54,6 +57,32 @@ class _TaskListScreenState extends State<TaskListScreen> {
     }
   }
 
+  // method for filter old pending tasks
+  void _filterOldPendingTasks() {
+    if (_allTasks != null) {
+      final now = DateTime.now();
+      _oldPendingTasks = _allTasks!.where((task) {
+        // Parse the end time
+        DateTime? endTime;
+        try {
+          endTime = DateTime.parse(task.endTime ?? '');
+        } catch (e) {
+          return false;
+        }
+
+        // Check if task is pending and past its end time
+        return task.taskStatus?.name == 'Pending' && endTime.isBefore(now);
+      }).toList();
+
+      // Sort by end time (oldest first)
+      _oldPendingTasks?.sort((a, b) {
+        final aTime = DateTime.parse(a.endTime ?? '');
+        final bTime = DateTime.parse(b.endTime ?? '');
+        return aTime.compareTo(bTime);
+      });
+    }
+  }
+
   Future<TaskListModel> getTaskList() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String? token = sharedPreferences.getString("token");
@@ -67,7 +96,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
       },
       body: {
         'start_date': '2024-01-01',
-        'end_date': '2025-11-01',
+        'end_date': '2034-11-01',
         'user_id': userId,
         'session_user_id': '',
         'status': '',
@@ -83,6 +112,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
       // searched tasks
       _allTasks = TaskListModel.fromJson(data).data;
       _filteredTasks = _allTasks;
+      _filterOldPendingTasks();
       return TaskListModel.fromJson(data);
     } else {
       throw Exception('Failed to load tasks');
@@ -121,9 +151,9 @@ class _TaskListScreenState extends State<TaskListScreen> {
         backgroundColor: Colors.white,
         systemOverlayStyle:
             const SystemUiOverlayStyle(statusBarColor: Colors.white),
-        title: Text(
+        title: const Text(
           "All Tasks",
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         centerTitle: true,
         actions: [
@@ -179,7 +209,88 @@ class _TaskListScreenState extends State<TaskListScreen> {
               ),
             ),
 
-          // all task
+          // New section for old pending overdue tasks
+          FutureBuilder<TaskListModel>(
+            future: _taskListFuture,
+            builder: (context, snapshot) {
+              if (snapshot.hasData &&
+                  _oldPendingTasks != null &&
+                  _oldPendingTasks!.isNotEmpty) {
+                return GestureDetector(
+                  onTap: () => setState(() {
+                    _isExpanded = !_isExpanded;
+                  }),
+                  child: Container(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    margin: const EdgeInsets.only(left: 18, right: 18, top: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.red[50],
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.red[200]!),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 15, top: 10, right: 15),
+                          child: Row(
+                            children: [
+                              Icon(Icons.warning_amber_rounded,
+                                  color: Colors.red[700]),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Overdue Tasks (${_oldPendingTasks!.length})',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red[700],
+                                ),
+                              ),
+                              const Spacer(),
+                              GestureDetector(
+                                child: const Icon(
+                                  Icons.keyboard_double_arrow_down_outlined,
+                                  color: Colors.red,
+                                ),
+                                onTap: () {
+                                  setState(() {
+                                    _isExpanded = !_isExpanded;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // the overdue tasks list
+                        if (_isExpanded)
+                          Container(
+                            height: _oldPendingTasks!.length > 2
+                                ? MediaQuery.of(context).size.height * 0.35
+                                : null,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              physics: _oldPendingTasks!.length > 2
+                                  ? const AlwaysScrollableScrollPhysics()
+                                  : const NeverScrollableScrollPhysics(),
+                              itemCount: _oldPendingTasks!.length,
+                              itemBuilder: (context, index) {
+                                return _buildOverdueTaskItem(
+                                    _oldPendingTasks![index]);
+                              },
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+
+          // all task list
           Expanded(
             child: FutureBuilder<TaskListModel>(
               future: _taskListFuture,
@@ -318,6 +429,73 @@ class _TaskListScreenState extends State<TaskListScreen> {
             ),
           ),
         ));
+  }
+
+  Widget _buildOverdueTaskItem(Data task) {
+    final endTime = DateTime.parse(task.endTime ?? '');
+    final daysOverdue = DateTime.now().difference(endTime).inDays;
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TaskOverview(taskId: task.id!.toInt()),
+          ),
+        );
+      },
+      child: Card(
+        color: const Color.fromARGB(255, 255, 247, 247),
+        margin: const EdgeInsets.only(
+          left: 15,
+          right: 15,
+          top: 10,
+        ),
+        child: ListTile(
+          title: Text(
+            task.companyName?.companyName ?? 'No Company',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.red[700],
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(task.taskName?.name ?? 'No Task Name'),
+              Text(
+                'Overdue by $daysOverdue days',
+                style: TextStyle(
+                  color: Colors.red[700],
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          trailing: Column(
+            children: [
+              Text(
+                task.taskStatus?.name ?? 'No status',
+                style: TextStyle(
+                    color: getStatusColor(task.taskStatus!.name.toString()),
+                    fontSize: 12.sp),
+              ),
+              const SizedBox(width: 5.0),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(7.0),
+                ),
+                color: Colors.blue[100],
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Text(task.endTime ?? 'No End Time'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _createTask() {
