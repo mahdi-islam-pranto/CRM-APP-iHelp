@@ -78,6 +78,20 @@ class _DashboardCounterState extends State<DashboardCounter> {
     final double iconSize = screenHeight * 0.04;
     final double textSize = screenHeight * 0.022;
 
+    // default text style for dashboard counter
+    TextStyle defaultTextStyleForCounter = TextStyle(
+      color: Colors.white,
+      fontSize: textSize,
+      fontWeight: FontWeight.bold,
+      shadows: const [
+        Shadow(
+          offset: Offset(2.0, 2.0), // Horizontal and vertical offset
+          blurRadius: 2.0, // Blur effect
+          color: Colors.black26, // Shadow color
+        ),
+      ],
+    );
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: screenWidth * 0.05,
@@ -115,25 +129,24 @@ class _DashboardCounterState extends State<DashboardCounter> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Icon(Icons.leaderboard,
-                            color: Colors.white, size: iconSize),
+                            shadows: const [
+                              Shadow(
+                                offset: Offset(
+                                    2.0, 2.0), // Horizontal and vertical offset
+                                blurRadius: 2.0, // Blur effect
+                                color: Colors.black12, // Shadow color
+                              ),
+                            ],
+                            color: Colors.white,
+                            size: iconSize),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              "Total Leads",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: textSize,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            Text("Total Leads",
+                                style: defaultTextStyleForCounter),
                             Text(
                               "$totalLeadCount",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: textSize,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: defaultTextStyleForCounter,
                             ),
                           ],
                         ),
@@ -168,26 +181,27 @@ class _DashboardCounterState extends State<DashboardCounter> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(Icons.leaderboard,
-                            color: Colors.white, size: iconSize),
+                        Icon(Icons.follow_the_signs,
+                            shadows: const [
+                              Shadow(
+                                offset: Offset(
+                                    2.0, 2.0), // Horizontal and vertical offset
+                                blurRadius: 2.0, // Blur effect
+                                color: Colors.black12, // Shadow color
+                              ),
+                            ],
+                            color: Colors.white,
+                            size: iconSize),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               "Follow Ups",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: textSize,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: defaultTextStyleForCounter,
                             ),
                             Text(
                               "$totalPendingFollowupCount",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: textSize,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: defaultTextStyleForCounter,
                             ),
                           ],
                         ),
@@ -228,26 +242,27 @@ class _DashboardCounterState extends State<DashboardCounter> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(Icons.follow_the_signs_outlined,
-                            color: Colors.white, size: iconSize),
+                        Icon(Icons.lightbulb_outline_sharp,
+                            shadows: const [
+                              Shadow(
+                                offset: Offset(
+                                    2.0, 2.0), // Horizontal and vertical offset
+                                blurRadius: 2.0, // Blur effect
+                                color: Colors.black12, // Shadow color
+                              ),
+                            ],
+                            color: Colors.white,
+                            size: iconSize),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               "Opportunities",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: textSize,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: defaultTextStyleForCounter,
                             ),
                             Text(
                               "$totalOpportunityCount",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: textSize,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: defaultTextStyleForCounter,
                             ),
                           ],
                         ),
@@ -282,27 +297,25 @@ class _DashboardCounterState extends State<DashboardCounter> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(Icons.task, color: Colors.white, size: iconSize),
+                        Icon(Icons.task,
+                            shadows: const [
+                              Shadow(
+                                offset: Offset(
+                                    2.0, 2.0), // Horizontal and vertical offset
+                                blurRadius: 2.0, // Blur effect
+                                color: Colors.black12, // Shadow color
+                              ),
+                            ],
+                            color: Colors.white,
+                            size: iconSize),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              "Pending Tasks",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: textSize,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              "$totalPendingTaskCount",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: textSize,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            Text("Pending Tasks",
+                                textAlign: TextAlign.center,
+                                style: defaultTextStyleForCounter),
+                            Text("$totalPendingTaskCount",
+                                style: defaultTextStyleForCounter),
                           ],
                         ),
                       ],
