@@ -249,10 +249,16 @@ class _TaskListScreenState extends State<TaskListScreen> {
                               ),
                               const Spacer(),
                               GestureDetector(
-                                child: const Icon(
-                                  Icons.keyboard_double_arrow_down_outlined,
-                                  color: Colors.red,
-                                ),
+                                child: _isExpanded
+                                    ? const Icon(
+                                        Icons.keyboard_double_arrow_up_outlined,
+                                        color: Colors.red,
+                                      )
+                                    : const Icon(
+                                        Icons
+                                            .keyboard_double_arrow_down_outlined,
+                                        color: Colors.red,
+                                      ),
                                 onTap: () {
                                   setState(() {
                                     _isExpanded = !_isExpanded;

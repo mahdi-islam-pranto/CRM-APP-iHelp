@@ -4,8 +4,6 @@ import '../FollowUP/FollowUPListScreen.dart';
 
 import '../Task/allTaskListScreen.dart';
 
-import '../resourses/resourses.dart';
-
 import '../screens/totalLeadList.dart';
 
 import '../screens/menu_page.dart';
@@ -80,15 +78,73 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
               });
             },
             items: const [
-              BottomNavigationBarItem(icon: Icon(Icons.menu), label: "Menu"),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.menu,
+                    shadows: [
+                      Shadow(
+                        offset:
+                            Offset(2.0, 2.0), // Horizontal and vertical offset
+                        blurRadius: 2.0, // Blur effect
+                        color: Colors.black12, // Shadow color
+                      ),
+                    ],
+                  ),
+                  label: "Menu"),
               // BottomNavigationBarItem(
               //     icon: Icon(Icons.contacts), label: "Contacts"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.follow_the_signs), label: "Followup"),
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+                  icon: Icon(
+                    Icons.follow_the_signs,
+                    shadows: [
+                      Shadow(
+                        offset:
+                            Offset(2.0, 2.0), // Horizontal and vertical offset
+                        blurRadius: 2.0, // Blur effect
+                        color: Colors.black12, // Shadow color
+                      ),
+                    ],
+                  ),
+                  label: "Followup"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.leaderboard), label: "Lead"),
-              BottomNavigationBarItem(icon: Icon(Icons.task), label: "Task"),
+                  icon: Icon(
+                    Icons.home,
+                    shadows: [
+                      Shadow(
+                        offset:
+                            Offset(2.0, 2.0), // Horizontal and vertical offset
+                        blurRadius: 2.0, // Blur effect
+                        color: Colors.black12, // Shadow color
+                      ),
+                    ],
+                  ),
+                  label: "Home"),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.leaderboard,
+                    shadows: [
+                      Shadow(
+                        offset:
+                            Offset(2.0, 2.0), // Horizontal and vertical offset
+                        blurRadius: 2.0, // Blur effect
+                        color: Colors.black12, // Shadow color
+                      ),
+                    ],
+                  ),
+                  label: "Lead"),
+              BottomNavigationBarItem(
+                  icon: Icon(
+                    Icons.task,
+                    shadows: [
+                      Shadow(
+                        offset:
+                            Offset(2.0, 2.0), // Horizontal and vertical offset
+                        blurRadius: 2.0, // Blur effect
+                        color: Colors.black12, // Shadow color
+                      ),
+                    ],
+                  ),
+                  label: "Task"),
             ],
           ),
         ),
