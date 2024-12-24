@@ -98,7 +98,7 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
 
     Map body = {
       "lead_id": CompanyName.companyId.toString(),
-      "user_id": userId,
+      "user_id": Owner.ownerId.toString(),
       "creator_user_id": userId,
       "followup_type_id": FollowupType.followUpType.toString(),
       "subject": _subject.text,

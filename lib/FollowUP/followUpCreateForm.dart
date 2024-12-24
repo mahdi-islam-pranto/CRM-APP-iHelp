@@ -72,6 +72,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
   void associateHandelDeviceToken(String assiciateDeviceToken) {
     setState(() {
       associateSelectedDeviceToken = assiciateDeviceToken;
+      print("associate selected token:$associateSelectedDeviceToken");
     });
   }
 
@@ -100,17 +101,18 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
 
     Map body = {
       "lead_id": CompanyName.companyId.toString(),
-      "user_id": userId,
+      "user_id": Owner.ownerId.toString(),
       "creator_user_id": userId,
       "followup_type_id": FollowupType.followUpType.toString(),
       "subject": _subject.text,
       "phone_number": _contactNumber.text,
       "next_followup_date": dateTimeController.text,
       "description": _description.text,
-      "associate_user_id": Associate.associateId.toString(),
+      "associate_user_id": Associate.associateId ?? "",
     };
 
     print('Sending request with body: ${jsonEncode(body)}');
+    print('Associate ID being sent: ${Associate.associateId}');
 
     var response = await http.post(
       Uri.parse(url),

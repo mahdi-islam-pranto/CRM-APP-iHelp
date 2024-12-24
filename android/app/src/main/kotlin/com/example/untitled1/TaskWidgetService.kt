@@ -1,5 +1,4 @@
 package com.example.untitled1
-
 import android.content.Intent
 import android.widget.RemoteViewsService
 import android.widget.RemoteViews
@@ -12,11 +11,13 @@ import android.content.Context
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class TaskWidgetService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory {
         return TaskWidgetItemFactory(applicationContext)
     }
 }
+
 
 class TaskWidgetItemFactory(private val context: Context) : 
     RemoteViewsService.RemoteViewsFactory {
@@ -130,6 +131,7 @@ class TaskWidgetItemFactory(private val context: Context) :
         Log.d(TAG, "Widget Factory Destroyed")
     }
 }
+
 
 data class Task(
     val companyName: String,

@@ -105,7 +105,7 @@ class _LeadTaskCreateFormState extends State<LeadTaskCreateForm> {
 
     Map body = {
       "lead_id": CompanyName.companyId.toString(),
-      "user_id": userId,
+      "user_id": Owner.ownerId.toString(),
       "creator_user_id": userId,
       "task_type_id": SelectedPipeline.taskTypeId.toString(),
       "subject": _subject.text,

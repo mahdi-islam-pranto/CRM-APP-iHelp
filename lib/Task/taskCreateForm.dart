@@ -101,7 +101,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
 
     Map body = {
       "lead_id": CompanyName.companyId.toString(),
-      "user_id": userId,
+      "user_id": Owner.ownerId.toString(),
       "creator_user_id": userId,
       "task_type_id": SelectedPipeline.taskTypeId.toString(),
       "subject": _subject.text,
@@ -124,6 +124,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
     );
 
     print('Request Headers: ${response.request?.headers}');
+    print("Response Body: ${response.body.toString()}");
     print('Request URL: ${response.request?.url}');
     print('Response Status: ${response.statusCode}');
 
@@ -230,7 +231,6 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
         ),
       );
     }
-
     // save notification to Firebase Firestore database
   }
 

@@ -6,3 +6,4 @@
     android:initialLayout="@layout/task_widget_layout"
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen" />
+
