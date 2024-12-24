@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import '../Models/followUpModel.dart';
 import '../resourses/app_colors.dart';
 
@@ -71,6 +72,16 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
         isLoading = false;
       });
       // Handle error
+    }
+  }
+
+  // Function to launch URL in phone app
+  void urlLauncher(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 
@@ -183,10 +194,37 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                         fontSize: 16, color: Colors.white),
                                   ),
                                   const SizedBox(height: 5),
-                                  Text(
-                                    "Phone: ${followUpDetails?.phoneNumber ?? "N/A"}",
-                                    style: const TextStyle(
-                                        fontSize: 16, color: Colors.white),
+                                  GestureDetector(
+                                    onTap: () {
+                                      urlLauncher(
+                                          "tel:${followUpDetails?.phoneNumber}");
+                                    },
+                                    child: RichText(
+                                        text: TextSpan(
+                                      children: [
+                                        const TextSpan(
+                                          text: "Phone: ",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.white),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              " ${followUpDetails?.phoneNumber}",
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              color: Colors.white),
+                                        ),
+                                      ],
+                                    )
+                                        // child: Text(
+                                        //   "Phone: ${followUpDetails?.phoneNumber ?? "N/A"}",
+                                        //   style: const TextStyle(
+                                        //       fontSize: 16, color: Colors.white),
+                                        // ),
+                                        ),
                                   ),
                                 ],
                               ),

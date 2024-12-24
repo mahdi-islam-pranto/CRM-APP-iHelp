@@ -71,6 +71,9 @@ dependencies:
   app_settings: ^5.1.1
   googleapis_auth: ^1.4.1
   googleapis:
+
+  # notification end
+  url_launcher: 
   
 
 #  app launching logo 

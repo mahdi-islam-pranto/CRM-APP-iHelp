@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import '../Models/LeadListModel.dart';
-import '../resourses/app_colors.dart';
 
 class LeadOverview extends StatefulWidget {
   final int leadId;
@@ -14,6 +14,16 @@ class LeadOverview extends StatefulWidget {
 
   @override
   State<LeadOverview> createState() => _LeadOverviewState();
+}
+
+// Function to launch URL in phone app
+void urlLauncher(String url) async {
+  final Uri uri = Uri.parse(url);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri);
+  } else {
+    throw 'Could not launch $url';
+  }
 }
 
 class _LeadOverviewState extends State<LeadOverview> {
@@ -181,10 +191,32 @@ class _LeadOverviewState extends State<LeadOverview> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               const SizedBox(height: 10),
-                                              Text(
-                                                "Phone: ${leadDetails?.phoneNumber ?? 'N/A'}",
-                                                style: TextStyle(
-                                                    color: Colors.grey[700]),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  urlLauncher(
+                                                      "tel:${leadDetails?.phoneNumber}");
+                                                },
+                                                child: RichText(
+                                                  text: TextSpan(
+                                                    text: "Phone: ",
+                                                    style: TextStyle(
+                                                      color: Colors.grey[700],
+                                                    ),
+                                                    children: [
+                                                      TextSpan(
+                                                        text: leadDetails
+                                                                ?.phoneNumber ??
+                                                            'N/A',
+                                                        style: const TextStyle(
+                                                          color: Colors.blue,
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .underline,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                               ),
                                               Text(
                                                 "Email: ${leadDetails?.email ?? 'N/A'}",
