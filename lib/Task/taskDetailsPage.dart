@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:untitled1/Models/taskListModel.dart';
 import '../resourses/app_colors.dart';
+import 'allTaskListScreen.dart';
 import 'taskUpdate.dart';
 
 class TaskOverview extends StatefulWidget {
@@ -126,7 +127,12 @@ class _TaskOverviewState extends State<TaskOverview> {
                             padding: const EdgeInsets.only(top: 50, left: 20),
                             child: GestureDetector(
                               onTap: () {
-                                Navigator.of(context).pop();
+                                // navigate back to task list page
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            TaskListScreen()));
                               },
                               child: Row(
                                 children: [
@@ -285,6 +291,11 @@ class _TaskOverviewState extends State<TaskOverview> {
                                                   const SizedBox(height: 10),
                                                   Text(
                                                       "Assign to: ${taskDetails?.assignName?.name ?? 'N/A'}",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .grey[700])),
+                                                  Text(
+                                                      "Created by: ${taskDetails?.creatorName?.name ?? 'N/A'}",
                                                       style: TextStyle(
                                                           color: Colors
                                                               .grey[700])),

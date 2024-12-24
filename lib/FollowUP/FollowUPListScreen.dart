@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/API/api_url.dart';
 
 import 'package:untitled1/FollowUP/followUpOverview.dart';
+import 'package:url_launcher/url_launcher.dart' as launcher;
 
 import '../Dashboard/bottom_navigation_page.dart';
 
@@ -42,6 +43,16 @@ class _FollowUpListState extends State<FollowUpList> {
   final TextEditingController _searchController = TextEditingController();
   String searchQuery = "";
   bool searchBar = false;
+
+  // Function to launch URL in phone app
+  void urlLauncher(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await launcher.canLaunchUrl(uri)) {
+      await launcher.launchUrl(uri);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   @override
   void initState() {
@@ -406,7 +417,8 @@ class _FollowUpListState extends State<FollowUpList> {
                                                               ['subject'] ??
                                                           'No Subject'),
                                                   const SizedBox(height: 8),
-                                                  _buildInfoRow(
+                                                  // phone number
+                                                  _buildPhoneRow(
                                                       Icons.phone,
                                                       filteredFollowUpList[
                                                                   index][
@@ -485,6 +497,42 @@ class _FollowUpListState extends State<FollowUpList> {
           ),
         ),
       ],
+    );
+  }
+
+  // phone number row
+  Widget _buildPhoneRow(IconData icon, String phone) {
+    return GestureDetector(
+      onTap: () async {
+        if (phone != 'No Phone No.') {
+          final Uri phoneUri = Uri(
+            scheme: 'tel',
+            path: phone,
+          );
+          try {
+            if (await launcher.canLaunchUrl(phoneUri)) {
+              await launcher.launchUrl(phoneUri);
+            } else {
+              print('Could not launch $phoneUri');
+            }
+          } catch (e) {
+            print('Error launching phone app: $e');
+          }
+        }
+      },
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: Colors.grey[600]),
+          const SizedBox(width: 8),
+          Text(
+            phone,
+            style: const TextStyle(
+              color: Colors.blue,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
