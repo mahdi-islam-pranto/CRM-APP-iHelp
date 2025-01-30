@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -201,14 +200,12 @@ class _OpportunityListScreenState extends State<OpportunityListScreen> {
             color: Colors.blue,
           ),
           onPressed: () {
-            showAnimatedDialog(
+            showDialog(
               context: context,
               barrierDismissible: true,
               builder: (BuildContext context) {
                 return const BottomNavigationPage();
               },
-              curve: Curves.fastOutSlowIn,
-              duration: const Duration(milliseconds: 700),
             );
           },
         ),

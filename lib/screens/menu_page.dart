@@ -1,8 +1,5 @@
-import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
 import 'package:untitled1/FollowUP/followUpCreateForm.dart';
 import 'package:untitled1/Lead/leadCreateform.dart';
@@ -11,7 +8,6 @@ import 'package:untitled1/Task/allTaskListScreen.dart';
 import 'package:untitled1/Task/taskCreateForm.dart';
 import 'package:untitled1/screens/totalLeadList.dart';
 
-import '../Contacts/contact_services.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({super.key});

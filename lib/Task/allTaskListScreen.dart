@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -139,12 +138,10 @@ class _TaskListScreenState extends State<TaskListScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, size: 18, color: Colors.blue),
           onPressed: () {
-            showAnimatedDialog(
+            showDialog(
               context: context,
               barrierDismissible: true,
               builder: (BuildContext context) => const BottomNavigationPage(),
-              curve: Curves.fastOutSlowIn,
-              duration: const Duration(milliseconds: 700),
             );
           },
         ),

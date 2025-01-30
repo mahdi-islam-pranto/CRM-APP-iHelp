@@ -2,8 +2,6 @@ import 'package:animated_floating_buttons/widgets/animated_floating_action_butto
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -101,7 +99,7 @@ class _NewDashboardState extends State<NewDashboard> {
         backgroundColor: Colors.blue[400],
         onPressed: () {
           // Navigate to another page when the "Image" button is pressed
-          showAnimatedDialog(
+          showDialog(
             context: context,
             barrierDismissible: true,
             builder: (BuildContext context) {
@@ -136,14 +134,12 @@ class _NewDashboardState extends State<NewDashboard> {
                               ),
                               onPressed: () {
                                 // Handle lead btton click
-                                showAnimatedDialog(
+                                showDialog(
                                   context: context,
                                   barrierDismissible: true,
                                   builder: (BuildContext context) {
                                     return const LeadCreateForm();
                                   },
-                                  curve: Curves.fastOutSlowIn,
-                                  duration: const Duration(seconds: 1),
                                 );
 
                                 // Add your lead button logic here
@@ -160,14 +156,12 @@ class _NewDashboardState extends State<NewDashboard> {
                               ),
                               onPressed: () {
                                 // Handle task button click
-                                showAnimatedDialog(
+                                showDialog(
                                   context: context,
                                   barrierDismissible: true,
                                   builder: (BuildContext context) {
                                     return const TaskCreateForm();
                                   },
-                                  curve: Curves.fastOutSlowIn,
-                                  duration: const Duration(seconds: 1),
                                 );
                               },
                               child: const Text(
@@ -191,14 +185,12 @@ class _NewDashboardState extends State<NewDashboard> {
                               ),
                               onPressed: () {
                                 // Handle task button click
-                                showAnimatedDialog(
+                                showDialog(
                                   context: context,
                                   barrierDismissible: true,
                                   builder: (BuildContext context) {
                                     return const FollowUpCreate();
                                   },
-                                  curve: Curves.fastOutSlowIn,
-                                  duration: const Duration(seconds: 1),
                                 );
                               },
                               child: const Text(
@@ -218,8 +210,6 @@ class _NewDashboardState extends State<NewDashboard> {
                 ),
               );
             },
-            curve: Curves.fastOutSlowIn,
-            duration: const Duration(seconds: 1),
           );
         },
         heroTag: "",

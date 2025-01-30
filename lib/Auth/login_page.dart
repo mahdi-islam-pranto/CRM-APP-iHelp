@@ -2,16 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
-
-import '../API/api_url.dart';
 import '../Dashboard/bottom_navigation_page.dart';
-import '../Notification/notification_service.dart';
 import '../NotificationService/notification_service.dart';
 import '../components/CustomProgress.dart';
-
 import '../resourses/app_colors.dart';
 import '../resourses/resourses.dart';
 

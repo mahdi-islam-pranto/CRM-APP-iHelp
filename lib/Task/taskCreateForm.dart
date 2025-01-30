@@ -3,6 +3,8 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
@@ -15,6 +17,7 @@ import '../components/CustomProgress.dart';
 import '../components/Dropdowns/taskTypeDropdown.dart';
 import 'allTaskListScreen.dart';
 
+
 class TaskCreateForm extends StatefulWidget {
   const TaskCreateForm({Key? key}) : super(key: key);
 
@@ -24,19 +27,198 @@ class TaskCreateForm extends StatefulWidget {
 
 class _TaskCreateFormState extends State<TaskCreateForm> {
   final _formKey = GlobalKey<FormState>();
+
   final _companyName = TextEditingController();
+
   final _subject = TextEditingController();
+
   final _description = TextEditingController();
+
   final _contactNumber = TextEditingController();
 
+  final _currentLocation = TextEditingController();
+
   TextEditingController startDateTimeController = TextEditingController();
+
   TextEditingController endDateTimeController = TextEditingController();
+
   late String dateTimePicker;
 
   String? currentUserId; // Add this variable
 
+  Position? position;
+
+  List<Placemark>? placeMark;
+
+
+
+  /// this is automtic location set very good working
+  // Future<void> getCurrentLocation() async {
+  //   try {
+  //     Position newPosition = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high,
+  //     );
+  //
+  //     List<Placemark> placeMark =
+  //     await placemarkFromCoordinates(newPosition.latitude, newPosition.longitude);
+  //
+  //     Placemark pMark = placeMark[0];
+  //
+  //     String completeAddress =
+  //         '${pMark.subThoroughfare ?? ''} ${pMark.thoroughfare ?? ''}, '
+  //         '${pMark.locality ?? ''}, ${pMark.administrativeArea ?? ''} '
+  //         '${pMark.postalCode ?? ''}, ${pMark.country ?? ''}';
+  //
+  //         _currentLocation.text = completeAddress.trim();
+  //   } catch (e) {
+  //     print("Error getting location: $e");
+  //   }
+  // }
+
+
+  bool isLoading = false; // Loading state
+
+  Future<void> _getCurrentLocation() async {
+    setState(() {
+      isLoading = true; // Show loading indicator
+    });
+
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location service is enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Location services are disabled.")));
+      return;
+    }
+
+    // Check for permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Location permissions are permanently denied.")));
+            return;
+      }
+    }
+
+    // Get current position
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+
+      // Get address from latitude and longitude
+      List<Placemark> placemarks =
+      await placemarkFromCoordinates(position.latitude, position.longitude);
+      if (placemarks.isNotEmpty) {
+        Placemark pMark = placemarks[0];
+        String completeAddress =
+            '${pMark.subThoroughfare ?? ''} ${pMark.thoroughfare ?? ''}, '
+            '${pMark.locality ?? ''}, ${pMark.administrativeArea ?? ''} '
+            '${pMark.postalCode ?? ''}, ${pMark.country ?? ''}';
+
+        setState(() {
+           _currentLocation.text = completeAddress; // Set full address
+           isLoading = false; // Hide loading indicator
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error getting location: $e")));
+    }
+  }
+
+
+
+  /// good work
+  // Future<void> _getCurrentLocation() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //
+  //   // Check if location service is enabled
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     return;
+  //   }
+  //
+  //   // Check for permission
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.deniedForever) {
+  //       return;
+  //     }
+  //   }
+  //
+  //   // Get current position
+  //   Position position = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high);
+  //
+  //   try {
+  //     // Get address from latitude and longitude
+  //     List<Placemark> placemarks =
+  //     await placemarkFromCoordinates(position.latitude, position.longitude);
+  //     if (placemarks.isNotEmpty) {
+  //       Placemark pMark = placemarks[0];
+  //       String completeAddress =
+  //           '${pMark.subThoroughfare ?? ''} ${pMark.thoroughfare ?? ''}, '
+  //           '${pMark.locality ?? ''}, ${pMark.administrativeArea ?? ''} '
+  //           '${pMark.postalCode ?? ''}, ${pMark.country ?? ''}';
+  //
+  //       setState(() {
+  //         _currentLocation.text = completeAddress; // Set full address
+  //       });
+  //     }
+  //   } catch (e) {
+  //     print("Error getting address: $e");
+  //   }
+  // }
+
+
+  /// location
+  // Future<void> _getCurrentLocation() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
+  //
+  //   // Check if location service is enabled
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     return;
+  //   }
+  //
+  //   // Check for permission
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //     if (permission == LocationPermission.deniedForever) {
+  //       return;
+  //     }
+  //   }
+  //
+  //   // Get current position
+  //   Position position = await Geolocator.getCurrentPosition(
+  //       desiredAccuracy: LocationAccuracy.high);
+  //
+  //   setState(() {
+  //     _currentLocation.text = "${position.latitude}, ${position.longitude}"; // Set location
+  //   });
+  // }
+
   @override
   void initState() {
+    _getCurrentLocation();
     super.initState();
 
     // set current date to start date
@@ -137,6 +319,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       startDateTimeController.clear();
 
       // send notification
+
       if (selectedDeviceToken.isNotEmpty) {
         SendNotificationService.sendNotificationUsingApi(
             token: selectedDeviceToken,
@@ -319,6 +502,11 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                       ),
                       const SizedBox(height: 12),
 
+                      // Location Traking
+
+                      currentLocationformField("Current Location",
+                          _currentLocation, 'Please enter location'),
+
                       descritionFormField("Description", _description,
                           'Please enter description'),
                       const SizedBox(height: 30),
@@ -329,6 +517,55 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
               ),
             ),
           )),
+    );
+  }
+
+  Widget currentLocationformField(
+      String label, TextEditingController controller, String errorText,
+      {String hintText = ''}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            label,
+            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                blurRadius: 3,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
+
+          child: TextFormField(
+            controller: _currentLocation,
+            readOnly: true, // Makes field non-editable
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              fillColor: Color(0xFFF8F6F8),
+              filled: true, // Apply fill color
+              suffixIcon: IconButton(
+                icon: Icon(Icons.my_location, color: Colors.blue),
+                onPressed: () async {
+                  await _getCurrentLocation(); // Properly handle async function
+                },
+              ),
+            ),
+          ),
+
+
+        ),
+      ],
     );
   }
 

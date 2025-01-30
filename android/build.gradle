@@ -1,3 +1,14 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.0.2' // Ensure you are using the correct version
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0' // Kotlin plugin (if using Kotlin)
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -6,12 +17,10 @@ allprojects {
 }
 
 rootProject.buildDir = '../build'
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
 
-// new
-subprojects {
     afterEvaluate { project ->
         if (project.plugins.hasPlugin("com.android.application") ||
                 project.plugins.hasPlugin("com.android.library")) {
