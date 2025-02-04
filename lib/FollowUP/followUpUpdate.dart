@@ -175,7 +175,7 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
       "phone_number": _contactNumber.text,
       "next_followup_date": dateTimeController.text,
       "description": _description.text,
-      "associate_user_id": Associates.Associate.associateId.toString(),
+      "associate_user_id": Associates.Associate.selectedAssociateIds.toString(),
       "followup_status": _selectedStatus.toString(),
       "creator_user_id": userId,
     };
@@ -367,14 +367,13 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
                               width: MediaQuery.of(context).size.width * 0.025),
                           Flexible(
                             flex: 1,
-                            child: dropDownRow(
-                                "Associate",
-                                LeadAssociateDropDown(
-                                  // initialValue:
-                                  //     widget.followUpDetails.associates[].name,
-                                  onDeviceTokenReceived:
-                                      associateHandelDeviceToken,
-                                )),
+                            child: MultiLeadAssociateDropDown(
+                              onDeviceTokensReceived: (List<String> associateHandelDeviceToken) {
+                                // Handle the list of device tokens here
+                                print('Selected Associate tokens: $associateHandelDeviceToken');
+                              },
+                              initialValues: ['', ''], // Optional
+                            ),
                           ),
                         ],
                       ),

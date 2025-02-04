@@ -108,11 +108,11 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
       "phone_number": _contactNumber.text,
       "next_followup_date": dateTimeController.text,
       "description": _description.text,
-      "associate_user_id": Associate.associateId ?? "",
+      "associate_user_id": Associate.selectedAssociateIds ?? "",
     };
 
     print('Sending request with body: ${jsonEncode(body)}');
-    print('Associate ID being sent: ${Associate.associateId}');
+    print('Associate ID being sent: ${Associate.selectedAssociateIds}');
 
     var response = await http.post(
       Uri.parse(url),
@@ -285,16 +285,33 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                               width: MediaQuery.of(context).size.width * 0.025),
                           Flexible(
                             flex: 1,
-                            child: dropDownRow(
-                                "Associate",
-                                LeadAssociateDropDown(
-                                  onDeviceTokenReceived:
-                                      associateHandelDeviceToken,
-                                )),
+                            child:  MultiLeadAssociateDropDown(
+                              onDeviceTokensReceived: (List<String> associateHandelDeviceToken) {
+                                // Handle the list of device tokens here
+                                print('Selected Associate tokens: $associateHandelDeviceToken');
+                              },
+                              initialValues: [], // Optional
+                            ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 12),
+
+
+                     // Multiple drop down
+                      MultiLeadAssociateDropDown(
+                        onDeviceTokensReceived: (List<String> deviceTokens) {
+                          // Handle the list of device tokens here
+                          print('Selected device tokens: $deviceTokens');
+                        },
+                        initialValues: ['John Doe', 'Jane Smith'], // Optional
+                      ),
+                      const SizedBox(height: 12),
+
+
+
+
+
                       dropDownRow(
                           "Follow Up Type", const FollowUpTypeDropdown()),
                       const SizedBox(height: 12),

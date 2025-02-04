@@ -76,80 +76,24 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
   // }
 
 
-  bool isLoading = false; // Loading state
-
-  Future<void> _getCurrentLocation() async {
-    setState(() {
-      isLoading = true; // Show loading indicator
-    });
-
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Check if location service is enabled
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      setState(() {
-        isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Location services are disabled.")));
-      return;
-    }
-
-    // Check for permission
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.deniedForever) {
-        setState(() {
-          isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Location permissions are permanently denied.")));
-            return;
-      }
-    }
-
-    // Get current position
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-
-      // Get address from latitude and longitude
-      List<Placemark> placemarks =
-      await placemarkFromCoordinates(position.latitude, position.longitude);
-      if (placemarks.isNotEmpty) {
-        Placemark pMark = placemarks[0];
-        String completeAddress =
-            '${pMark.subThoroughfare ?? ''} ${pMark.thoroughfare ?? ''}, '
-            '${pMark.locality ?? ''}, ${pMark.administrativeArea ?? ''} '
-            '${pMark.postalCode ?? ''}, ${pMark.country ?? ''}';
-
-        setState(() {
-           _currentLocation.text = completeAddress; // Set full address
-           isLoading = false; // Hide loading indicator
-        });
-      }
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error getting location: $e")));
-    }
-  }
-
-
-
-  /// good work
+  // bool isLoading = false; // Loading state
+  //
   // Future<void> _getCurrentLocation() async {
+  //   setState(() {
+  //     isLoading = true; // Show loading indicator
+  //   });
+  //
   //   bool serviceEnabled;
   //   LocationPermission permission;
   //
   //   // Check if location service is enabled
   //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
   //   if (!serviceEnabled) {
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text("Location services are disabled.")));
   //     return;
   //   }
   //
@@ -158,15 +102,20 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
   //   if (permission == LocationPermission.denied) {
   //     permission = await Geolocator.requestPermission();
   //     if (permission == LocationPermission.deniedForever) {
-  //       return;
+  //       setState(() {
+  //         isLoading = false;
+  //       });
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(content: Text("Location permissions are permanently denied.")));
+  //           return;
   //     }
   //   }
   //
   //   // Get current position
-  //   Position position = await Geolocator.getCurrentPosition(
-  //       desiredAccuracy: LocationAccuracy.high);
-  //
   //   try {
+  //     Position position = await Geolocator.getCurrentPosition(
+  //         desiredAccuracy: LocationAccuracy.high);
+  //
   //     // Get address from latitude and longitude
   //     List<Placemark> placemarks =
   //     await placemarkFromCoordinates(position.latitude, position.longitude);
@@ -178,13 +127,64 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
   //           '${pMark.postalCode ?? ''}, ${pMark.country ?? ''}';
   //
   //       setState(() {
-  //         _currentLocation.text = completeAddress; // Set full address
+  //          _currentLocation.text = completeAddress; // Set full address
+  //          isLoading = false; // Hide loading indicator
   //       });
   //     }
   //   } catch (e) {
-  //     print("Error getting address: $e");
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text("Error getting location: $e")));
   //   }
   // }
+
+
+
+  /// good work
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location service is enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return;
+    }
+
+    // Check for permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        return;
+      }
+    }
+
+    // Get current position
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    try {
+      // Get address from latitude and longitude
+      List<Placemark> placemarks =
+      await placemarkFromCoordinates(position.latitude, position.longitude);
+      if (placemarks.isNotEmpty) {
+        Placemark pMark = placemarks[0];
+        String completeAddress =
+            '${pMark.subThoroughfare ?? ''} ${pMark.thoroughfare ?? ''}, '
+            '${pMark.locality ?? ''}, ${pMark.administrativeArea ?? ''} '
+            '${pMark.postalCode ?? ''}, ${pMark.country ?? ''}';
+
+        setState(() {
+          _currentLocation.text = completeAddress; // Set full address
+        });
+      }
+    } catch (e) {
+      print("Error getting address: $e");
+    }
+  }
 
 
   /// location
@@ -557,8 +557,10 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
               suffixIcon: IconButton(
                 icon: Icon(Icons.my_location, color: Colors.blue),
                 onPressed: () async {
+                  print('clicked');
                   await _getCurrentLocation(); // Properly handle async function
                 },
+               // onPressed: getCurrentLocation,
               ),
             ),
           ),

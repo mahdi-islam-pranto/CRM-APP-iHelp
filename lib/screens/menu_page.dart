@@ -8,6 +8,8 @@ import 'package:untitled1/Task/allTaskListScreen.dart';
 import 'package:untitled1/Task/taskCreateForm.dart';
 import 'package:untitled1/screens/totalLeadList.dart';
 
+import '../Contacts/contact_services.dart';
+
 
 class MenuPage extends StatelessWidget {
   const MenuPage({super.key});
@@ -467,6 +469,53 @@ class MenuPage extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 10),
                                     const Text("Create Follow up",
+                                        style: TextStyle(fontSize: 14))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) =>
+                              //         const ContactServices()));
+                            },
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.19,
+                              width: MediaQuery.of(context).size.width * 0.435,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: const Color.fromARGB(50, 203, 249, 216),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 62,
+                                      width: 61,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        color: const Color.fromARGB(
+                                            114, 153, 66, 204),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.contact_emergency,
+                                          color: Colors.white,
+                                          size: 35,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    const Text("Contacts",
                                         style: TextStyle(fontSize: 14))
                                   ],
                                 ),
