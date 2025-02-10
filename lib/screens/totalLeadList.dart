@@ -327,7 +327,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                     color: Colors.white,
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 5),
-                                    elevation: 2.0,
+                                    elevation: 0.5,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),

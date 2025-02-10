@@ -1086,6 +1086,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:marquee/marquee.dart';
+import 'package:untitled1/Contacts/ContactsDetails.dart';
 import 'package:untitled1/components/drawermenu/drawer_menu.dart';
 import 'CallUI.dart';
 import 'SipAccountStatus.dart';
@@ -1093,11 +1094,10 @@ import 'call_logs/CallLogDetails.dart';
 import '../database/DBHandler.dart';
 import 'call_logs/CallLogsModel.dart';
 
-
 class SipDialPad extends StatefulWidget {
-  const SipDialPad(
-      {Key? key,})
-      : super(key: key);
+  const SipDialPad({
+    Key? key,
+  }) : super(key: key);
 
   // final String phoneNumber;
   // final String callerName;
@@ -1117,7 +1117,7 @@ class _SipDialPadState extends State<SipDialPad> {
 
   String? callerName;
 
-      /*
+  /*
       false = history search
       true = contacts search
        */
@@ -1143,7 +1143,6 @@ class _SipDialPadState extends State<SipDialPad> {
 
   @override
   Widget build(BuildContext context) {
-
     // if (widget.phoneNumber.isNotEmpty) {
     //
     //   for (int i = 0; i < widget.phoneNumber.length; i++) {
@@ -1155,7 +1154,7 @@ class _SipDialPadState extends State<SipDialPad> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-          drawer:DrawerMenu(),
+          drawer: DrawerMenu(),
           appBar: AppBar(
             // New Changed
             flexibleSpace: Container(
@@ -1200,19 +1199,18 @@ class _SipDialPadState extends State<SipDialPad> {
                         ),
                         SizedBox(
                             width: 40,
-                              height: 15,
+                            height: 15,
                             child: Marquee(
                               text: SipAccountStatus.extension,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                               scrollAxis: Axis.horizontal,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               blankSpace: 10.0,
                               velocity: 50.0,
                               textDirection: TextDirection.ltr,
                               pauseAfterRound: const Duration(seconds: 1),
-                              accelerationDuration:
-                                  const Duration(seconds: 0),
+                              accelerationDuration: const Duration(seconds: 0),
                               accelerationCurve: Curves.easeInCirc,
                               decelerationDuration:
                                   const Duration(milliseconds: 500),
@@ -2152,30 +2150,6 @@ class _SipDialPadState extends State<SipDialPad> {
         TextSelection.fromPosition(TextPosition(offset: newPosition));
   }
 
-  // void setDigitInList() {
-  //   cursorCurrentIndex++;
-  //   String number = "";
-  //   for (var element in numberDigits) {
-  //     number += element;
-  //   }
-  //
-  //   digitsController.text = number;
-  //   digitsController.selection = TextSelection.fromPosition(TextPosition(offset: cursorCurrentIndex));
-  // }
-  //
-  // void removeDigitFromList() {
-  //   cursorCurrentIndex--;
-  //   String number = "";
-  //   for (var element in numberDigits) {
-  //     number += element;
-  //   }
-  //
-  //   digitsController.text = number;
-  //   digitsController.selection =
-  //       TextSelection.fromPosition(TextPosition(offset: cursorCurrentIndex));
-  // }
-
-  //Search field
   late String searchKey;
 
   Widget searchContacts() {
@@ -2359,7 +2333,7 @@ class _SipDialPadState extends State<SipDialPad> {
 // showing get contact
   Widget getContactsTabView() {
     return FutureBuilder(
-         future:getPhoneContacts(),
+        future: getPhoneContacts(),
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.data == null) {
             return const Center(
@@ -2393,13 +2367,13 @@ class _SipDialPadState extends State<SipDialPad> {
                                 fontSize: 30, fontWeight: FontWeight.bold),
                           )),
                   onTap: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => ContactsDetails(
-                    //             clientName: snapshot.data[index].displayName,
-                    //             companyName: "Phone Contact",
-                    //             phoneNumber: phones.toString())));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ContactsDetails(
+                                clientName: snapshot.data[index].displayName,
+                                companyName: "Phone Contact",
+                                phoneNumber: phones.toString())));
                   },
                 );
               });
@@ -2413,7 +2387,7 @@ class _SipDialPadState extends State<SipDialPad> {
   Future<List<dynamic>> getPhoneContacts() async {
     var temp = await FlutterContacts.getContacts(
         withProperties: true, withThumbnail: true, withPhoto: true);
-   // tempContactList = temp;
+    // tempContactList = temp;
     return temp;
   }
 

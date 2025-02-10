@@ -98,6 +98,7 @@ class SIPCredentialState extends State<SIPCredential> {
                 ),
                 color: Colors.blue,
                 child: AnimatedButton(
+                  color: Colors.blue,
                   width: 150,
                   text: 'Save',
                   pressEvent: () async {
