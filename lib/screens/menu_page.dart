@@ -7,9 +7,7 @@ import 'package:untitled1/NotificationService/notificationPage.dart';
 import 'package:untitled1/Task/allTaskListScreen.dart';
 import 'package:untitled1/Task/taskCreateForm.dart';
 import 'package:untitled1/screens/totalLeadList.dart';
-
-import '../Contacts/contact_services.dart';
-
+import '../sip_account/SipDialPad.dart';
 
 class MenuPage extends StatelessWidget {
   const MenuPage({super.key});
@@ -57,6 +55,54 @@ class MenuPage extends StatelessWidget {
 
                     Column(
                       children: [
+                        //sip contacts
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SipDialPad()));
+                            },
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.19,
+                              width: MediaQuery.of(context).size.width * 0.435,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: const Color.fromARGB(114, 236, 215, 248),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 62,
+                                      width: 61,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        color: const Color.fromARGB(
+                                            114, 153, 66, 204),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.sip_outlined,
+                                          color: Colors.white,
+                                          size: 35,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    const Text("Sip Contacts",
+                                        style: TextStyle(fontSize: 14))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
                         // Notifications
                         Material(
                           color: Colors.transparent,
@@ -217,55 +263,6 @@ class MenuPage extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 10),
                                     const Text("Tasks",
-                                        style: TextStyle(fontSize: 14))
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 16),
-                        // follow ups
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const FollowUpList()));
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 0.19,
-                              width: MediaQuery.of(context).size.width * 0.435,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(14),
-                                color: const Color.fromARGB(50, 255, 228, 228),
-                              ),
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      height: 62,
-                                      width: 61,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(14),
-                                        color: const Color.fromARGB(
-                                            200, 231, 125, 125),
-                                      ),
-                                      child: const Center(
-                                        child: Icon(
-                                          Icons.arrow_circle_right_outlined,
-                                          color: Colors.white,
-                                          size: 35,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 10),
-                                    const Text("Follow Ups",
                                         style: TextStyle(fontSize: 14))
                                   ],
                                 ),
@@ -477,22 +474,23 @@ class MenuPage extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 16),
+                        // follow ups
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
                             onTap: () {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //         builder: (context) =>
-                              //         const ContactServices()));
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const FollowUpList()));
                             },
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.19,
                               width: MediaQuery.of(context).size.width * 0.435,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(14),
-                                color: const Color.fromARGB(50, 203, 249, 216),
+                                color: const Color.fromARGB(50, 255, 228, 228),
                               ),
                               child: Center(
                                 child: Column(
@@ -504,18 +502,18 @@ class MenuPage extends StatelessWidget {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(14),
                                         color: const Color.fromARGB(
-                                            114, 153, 66, 204),
+                                            200, 231, 125, 125),
                                       ),
                                       child: const Center(
                                         child: Icon(
-                                          Icons.contact_emergency,
+                                          Icons.arrow_circle_right_outlined,
                                           color: Colors.white,
                                           size: 35,
                                         ),
                                       ),
                                     ),
                                     const SizedBox(height: 10),
-                                    const Text("Contacts",
+                                    const Text("Follow Ups",
                                         style: TextStyle(fontSize: 14))
                                   ],
                                 ),
