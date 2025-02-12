@@ -46,10 +46,12 @@ class _ContactsDetailsState extends State<ContactsDetails> {
 
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.blue,
-          systemOverlayStyle:
-          const SystemUiOverlayStyle(statusBarColor: Colors.blue),
-          automaticallyImplyLeading: true),
+        leading: IconButton(onPressed: (){
+          Navigator.pop(context);
+        }, icon: Icon(Icons.chevron_left,size: 25,color: Colors.blue,)),
+
+
+      ),
       body: ListView(
         children: [
           const SizedBox(

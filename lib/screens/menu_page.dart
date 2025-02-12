@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:untitled1/Contacts/contact_services.dart';
 import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
 import 'package:untitled1/FollowUP/followUpCreateForm.dart';
 import 'package:untitled1/Lead/leadCreateform.dart';
@@ -7,6 +8,7 @@ import 'package:untitled1/NotificationService/notificationPage.dart';
 import 'package:untitled1/Task/allTaskListScreen.dart';
 import 'package:untitled1/Task/taskCreateForm.dart';
 import 'package:untitled1/screens/totalLeadList.dart';
+import 'package:untitled1/sip_account/SIPCredential.dart';
 import '../sip_account/SipDialPad.dart';
 
 class MenuPage extends StatelessWidget {
@@ -17,16 +19,16 @@ class MenuPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            size: 18,
-            color: Colors.blue,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(
+        //     Icons.arrow_back_ios,
+        //     size: 18,
+        //     color: Colors.blue,
+        //   ),
+        //   onPressed: () {
+        //     Navigator.of(context).pop();
+        //   },
+        // ),
         backgroundColor: Colors.white,
         title: Container(
           height: 35,
@@ -63,7 +65,7 @@ class MenuPage extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => SipDialPad()));
+                                      builder: (context) => SIPCredential()));
                             },
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.19,
@@ -279,58 +281,55 @@ class MenuPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // contacts
-                        // Material(
-                        //   color: Colors.transparent,
-                        //   child: InkWell(
-                        //     onTap: () {
-                        //       Navigator.push(
-                        //           context,
-                        //           MaterialPageRoute(
-                        //               builder: (context) =>
-                        //                   const ContactServices()));
-                        //     },
-                        //     child: Container(
-                        //       height: MediaQuery.of(context).size.height * 0.19,
-                        //       width: MediaQuery.of(context).size.width * 0.435,
-                        //       decoration: BoxDecoration(
-                        //         borderRadius: BorderRadius.circular(14),
-                        //         color: const Color.fromARGB(50, 127, 201, 231),
-                        //       ),
-                        //       child: Center(
-                        //         child: Column(
-                        //           mainAxisAlignment: MainAxisAlignment.center,
-                        //           children: [
-                        //             // contacts
-                        //             Container(
-                        //               height: 62,
-                        //               width: 61,
-                        //               decoration: BoxDecoration(
-                        //                 borderRadius: BorderRadius.circular(14),
-                        //                 color: const Color.fromARGB(
-                        //                     200, 127, 201, 231),
-                        //               ),
-                        //               child: const Center(
-                        //                 child: Icon(
-                        //                   Icons.contact_page_outlined,
-                        //                   color: Colors.white,
-                        //                   size: 35,
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //             const SizedBox(height: 10),
-                        //             const Text("Contacts",
-                        //                 style: TextStyle(fontSize: 14))
-                        //           ],
-                        //         ),
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
 
-                        // const SizedBox(height: 16),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SipDialPad()));
+                            },
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.19,
+                              width: MediaQuery.of(context).size.width * 0.435,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: const Color.fromARGB(114, 236, 215, 248),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 62,
+                                      width: 61,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        color: const Color.fromARGB(
+                                            255, 138, 228, 184),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.contact_emergency,
+                                          color: Colors.white,
+                                          size: 35,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    const Text("My Contacts",
+                                        style: TextStyle(fontSize: 14))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
 
-                        // create lead
+                        const SizedBox(height: 16),
+
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
@@ -339,7 +338,7 @@ class MenuPage extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const LeadCreateForm()));
+                                      const LeadCreateForm()));
                             },
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.19,
@@ -358,11 +357,11 @@ class MenuPage extends StatelessWidget {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(14),
                                         color: const Color.fromARGB(
-                                            200, 129, 232, 158),
+                                            114, 30, 180, 234),
                                       ),
                                       child: const Center(
                                         child: Icon(
-                                          Icons.person_add_alt_1_outlined,
+                                          Icons.leaderboard,
                                           color: Colors.white,
                                           size: 35,
                                         ),
@@ -454,11 +453,11 @@ class MenuPage extends StatelessWidget {
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(14),
                                         color: const Color.fromARGB(
-                                            200, 129, 232, 158),
+                                            114, 30, 158, 154),
                                       ),
                                       child: const Center(
                                         child: Icon(
-                                          Icons.create_new_folder_outlined,
+                                          Icons.follow_the_signs,
                                           color: Colors.white,
                                           size: 35,
                                         ),

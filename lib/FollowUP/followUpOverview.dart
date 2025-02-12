@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled1/widget/sip_call_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Models/followUpModel.dart';
 import '../resourses/app_colors.dart';
@@ -194,37 +195,42 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                         fontSize: 16, color: Colors.white),
                                   ),
                                   const SizedBox(height: 5),
-                                  GestureDetector(
-                                    onTap: () {
-                                      urlLauncher(
-                                          "tel:${followUpDetails?.phoneNumber}");
-                                    },
-                                    child: RichText(
-                                        text: TextSpan(
-                                      children: [
-                                        const TextSpan(
-                                          text: "Phone: ",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.white),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20), // Inner spacing
+                                        decoration: BoxDecoration(
+                                          color: Colors.white, // Background color
+                                          borderRadius: BorderRadius.circular(15), // Rounded corners
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.withOpacity(0.2), // Soft shadow
+                                              blurRadius: 8,
+                                              spreadRadius: 2,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                          border: Border.all(color: Colors.blue.shade700, width: 1), // Border styling
                                         ),
-                                        TextSpan(
-                                          text:
-                                              " ${followUpDetails?.phoneNumber}",
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                              color: Colors.white),
+                                        child: Row(
+                                          children: [
+                                          //  Icon(Icons.call, color: Colors.green.shade700, size: 20), // Call icon
+                                            const SizedBox(width: 8),
+                                            SipCallButton(
+                                              phoneNumber: followUpDetails!.phoneNumber.toString().isNotEmpty
+                                                  ? followUpDetails!.phoneNumber.toString()
+                                                  : "No Phone No.",
+                                              callerName: followUpDetails
+                                                  ?.companyName?.companyName ??
+                                                  "N/A",
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    )
-                                        // child: Text(
-                                        //   "Phone: ${followUpDetails?.phoneNumber ?? "N/A"}",
-                                        //   style: const TextStyle(
-                                        //       fontSize: 16, color: Colors.white),
-                                        // ),
-                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

@@ -12,9 +12,7 @@ import '../Lead/LeadOwnerDropdown.dart';
 import '../NotificationService/sendNotification.dart';
 import '../components/CustomProgress.dart';
 import '../components/Dropdowns/companyNameDropDown.dart';
-
 import 'followUpType.dart';
-import 'leadFollowUpList.dart';
 
 class LeadFollowUpCreate extends StatefulWidget {
   final int leadId;
@@ -259,7 +257,7 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
             ),
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, size: 18),
+              icon: const Icon(Icons.arrow_back_ios, size: 18,color: Colors.blue,),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -386,28 +384,6 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
     );
   }
 
-// dropdown widget
-  // Widget dropDownRow(String label, Widget dropDown) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
-  //     child: Row(
-  //       children: [
-  //         Expanded(
-  //           flex: 1,
-  //           child: Text(label,
-  //               style:
-  //                   const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-  //         ),
-  //         // Wrapping the dropdown in Expanded to avoid overflow
-
-  //         Expanded(
-  //           flex: 3,
-  //           child: dropDown,
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget dropDownRow(String label, Widget dropDown) {
     return Column(

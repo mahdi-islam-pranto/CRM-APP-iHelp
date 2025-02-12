@@ -6,7 +6,8 @@ class AppColors {
   Color grey = Colors.grey;
   Color red = Colors.red;
   Color white = Colors.white;
-  Color buttonColor = const Color(0xff33665A);
+  Color buttonColorr = const Color(0xff33665A);
+  Color buttonColor = const Color(0xFF007AFF);
   Color backgroundColor = const Color(0xFFF8F6F8);
 }
 

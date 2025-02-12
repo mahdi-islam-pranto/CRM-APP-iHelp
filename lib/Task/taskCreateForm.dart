@@ -3,6 +3,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -425,6 +426,9 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
           backgroundColor: formBackgroundColor,
           appBar: AppBar(
             backgroundColor: Colors.white,
+            systemOverlayStyle: const SystemUiOverlayStyle(
+              statusBarColor: Colors.white,
+            ),
             // toolbarHeight: 80,
             title: const Text(
               "CREATE NEW TASK",
@@ -432,7 +436,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
             ),
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, size: 18),
+              icon: const Icon(Icons.arrow_back_ios, size: 18,color: Colors.blue,),
               onPressed: () {
                 Navigator.pop(context);
               },

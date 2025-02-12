@@ -7,9 +7,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/API/api_url.dart';
+import 'package:untitled1/resourses/app_colors.dart';
 
 import 'package:untitled1/screens/leadDetailsTabs.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled1/sip_account/CallUI.dart';
+import 'package:untitled1/widget/lead_list_design.dart';
+import 'package:untitled1/widget/sip_call_button.dart';
 import '../Dashboard/bottom_navigation_page.dart';
 import '../Lead/leadCreateform.dart';
 import '../Models/LeadListModel.dart';
@@ -208,7 +212,6 @@ class _LeadListScreenState extends State<LeadListScreen> {
               builder: (BuildContext context) {
                 return const BottomNavigationPage();
               },
-
             );
           },
         ),
@@ -223,16 +226,23 @@ class _LeadListScreenState extends State<LeadListScreen> {
         centerTitle: true,
         automaticallyImplyLeading: true,
         actions: [
-          IconButton(
-            tooltip: 'Search',
-            onPressed: () {
-              setState(() {
-                searchBar = !searchBar;
-              });
-            },
-            icon: const Icon(
-              Icons.search_outlined,
-              color: Colors.black87,
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: CircleAvatar(
+              radius:18,
+              backgroundColor: Colors.blue.shade50,
+              child: IconButton(
+                tooltip: 'Search',
+                onPressed: () {
+                  setState(() {
+                    searchBar = !searchBar;
+                  });
+                },
+                icon: const Icon(
+                  Icons.search_outlined,
+                  color: Colors.black87,
+                ),
+              ),
             ),
           ),
         ],
@@ -320,84 +330,144 @@ class _LeadListScreenState extends State<LeadListScreen> {
                             LeadListModel lead = filteredLeadList[index];
                             return Column(
                               children: [
+                                // LeadCard(
+                                //   lead: lead,
+                                //   context: context,
+                                // ),
+
                                 Container(
-                                  padding: const EdgeInsets.only(
-                                      top: 8, left: 10, right: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 5),
                                   child: Card(
-                                    color: Colors.white,
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 5),
+                                    color: formBackgroundColor,
+                                    // color: Color.fromRGBO(
+                                    //     253, 250, 250, 1.0),
                                     elevation: 0.5,
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      side: BorderSide(
+                                          color: Color.fromRGBO(
+                                              253, 250, 250, 1.0)),
                                     ),
-                                    child: ListTile(
-                                      title: Text(
-                                        lead.companyName ?? "",
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 17),
-                                      ),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const SizedBox(height: 8.0),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.phone,
-                                                color: Colors.blue,
-                                                size: 16,
-                                              ),
-                                              const SizedBox(width: 5.0),
-                                              Text(lead.phoneNumber ?? ""),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 5.0),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.money_outlined,
-                                                color: Colors.blue,
-                                                size: 16,
-                                              ),
-                                              const SizedBox(width: 5.0),
-                                              Text(
-                                                  lead.leadPipelineName?.name ??
-                                                      ""),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 5.0),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.person,
-                                                color: Colors.blue,
-                                                size: 16,
-                                              ),
-                                              const SizedBox(width: 5.0),
-                                              Text(lead.assignName?.name ?? ""),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      trailing: const Icon(
-                                        Icons.arrow_forward_ios,
-                                        size: 14,
-                                        color: Colors.blue,
-                                      ),
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(12.0),
                                       onTap: () {
                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    LeadDetailsTabs(
-                                                        leadId: lead.id!)));
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                LeadDetailsTabs(
+                                                    leadId: lead.id!),
+                                          ),
+                                        );
                                       },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    lead.companyName ?? "",
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.black87,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 6,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.blue.shade50,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.money_outlined,
+                                                        size: 16,
+                                                        color: Colors
+                                                            .blue.shade700,
+                                                      ),
+                                                      const SizedBox(width: 6),
+                                                      Text(
+                                                        lead.leadPipelineName
+                                                                ?.name ??
+                                                            "",
+                                                        style: TextStyle(
+                                                          fontSize: 13,
+                                                          color: Colors
+                                                              .blue.shade700,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 16),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.person,
+                                                  size: 16,
+                                                  color: Colors.grey.shade600,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Text(
+                                                  lead.assignName?.name ?? "",
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey.shade700,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 16),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+
+                                                SipCallButton(
+                                                  phoneNumber: lead.phoneNumber
+                                                      .toString(),
+                                                  callerName: lead.companyName
+                                                      .toString(),
+                                                ),
+                                                Icon(
+                                                  Icons.arrow_forward_ios,
+                                                  size: 16,
+                                                  color: Colors.blue.shade400,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
+
                                 if (index == filteredLeadList.length - 1 &&
                                     isLoadingMore)
                                   Padding(

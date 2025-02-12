@@ -345,7 +345,7 @@ class _TaskListScreenState extends State<TaskListScreen> {
           padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
           child: Card(
             color: Colors.white,
-            elevation: 2,
+            elevation: 0.8,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(
                 Radius.circular(10),

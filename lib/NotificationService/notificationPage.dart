@@ -43,6 +43,12 @@ class _NotificationPageState extends State<NotificationPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, size: 18,color: Colors.blue,),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         backgroundColor: Colors.white,
         title: const Text("Notifications"),
       ),

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled1/widget/lead_details_cotact_information.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Models/LeadListModel.dart';
 
@@ -178,55 +179,18 @@ class _LeadOverviewState extends State<LeadOverview> {
                                         height: 60,
                                         color: Colors.blue,
                                       ),
+
+                                  // contact information
                                       Expanded(
-                                        child: ListTile(
-                                          title: Text(
-                                            "Contact Information",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge,
-                                          ),
-                                          subtitle: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const SizedBox(height: 10),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  urlLauncher(
-                                                      "tel:${leadDetails?.phoneNumber}");
-                                                },
-                                                child: RichText(
-                                                  text: TextSpan(
-                                                    text: "Phone: ",
-                                                    style: TextStyle(
-                                                      color: Colors.grey[700],
-                                                    ),
-                                                    children: [
-                                                      TextSpan(
-                                                        text: leadDetails
-                                                                ?.phoneNumber ??
-                                                            'N/A',
-                                                        style: const TextStyle(
-                                                          color: Colors.blue,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Text(
-                                                "Email: ${leadDetails?.email ?? 'N/A'}",
-                                                style: TextStyle(
-                                                    color: Colors.grey[700]),
-                                              ),
-                                            ],
-                                          ),
+                                        child: ContactInformationCard(
+                                          phoneNumber: leadDetails?.phoneNumber ?? 'N/A',
+                                          callerName: leadDetails?.companyName?? 'N/A',
+                                          email: leadDetails?.email ?? 'N/A',
                                         ),
                                       ),
+
+
+
                                     ],
                                   ),
                                 ),

@@ -40,7 +40,7 @@ class _LeadCreateFormState extends State<LeadCreateForm> {
           ),
           centerTitle: true,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, size: 18),
+            icon: const Icon(Icons.arrow_back_ios, size: 18,color: Colors.blue,),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -51,7 +51,7 @@ class _LeadCreateFormState extends State<LeadCreateForm> {
           padding: EdgeInsets.symmetric(
               horizontal: MediaQuery.of(context).size.width * 0.025),
 
-// Responsive Form Container
+         // Responsive Form Container
           height: MediaQuery.of(context).size.height * 0.85,
           width: MediaQuery.of(context).size.width * 1,
           child: Form(
@@ -216,8 +216,7 @@ class _LeadCreateFormState extends State<LeadCreateForm> {
                             "Cancel",
                             style: TextStyle(color: Colors.blue, fontSize: 16),
                           )),
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.065),
+                        SizedBox(width: MediaQuery.of(context).size.width * 0.03),
                       // save
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(

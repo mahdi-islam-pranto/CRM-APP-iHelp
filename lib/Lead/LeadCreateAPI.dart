@@ -113,15 +113,6 @@ class LeadCreateAPI {
       "associate_user_id": associateUserId,
     };
 
-    // Check for empty required fields
-    // var isEmpty;
-    // if (userId == 0 || companyName.isEmpty || leadPipelineId.isEmpty || phoneNumber.isEmpty) {
-    //   customProgress.hideDialog();
-    //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //     content: Text('Please fill in all required fields.'),
-    //   ));
-    //   return;
-    // }
 
     print('Sending request with body: ${jsonEncode(body)}');
 
