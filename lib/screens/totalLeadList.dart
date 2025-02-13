@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,11 +7,8 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/API/api_url.dart';
 import 'package:untitled1/resourses/app_colors.dart';
-
 import 'package:untitled1/screens/leadDetailsTabs.dart';
 import 'package:http/http.dart' as http;
-import 'package:untitled1/sip_account/CallUI.dart';
-import 'package:untitled1/widget/lead_list_design.dart';
 import 'package:untitled1/widget/sip_call_button.dart';
 import '../Dashboard/bottom_navigation_page.dart';
 import '../Lead/leadCreateform.dart';
@@ -28,20 +24,27 @@ class LeadListScreen extends StatefulWidget {
 
 class _LeadListScreenState extends State<LeadListScreen> {
   bool isLoading = true;
+
   bool isLoadingMore = false;
+
   int page = 1;
-  final int pageSize = 10; // Number of items to load per page
+
+  final int pageSize = 10; //// Number of items to load per page
+
   final GlobalKey<AnimatedFloatingActionButtonState> key =
       GlobalKey<AnimatedFloatingActionButtonState>();
 
   List<LeadListModel> totalLeadList = [];
+
   Set<int> leadIds = {}; // Set to track unique lead IDs
+
   bool hasMoreLeads = true; // Flag to check if more leads are available
 
   // search functions
   List<LeadListModel> filteredLeadList = [];
 
   final TextEditingController _searchController = TextEditingController();
+
   String searchQuery = "";
 
   @override
@@ -68,7 +71,6 @@ class _LeadListScreenState extends State<LeadListScreen> {
           final companyName = lead.companyName?.toLowerCase() ?? '';
           final leadPipeline = lead.leadPipelineName?.name.toLowerCase() ?? '';
           final query = searchQuery.toLowerCase();
-
           return companyName.contains(query) || leadPipeline.contains(query);
         }).toList();
       }
@@ -229,7 +231,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: CircleAvatar(
-              radius:18,
+              radius: 18,
               backgroundColor: Colors.blue.shade50,
               child: IconButton(
                 tooltip: 'Search',
@@ -447,7 +449,6 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                                   MainAxisAlignment
                                                       .spaceBetween,
                                               children: [
-
                                                 SipCallButton(
                                                   phoneNumber: lead.phoneNumber
                                                       .toString(),

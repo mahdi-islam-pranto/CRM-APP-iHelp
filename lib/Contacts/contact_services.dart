@@ -12,15 +12,21 @@ class ContactServices extends StatefulWidget {
 
 class _ContactServicesState extends State<ContactServices> {
   bool isLoading = true;
+
   List<Contact> contactList = [];
+
   List<Contact> filterContactList = [];
+
   TextEditingController searchController = TextEditingController();
+
   List<Map<String, String>> callHistory = [];
 
   @override
   void initState() {
     super.initState();
+
     getContacts();
+
     searchController.addListener(filterContacts);
   }
 
@@ -31,30 +37,37 @@ class _ContactServicesState extends State<ContactServices> {
       setState(() {
         isLoading = false;
       });
+
       showAlertDialog();
     }
   }
 
   Future<void> loadContacts() async {
     try {
-      List<Contact> contacts = await FlutterContacts.getContacts(withProperties: true);
+      List<Contact> contacts =
+          await FlutterContacts.getContacts(withProperties: true);
+
       setState(() {
         contactList = contacts;
+
         isLoading = false;
       });
     } catch (e) {
       setState(() {
         isLoading = false;
       });
+
       debugPrint("Error fetching contacts: $e");
     }
   }
 
   void filterContacts() {
     String searchTerm = searchController.text.toLowerCase();
+
     setState(() {
       filterContactList = contactList
-          .where((contact) => (contact.displayName ?? "").toLowerCase().contains(searchTerm))
+          .where((contact) =>
+              (contact.displayName ?? "").toLowerCase().contains(searchTerm))
           .toList();
     });
   }
@@ -62,6 +75,7 @@ class _ContactServicesState extends State<ContactServices> {
   @override
   Widget build(BuildContext context) {
     bool isSearching = searchController.text.isNotEmpty;
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -87,42 +101,44 @@ class _ContactServicesState extends State<ContactServices> {
 
   Widget buildContactsTab(bool isSearching) {
     List<Contact> displayList = isSearching ? filterContactList : contactList;
+
     return Container(
       padding: const EdgeInsets.all(8.0),
       child: isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: TextField(
-              controller: searchController,
-              decoration: const InputDecoration(
-                labelText: "Search",
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: displayList.length,
-              itemBuilder: (context, index) {
-                Contact contact = displayList[index];
-                return ListTile(
-                  title: Text(contact.displayName ?? "Unknown"),
-                  subtitle: contact.phones.isNotEmpty
-                      ? Text(contact.phones.first.number)
-                      : const Text("No phone number"),
-                  leading: CircleAvatar(
-                    child: Text(contact.displayName?[0] ?? "?"),
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: TextField(
+                    controller: searchController,
+                    decoration: const InputDecoration(
+                      labelText: "Search",
+                      prefixIcon: Icon(Icons.search),
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                );
-              },
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: displayList.length,
+                    itemBuilder: (context, index) {
+                      Contact contact = displayList[index];
+                      return ListTile(
+                        title: Text(contact.displayName ?? "Unknown"),
+                        subtitle: contact.phones.isNotEmpty
+                            ? Text(contact.phones.first.number)
+                            : const Text("No phone number"),
+                        leading: CircleAvatar(
+                          child: Text(contact.displayName?[0] ?? "?"),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -130,16 +146,16 @@ class _ContactServicesState extends State<ContactServices> {
     return callHistory.isEmpty
         ? const Center(child: Text("No Call History"))
         : ListView.builder(
-      itemCount: callHistory.length,
-      itemBuilder: (context, index) {
-        var history = callHistory[index];
-        return ListTile(
-          title: Text(history["name"] ?? "Unknown"),
-          subtitle: Text("${history["number"]} • ${history["time"]}"),
-          leading: const Icon(Icons.phone, color: Colors.green),
-        );
-      },
-    );
+            itemCount: callHistory.length,
+            itemBuilder: (context, index) {
+              var history = callHistory[index];
+              return ListTile(
+                title: Text(history["name"] ?? "Unknown"),
+                subtitle: Text("${history["number"]} • ${history["time"]}"),
+                leading: const Icon(Icons.phone, color: Colors.green),
+              );
+            },
+          );
   }
 
   void showAlertDialog() {
@@ -148,10 +164,14 @@ class _ContactServicesState extends State<ContactServices> {
       builder: (context) {
         return AlertDialog(
           title: const Text("Allow Permission"),
-          content: const Text("Please allow Contact permission to view contacts"),
+          content:
+              const Text("Please allow Contact permission to view contacts"),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
-            TextButton(onPressed: () => openAppSettings(), child: const Text("OK")),
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel")),
+            TextButton(
+                onPressed: () => openAppSettings(), child: const Text("OK")),
           ],
         );
       },

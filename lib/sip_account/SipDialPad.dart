@@ -102,134 +102,125 @@ class _SipDialPadState extends State<SipDialPad> {
       length: 2,
       child: Scaffold(
           // drawer: DrawerMenu(),
-        appBar: AppBar(
-          elevation: 0,
-          leadingWidth: 65,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Container(
+          appBar: AppBar(
+            elevation: 0,
+            leadingWidth: 65,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.blue.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    Icons.chevron_left,
+                    size: 28,
+                    color: Colors.blue,
+                  ),
+                  tooltip: 'Back',
+                ),
+              ),
+            ),
+            centerTitle: true,
+            title: Container(
+              height: 45,
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
+                color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade200),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(
-                  Icons.chevron_left,
-                  size: 28,
-                  color: Colors.blue,
-                ),
-                tooltip: 'Back',
-              ),
+              child: searchContacts(),
             ),
-          ),
-          centerTitle: true,
-          title: Container(
-            height: 45,
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade50,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade200),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: searchContacts(),
-          ),
-          actions: [
-            // SIP Account Status
-            Container(
-              margin: const EdgeInsets.only(right: 16),
-              child: SipAccountStatus.sipAccountStatus
-                  ? Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.green.shade100,
-                        width: 1,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 8,
-                          height: 8,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            color: Colors.green.shade500,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.green.withOpacity(0.3),
-                                blurRadius: 4,
-                                spreadRadius: 1,
+            actions: [
+              // SIP Account Status
+              Container(
+                margin: const EdgeInsets.only(right: 16),
+                child: SipAccountStatus.sipAccountStatus
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: Colors.green.shade500,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.green.withOpacity(0.3),
+                                      blurRadius: 4,
+                                      spreadRadius: 1,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              SizedBox(
+                                width: 50,
+                                child: Marquee(
+                                  text: SipAccountStatus.extension,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13,
+                                    color: Colors.green.shade700,
+                                  ),
+                                  scrollAxis: Axis.horizontal,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                  blankSpace: 20.0,
+                                  velocity: 30.0,
+                                  pauseAfterRound: const Duration(seconds: 1),
+                                  accelerationDuration:
+                                      const Duration(seconds: 1),
+                                  accelerationCurve: Curves.easeInOutCubic,
+                                  decelerationDuration:
+                                      const Duration(milliseconds: 500),
+                                  decelerationCurve: Curves.easeOut,
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        SizedBox(
-                          width: 50,
-                          child: Marquee(
-                            text: SipAccountStatus.extension,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                              color: Colors.green.shade700,
-                            ),
-                            scrollAxis: Axis.horizontal,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            blankSpace: 20.0,
-                            velocity: 30.0,
-                            pauseAfterRound: const Duration(seconds: 1),
-                            accelerationDuration: const Duration(seconds: 1),
-                            accelerationCurve: Curves.easeInOutCubic,
-                            decelerationDuration: const Duration(milliseconds: 500),
-                            decelerationCurve: Curves.easeOut,
+                        ],
+                      )
+                    : Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey.shade200,
+                          border: Border.all(
+                            color: Colors.grey.shade300,
+                            width: 1,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ],
-              )
-                  : Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey.shade200,
-                  border: Border.all(
-                    color: Colors.grey.shade300,
-                    width: 1,
-                  ),
-                ),
-                child: Center(
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(4),
-                      color: Colors.grey.shade400,
-                    ),
-                  ),
-                ),
+                        child: Center(
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
+                              color: Colors.grey.shade400,
+                            ),
+                          ),
+                        ),
+                      ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
           floatingActionButton: Visibility(
             visible: !isDialPadShowing,
             child: FloatingActionButton(
@@ -780,7 +771,7 @@ class _SipDialPadState extends State<SipDialPad> {
   Future<List<dynamic>> getPhoneContacts() async {
     var temp = await FlutterContacts.getContacts(
         withProperties: true, withThumbnail: true, withPhoto: true);
-        // tempContactList = temp;
+    // tempContactList = temp;
     return temp;
   }
 }

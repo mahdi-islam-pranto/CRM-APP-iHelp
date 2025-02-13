@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:untitled1/Contacts/contact_services.dart';
 import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
 import 'package:untitled1/FollowUP/followUpCreateForm.dart';
 import 'package:untitled1/Lead/leadCreateform.dart';
@@ -19,16 +18,6 @@ class MenuPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        // leading: IconButton(
-        //   icon: const Icon(
-        //     Icons.arrow_back_ios,
-        //     size: 18,
-        //     color: Colors.blue,
-        //   ),
-        //   onPressed: () {
-        //     Navigator.of(context).pop();
-        //   },
-        // ),
         backgroundColor: Colors.white,
         title: Container(
           height: 35,
@@ -46,7 +35,6 @@ class MenuPage extends StatelessWidget {
             children: [
               const SizedBox(height: 10),
               // menus Row
-
               Padding(
                 padding: const EdgeInsets.only(left: 18, right: 18),
                 child: Row(
@@ -281,7 +269,6 @@ class MenuPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
@@ -338,7 +325,7 @@ class MenuPage extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                      const LeadCreateForm()));
+                                          const LeadCreateForm()));
                             },
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.19,
