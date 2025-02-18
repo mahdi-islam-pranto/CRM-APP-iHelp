@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:'
     'permission_handler/permission_handler.dart';
+import 'package:untitled1/Contacts/ContactsDetails.dart';
 
 class ContactServices extends StatefulWidget {
   const ContactServices({super.key});
@@ -126,6 +127,15 @@ class _ContactServicesState extends State<ContactServices> {
                     itemBuilder: (context, index) {
                       Contact contact = displayList[index];
                       return ListTile(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ContactsDetails(
+                                      clientName: contact.displayName,
+                                      companyName: "Phone Contact",
+                                      phoneNumber: contact.phones.toString())));
+                        },
                         title: Text(contact.displayName ?? "Unknown"),
                         subtitle: contact.phones.isNotEmpty
                             ? Text(contact.phones.first.number)

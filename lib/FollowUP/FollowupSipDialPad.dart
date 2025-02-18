@@ -6,27 +6,30 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:marquee/marquee.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:untitled1/Contacts/ContactsDetails.dart';
-import 'CallUI.dart';
-import 'SipAccountStatus.dart';
-import 'call_logs/CallLogDetails.dart';
-import '../database/DBHandler.dart';
-import 'call_logs/CallLogsModel.dart';
+import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
+import 'package:untitled1/database/DBHandler.dart';
+import 'package:untitled1/screens/totalLeadList.dart';
+import 'package:untitled1/sip_account/CallUI.dart';
+import 'package:untitled1/sip_account/SipAccountStatus.dart';
+import 'package:untitled1/sip_account/call_logs/CallLogDetails.dart';
+import 'package:untitled1/sip_account/call_logs/CallLogsModel.dart';
 
-class SipDialPad extends StatefulWidget {
-  const SipDialPad({
+class Followupsipdialpad extends StatefulWidget {
+  const Followupsipdialpad({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<SipDialPad> createState() => _SipDialPadState();
+  State<Followupsipdialpad> createState() => _FollowupsipdialpadState();
 }
 
-class _SipDialPadState extends State<SipDialPad> {
+class _FollowupsipdialpadState extends State<Followupsipdialpad> {
+
+
   TextEditingController digitsController = TextEditingController();
 
   TextEditingController searchController = TextEditingController();
 
-  bool isSearch = false;
 
   List<String> numberDigits = [];
   bool isLoading = true;
@@ -36,34 +39,19 @@ class _SipDialPadState extends State<SipDialPad> {
   bool isDialPadShowing = true;
 
   String? callerName;
-
   List<dynamic> allContacts = [];
-
   // Stores all contacts
   List<dynamic> filteredContacts = []; // Stores filtered contacts
-
   String searchKey = "";
-
+  bool isSearch = false;
   List<Contact> contactList = [];
 
   List<Contact> filterContactList = [];
 
-  @override
-  void initState() {
-    super.initState();
-    getContacts();
-    searchController.addListener(filterContacts);
-  }
 
   Future<void> getContacts() async {
     if (await Permission.contacts.request().isGranted) {
-      List<Contact> fetchedContacts = (await getPhoneContacts())
-          .cast<Contact>(); // Explicitly cast to List<Contact>
-
-      setState(() {
-        contactList = fetchedContacts;
-        filterContactList = fetchedContacts;
-      });
+      getContactsTabView(isSearch);
     } else {
       setState(() {
         isLoading = false;
@@ -79,7 +67,7 @@ class _SipDialPadState extends State<SipDialPad> {
         return AlertDialog(
           title: const Text("Allow Permission"),
           content:
-              const Text("Please allow Contact permission to view contacts"),
+          const Text("Please allow Contact permission to view contacts"),
           actions: [
             TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -92,14 +80,24 @@ class _SipDialPadState extends State<SipDialPad> {
     );
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    //callerName = widget.callerName;
+    getContacts();
+    searchController.addListener(filterContacts);
+
+    super.initState();
+  }
+
+
   void filterContacts() {
-    String query = searchController.text.toLowerCase();
+    String searchTerm = searchController.text.toLowerCase();
+
     setState(() {
       filterContactList = contactList
           .where((contact) =>
-              contact.displayName.toLowerCase().contains(query) ||
-              (contact.phones.isNotEmpty &&
-                  contact.phones.first.number.contains(query)))
+          (contact.displayName ?? "").toLowerCase().contains(searchTerm))
           .toList();
     });
   }
@@ -117,6 +115,8 @@ class _SipDialPadState extends State<SipDialPad> {
 
   @override
   Widget build(BuildContext context) {
+    bool isSearching = searchController.text.isNotEmpty;
+
     // if (widget.phoneNumber.isNotEmpty) {
     //
     //   for (int i = 0; i < widget.phoneNumber.length; i++) {
@@ -126,9 +126,10 @@ class _SipDialPadState extends State<SipDialPad> {
     // }
 
     return DefaultTabController(
+
       length: 2,
       child: Scaffold(
-          // drawer: DrawerMenu(),
+        // drawer: DrawerMenu(),
           appBar: AppBar(
             elevation: 0,
             leadingWidth: 65,
@@ -141,7 +142,10 @@ class _SipDialPadState extends State<SipDialPad> {
                 ),
                 child: IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+// remove previous route
+//                   Navigator.removeRoute(context, MaterialPageRoute(builder: (context) => CallUI(phoneNumber: "", callerName: ""),));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => FollowUpList(),));
+
                   },
                   icon: const Icon(
                     Icons.chevron_left,
@@ -176,74 +180,74 @@ class _SipDialPadState extends State<SipDialPad> {
                 margin: const EdgeInsets.only(right: 16),
                 child: SipAccountStatus.sipAccountStatus
                     ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  color: Colors.green.shade500,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.green.withOpacity(0.3),
-                                      blurRadius: 4,
-                                      spreadRadius: 1,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              SizedBox(
-                                width: 50,
-                                child: Marquee(
-                                  text: SipAccountStatus.extension,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 13,
-                                    color: Colors.green.shade700,
-                                  ),
-                                  scrollAxis: Axis.horizontal,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  blankSpace: 20.0,
-                                  velocity: 30.0,
-                                  pauseAfterRound: const Duration(seconds: 1),
-                                  accelerationDuration:
-                                      const Duration(seconds: 1),
-                                  accelerationCurve: Curves.easeInOutCubic,
-                                  decelerationDuration:
-                                      const Duration(milliseconds: 500),
-                                  decelerationCurve: Curves.easeOut,
-                                ),
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.green.shade500,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.green.withOpacity(0.3),
+                                blurRadius: 4,
+                                spreadRadius: 1,
                               ),
                             ],
                           ),
-                        ],
-                      )
-                    : Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey.shade200,
-                          border: Border.all(
-                            color: Colors.grey.shade300,
-                            width: 1,
-                          ),
                         ),
-                        child: Center(
-                          child: Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: Colors.grey.shade400,
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 50,
+                          child: Marquee(
+                            text: SipAccountStatus.extension,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                              color: Colors.green.shade700,
                             ),
+                            scrollAxis: Axis.horizontal,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            blankSpace: 20.0,
+                            velocity: 30.0,
+                            pauseAfterRound: const Duration(seconds: 1),
+                            accelerationDuration:
+                            const Duration(seconds: 1),
+                            accelerationCurve: Curves.easeInOutCubic,
+                            decelerationDuration:
+                            const Duration(milliseconds: 500),
+                            decelerationCurve: Curves.easeOut,
                           ),
                         ),
+                      ],
+                    ),
+                  ],
+                )
+                    : Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey.shade200,
+                    border: Border.all(
+                      color: Colors.grey.shade300,
+                      width: 1,
+                    ),
+                  ),
+                  child: Center(
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: Colors.grey.shade400,
                       ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -304,7 +308,7 @@ class _SipDialPadState extends State<SipDialPad> {
                   //Display call logs
                   getCallLogs(),
                   //Display Phone contacts
-                  getContactsTabView(),
+                  getContactsTabView(isSearching),
                 ]),
               ),
               // DialPad
@@ -354,56 +358,6 @@ class _SipDialPadState extends State<SipDialPad> {
 
       return false;
     }
-  }
-
-
-  Widget getContactsTabView() {
-    return FutureBuilder(
-        future: isSearch ? getSearchPhoneContacts() : getPhoneContacts(),
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.data == null) {
-            return const Center(
-              child: SizedBox(height: 50, child: CircularProgressIndicator()),
-            );
-          }
-
-          return ListView.builder(
-              semanticChildCount: snapshot.data.length,
-              itemCount: snapshot.data.length,
-              itemBuilder: (context, int index) {
-                if (snapshot.data[index].phones.isEmpty) {
-                  return const Text("");
-                }
-
-                // var phones = snapshot.data[index].phones.first.normalizedNumber;
-                var phones = snapshot.data[index].phones.first.number;
-                var photo = snapshot.data[index].photo;
-                var name = snapshot.data[index].displayName;
-
-                return ListTile(
-                  title: Text(name),
-                  subtitle: Text(phones.toString()),
-                  leading: photo != null
-                      ? CircleAvatar(radius: 45, child: Image.memory(photo))
-                      : CircleAvatar(
-                          radius: 45,
-                          child: Text(
-                            name[0],
-                            style: const TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold),
-                          )),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ContactsDetails(
-                                clientName: snapshot.data[index].displayName,
-                                companyName: "Phone Contact",
-                                phoneNumber: phones.toString())));
-                  },
-                );
-              });
-        });
   }
 
   ///new good work
@@ -505,8 +459,8 @@ class _SipDialPadState extends State<SipDialPad> {
                     Navigator.pop(context);
 
                     String name = callerName.toString().trim().isEmpty
-                            ? "Unknown"
-                            : callerName.toString().trim();
+                        ? "Unknown"
+                        : callerName.toString().trim();
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -612,53 +566,27 @@ class _SipDialPadState extends State<SipDialPad> {
         TextSelection.fromPosition(TextPosition(offset: newPosition));
   }
 
-
-  //Provide searched contacts list
-  Future<List<Contact>> getSearchPhoneContacts() async {
-    return searchContactList;
-  }
-
-  // Search a contact from contacts list by keyword
-  List<Contact> searchContactList = [];
-  List<Contact> tempContactList = [];
-
-  void searchContact(String keyword) {
-    setState(() {
-      isSearch = true;
-      searchContactList = [];
-    });
-
-    if (keyword.isEmpty) {
-      searchContactList = tempContactList;
-      setState(() {
-        isSearch = false;
-      });
-    } else {
-      setState(() {
-        if (RegExp(r'^[0-9]+$').hasMatch(keyword)) {
-          searchContactList = tempContactList
-              .where((contact) => contact.phones
-                  .toString()
-                  .toLowerCase()
-                  .contains(keyword.toLowerCase()))
-              .toList();
-        } else {
-          searchContactList = tempContactList
-              .where((contact) => contact.displayName
-                  .toLowerCase()
-                  .contains(keyword.toLowerCase()))
-              .toList();
-        }
-        isSearch = true;
-      });
-    }
-  }
-
-  Future<List<Contact>> getPhoneContacts() async {
-    var temp = await FlutterContacts.getContacts(
-        withProperties: true, withThumbnail: true, withPhoto: true);
-    tempContactList = temp;
-    return temp;
+  Widget searchContacts() {
+    return TextField(
+      // controller: searchController,
+        maxLines: 1,
+        decoration: const InputDecoration(
+            hintText: "Search contacts ...",
+            border: InputBorder.none,
+            prefixIcon: Icon(Icons.search_outlined)),
+        onChanged: (keyword) {
+          if (keyword.isNotEmpty) {
+            setState(() {
+              searchKey = keyword;
+              isSearch = true;
+            });
+          } else {
+            setState(() {
+              isSearch = false;
+            });
+          }
+          //searchContact(keyword);
+        });
   }
 
   Widget getCallLogs() {
@@ -677,7 +605,7 @@ class _SipDialPadState extends State<SipDialPad> {
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
                 CallLogsModel callLogsModel =
-                    CallLogsModel.fromMap(snapshot.data[index]);
+                CallLogsModel.fromMap(snapshot.data[index]);
 
                 if (callLogsModel.date == null) {
                   return null;
@@ -706,8 +634,8 @@ class _SipDialPadState extends State<SipDialPad> {
                     cursorCurrentIndex = 0;
 
                     for (int i = 0;
-                        i < callLogsModel.phoneNumber.toString().trim().length;
-                        i++) {
+                    i < callLogsModel.phoneNumber.toString().trim().length;
+                    i++) {
                       numberDigits
                           .add(callLogsModel.phoneNumber.toString().trim()[i]);
                       setDigitInList();
@@ -719,7 +647,6 @@ class _SipDialPadState extends State<SipDialPad> {
                       elevation: 0.5,
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-
                         //margin: const EdgeInsets.only(top: 5),
 
                         child: Row(
@@ -731,13 +658,13 @@ class _SipDialPadState extends State<SipDialPad> {
                                 // Name
                                 Text(
                                   callLogsModel.name
+                                      .toString()
+                                      .trim()
+                                      .isEmpty ||
+                                      RegExp(r'^[0-9]+$').hasMatch(
+                                          callLogsModel.name
                                               .toString()
-                                              .trim()
-                                              .isEmpty ||
-                                          RegExp(r'^[0-9]+$').hasMatch(
-                                              callLogsModel.name
-                                                  .toString()
-                                                  .trim())
+                                              .trim())
                                       ? 'Unknown'
                                       : callLogsModel.name.toString().trim(),
                                   style: const TextStyle(
@@ -801,9 +728,9 @@ class _SipDialPadState extends State<SipDialPad> {
                                                           .name
                                                           .toString(),
                                                       contactNumber:
-                                                          callLogsModel
-                                                              .phoneNumber
-                                                              .toString())));
+                                                      callLogsModel
+                                                          .phoneNumber
+                                                          .toString())));
                                     })
                               ],
                             )
@@ -817,21 +744,67 @@ class _SipDialPadState extends State<SipDialPad> {
         });
   }
 
-  Widget searchContacts() {
-    return TextField(
-      maxLines: 1,
-      decoration: const InputDecoration(
-        hintText: "Search contacts ...",
-        border: InputBorder.none,
-        prefixIcon: Icon(Icons.search_outlined),
-      ),
-      onChanged: (keyword) {
-        setState(() {
-          searchKey = keyword;
-          isSearch = keyword.isNotEmpty;
+// showing get contact
+  Widget getContactsTabView(isSearching) {
+    bool isSearching = searchController.text.isNotEmpty;
+
+    return FutureBuilder(
+        future: getPhoneContacts(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.data == null) {
+            return const Center(
+              child: SizedBox(height: 50, child: CircularProgressIndicator()),
+            );
+          }
+
+          return ListView.builder(
+              semanticChildCount: snapshot.data.length,
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, int index) {
+                if (snapshot.data[index].phones.isEmpty) {
+                  return const Text("Unknown");
+                }
+
+                // var phones = snapshot.data[index].phones.first.normalizedNumber;
+                var phones = snapshot.data[index].phones.first.number;
+                var photo = snapshot.data[index].photo;
+                var name = snapshot.data[index].displayName;
+
+                return ListTile(
+                  title: Text(name),
+                  subtitle: Text(phones.toString()),
+                  leading: photo != null
+                      ? CircleAvatar(radius: 45, child: Image.memory(photo))
+                      : CircleAvatar(
+                      backgroundColor:
+                      Color.fromRGBO(118, 137, 246, 0.4470588235294118),
+                      radius: 45,
+                      child: Text(
+                        name[0],
+                        style: const TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      )),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ContactsDetails(
+                                clientName: snapshot.data[index].displayName,
+                                companyName: "Phone Contact",
+                                phoneNumber: phones.toString())));
+                  },
+                );
+              });
         });
-        searchContact(keyword);
-      },
-    );
+  }
+
+  Future<List<dynamic>> getPhoneContacts() async {
+    var temp = await FlutterContacts.getContacts(withProperties: true, withThumbnail: true, withPhoto: true);
+
+
+    // tempContactList = temp;
+
+
+    return temp;
   }
 }

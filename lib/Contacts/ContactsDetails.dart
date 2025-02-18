@@ -147,7 +147,7 @@ class _ContactsDetailsState extends State<ContactsDetails> {
               ],
             ),
           ),
-
+          //
           // Container(
           //   margin: const EdgeInsets.all(10),
           //   padding: const EdgeInsets.all(10),
@@ -182,14 +182,14 @@ class _ContactsDetailsState extends State<ContactsDetails> {
           //           ],
           //         ),
           //         onPressed: () async {
-          //           // await FlutterPhoneDirectCaller.callNumber(
-          //           //     widget.phoneNumber.toString());
+          //           await FlutterPhoneDirectCaller.callNumber(
+          //               widget.phoneNumber.toString());
           //         },
           //       ),
           //     ],
           //   ),
           // ),
-          ContactInfo(phoneNumber: widget.phoneNumber,),
+        ContactInfo(phoneNumber: widget.phoneNumber,),
         ],
       ),
     );
