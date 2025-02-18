@@ -25,15 +25,23 @@ class DBHandler {
   static const leadContactsTable = "lead_contacts";
 
   //App package name
-  static const appPackageName = "com.example.dialercall";
+  static const appPackageName = "com.example.untitled1";
 
   static const dbVersion = 1;
 
   static final DBHandler instance = DBHandler();
 
+  // Future<Database?> get database async {
+  //   return await initDB();
+  // }
   Future<Database?> get database async {
-    return await initDB();
+    if (_database != null) return _database;
+    _database = await initDB();
+    return _database;
   }
+
+  Database? _database;
+
 
   initDB() async {
     //Android database path
@@ -101,10 +109,22 @@ class DBHandler {
   }
 
   // Read call logs list
+  // Future<List<Map<String, dynamic>>> getCallLogs() async {
+  //   Database? db = await instance.database;
+  //   return await db!.query(callLogTable, orderBy: "$dateTime DESC");
+  // }
   Future<List<Map<String, dynamic>>> getCallLogs() async {
     Database? db = await instance.database;
-    return await db!.query(callLogTable, orderBy: "$dateTime DESC");
+    if (db == null) {
+      log("Database is not initialized!");
+      return [];
+    }
+
+    final logs = await db.query(callLogTable, orderBy: "$dateTime DESC");
+    log("Call Logs: $logs");  // Debugging line
+    return logs;
   }
+
 
   // Insert a new call history
   insertACallHistory(Map<String, dynamic> row) async {

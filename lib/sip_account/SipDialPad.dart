@@ -660,7 +660,7 @@ class _SipDialPadState extends State<SipDialPad> {
     tempContactList = temp;
     return temp;
   }
-
+/// call log
   Widget getCallLogs() {
     return FutureBuilder(
         future: isSearch
@@ -672,7 +672,6 @@ class _SipDialPadState extends State<SipDialPad> {
               child: SizedBox(height: 50, child: CircularProgressIndicator()),
             );
           }
-
           return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
@@ -713,109 +712,163 @@ class _SipDialPadState extends State<SipDialPad> {
                       setDigitInList();
                     }
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 5.0, left: 5.0),
-                    child: Card(
-                      elevation: 0.5,
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-
-                        //margin: const EdgeInsets.only(top: 5),
-
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Name
-                                Text(
-                                  callLogsModel.name
-                                              .toString()
-                                              .trim()
-                                              .isEmpty ||
-                                          RegExp(r'^[0-9]+$').hasMatch(
-                                              callLogsModel.name
-                                                  .toString()
-                                                  .trim())
-                                      ? 'Unknown'
-                                      : callLogsModel.name.toString().trim(),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    if (callLogsModel.type
-                                        .toString()
-                                        .contains("Missed"))
-                                      const Icon(Icons.call_missed,
-                                          color: Colors.redAccent)
-                                    else if (callLogsModel.type
-                                        .toString()
-                                        .contains("Incoming"))
-                                      const Icon(
-                                        Icons.call_received,
-                                        color: Colors.grey,
-                                        size: 10,
-                                      )
-                                    else
-                                      const Icon(
-                                        Icons.call_made_outlined,
-                                        color: Colors.blue,
-                                        size: 15,
-                                      ),
-                                    Text(callLogsModel.phoneNumber.toString()),
-                                  ],
-                                ),
-                                Text(
-                                  callLogsModel.date.toString().substring(
-                                      0,
-                                      callLogsModel.date
-                                          .toString()
-                                          .indexOf(" ")),
-                                  style: const TextStyle(fontSize: 11),
-                                )
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(callLogsModel.time.toString()),
-                                const SizedBox(width: 6),
-
-                                //call history button
-                                IconButton(
-                                    icon: Icon(
-                                      Icons.info_outline,
-                                      color: Colors.blue[200],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                      child: Card(
+                        elevation: 0.2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  // Call type icon with colored circle background
+                                  Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                      color: callLogsModel.type.toString().contains("Missed")
+                                          ? Colors.red.withOpacity(0.1)
+                                          : callLogsModel.type.toString().contains("Incoming")
+                                          ? Colors.green.withOpacity(0.1)
+                                          : Colors.blue.withOpacity(0.1),
+                                      shape: BoxShape.circle,
                                     ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CallLogDetails(
-                                                      contactName: callLogsModel
-                                                          .name
-                                                          .toString(),
-                                                      contactNumber:
-                                                          callLogsModel
-                                                              .phoneNumber
-                                                              .toString())));
-                                    })
-                              ],
-                            )
-                          ],
+                                    child: Center(
+                                      child: callLogsModel.type.toString().contains("Missed")
+                                          ? const Icon(Icons.call_missed, color: Colors.red, size: 20)
+                                          : callLogsModel.type.toString().contains("Incoming")
+                                          ? const Icon(Icons.call_received, color: Colors.green, size: 20)
+                                          : const Icon(Icons.call_made, color: Colors.blue, size: 20),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  // Contact info
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Name
+                                      Text(
+                                        callLogsModel.name.toString().trim().isEmpty ||
+                                            RegExp(r'^[0-9]+$').hasMatch(callLogsModel.name.toString().trim())
+                                            ? 'Unknown'
+                                            : callLogsModel.name.toString().trim(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      // Phone number
+                                      Text(
+                                        callLogsModel.phoneNumber.toString(),
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      // Date
+                                      Row(
+                                        children: [
+                                          Icon(Icons.calendar_today, size: 12, color: Colors.grey[500]),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            callLogsModel.date.toString().substring(0, callLogsModel.date.toString().indexOf(" ")),
+                                            style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  // Time
+                                  Text(
+                                    callLogsModel.time.toString(),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[700],
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  // Call details button
+                                  Material(
+                                    color: Colors.blue.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(8),
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => CallLogDetails(
+                                                    contactName: callLogsModel.name.toString(),
+                                                    contactNumber: callLogsModel.phoneNumber.toString())));
+                                      },
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(
+                                          Icons.info_outline,
+                                          color: Colors.blue,
+                                          size: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
+                    )
+
                 );
               });
         });
   }
+
+
+  ///
+  // Widget getCallLogs() {
+  //   return FutureBuilder(
+  //     future: isSearch
+  //         ? DBHandler.instance.getDialPadSearch(searchKey)
+  //         : DBHandler.instance.getCallLogs(),
+  //     builder: (context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+  //       if (snapshot.connectionState == ConnectionState.waiting) {
+  //         return const Center(
+  //           child: CircularProgressIndicator(),
+  //         );
+  //       }
+  //
+  //       if (!snapshot.hasData || snapshot.data!.isEmpty) {
+  //         return const Center(child: Text("No Call Logs Available"));
+  //       }
+  //
+  //       return ListView.builder(
+  //         itemCount: snapshot.data!.length,
+  //         itemBuilder: (context, index) {
+  //           CallLogsModel callLogsModel = CallLogsModel.fromMap(snapshot.data![index]);
+  //
+  //           return ListTile(
+  //             title: Text(callLogsModel.name ?? "Unknown"),
+  //             subtitle: Text(callLogsModel.phoneNumber ?? "No Number"),
+  //           );
+  //         },
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget searchContacts() {
     return TextField(
