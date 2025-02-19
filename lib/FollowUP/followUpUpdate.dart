@@ -261,12 +261,12 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
             backgroundColor: Colors.white,
             // toolbarHeight: 80,
             title: const Text(
-              "UPDATE  FOLLOW  UP",
+              "Update Follow Up",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, size: 18),
+              icon: const Icon(Icons.arrow_back_ios, size: 18,color: Colors.blue,),
               onPressed: () {
                 Navigator.pop(context);
               },

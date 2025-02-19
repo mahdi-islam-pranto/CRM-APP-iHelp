@@ -82,7 +82,8 @@ class _CallLogDetailsState extends State<CallLogDetails> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.blue[600],
-        systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.blue[700]),
+        systemOverlayStyle:
+            SystemUiOverlayStyle(statusBarColor: Colors.blue[700]),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded, color: Colors.white),
           onPressed: () => Navigator.pop(context),
@@ -195,16 +196,20 @@ class _CallLogDetailsState extends State<CallLogDetails> {
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
       itemCount: callHistory.length,
       itemBuilder: (BuildContext context, int index) {
-        CallLogDetailsModel call = CallLogDetailsModel.fromMap(callHistory[index]);
+        CallLogDetailsModel call =
+            CallLogDetailsModel.fromMap(callHistory[index]);
 
         return Card(
-          elevation: 1,
+          elevation: 0.5,
           margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             leading: CircleAvatar(
-              backgroundColor: _getCallTypeColor(call.type.toString()).withOpacity(0.2),
+              backgroundColor:
+                  _getCallTypeColor(call.type.toString()).withOpacity(0.2),
               radius: 20,
               child: _getCallTypeIcon(call.type.toString()),
             ),
@@ -247,11 +252,14 @@ class _CallLogDetailsState extends State<CallLogDetails> {
   Widget _getCallTypeIcon(String type) {
     switch (type) {
       case "Missed":
-        return const Icon(Icons.call_missed_rounded, color: Colors.red, size: 22);
+        return const Icon(Icons.call_missed_rounded,
+            color: Colors.red, size: 22);
       case "Outgoing":
-        return const Icon(Icons.call_made_rounded, color: Colors.green, size: 22);
+        return const Icon(Icons.call_made_rounded,
+            color: Colors.green, size: 22);
       default: // Incoming
-        return const Icon(Icons.call_received_rounded, color: Colors.blue, size: 22);
+        return const Icon(Icons.call_received_rounded,
+            color: Colors.blue, size: 22);
     }
   }
 

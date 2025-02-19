@@ -338,7 +338,7 @@ class _MultiSelectDialogState extends State<MultiSelectDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Select Members"),
+      title: Center(child: const Text("Select Associate",style: TextStyle(fontSize: 18,color: Colors.blue),)),
       content: SingleChildScrollView(
         child: ListBody(
           children: widget.items.map((item) => CheckboxListTile(

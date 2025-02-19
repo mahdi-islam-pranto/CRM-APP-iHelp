@@ -237,12 +237,16 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
             backgroundColor: Colors.white,
             // toolbarHeight: 80,
             title: const Text(
-              "CREATE  FOLLOW  UP",
+              "Create Follow Up",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, size: 18),
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                size: 18,
+                color: Colors.blue,
+              ),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -285,10 +289,12 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                               width: MediaQuery.of(context).size.width * 0.025),
                           Flexible(
                             flex: 1,
-                            child:  MultiLeadAssociateDropDown(
-                              onDeviceTokensReceived: (List<String> associateHandelDeviceToken) {
+                            child: MultiLeadAssociateDropDown(
+                              onDeviceTokensReceived:
+                                  (List<String> associateHandelDeviceToken) {
                                 // Handle the list of device tokens here
-                                print('Selected Associate tokens: $associateHandelDeviceToken');
+                                print(
+                                    'Selected Associate tokens: $associateHandelDeviceToken');
                               },
                               initialValues: [], // Optional
                             ),
@@ -297,8 +303,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                       ),
                       const SizedBox(height: 12),
 
-
-                     // Multiple drop down
+                      // Multiple drop down
                       MultiLeadAssociateDropDown(
                         onDeviceTokensReceived: (List<String> deviceTokens) {
                           // Handle the list of device tokens here
@@ -307,10 +312,6 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                         initialValues: ['John Doe', 'Jane Smith'], // Optional
                       ),
                       const SizedBox(height: 12),
-
-
-
-
 
                       dropDownRow(
                           "Follow Up Type", const FollowUpTypeDropdown()),

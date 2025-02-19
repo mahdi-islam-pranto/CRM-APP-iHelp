@@ -540,7 +540,7 @@ class _FollowUpListState extends State<FollowUpList> {
                               );
                             }
                             return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
                               child: Card(
                                 elevation: 0.5,
                                 color: formBackgroundColor,

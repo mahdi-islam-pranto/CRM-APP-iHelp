@@ -42,7 +42,6 @@ class DBHandler {
 
   Database? _database;
 
-
   initDB() async {
     //Android database path
     String path = "/data/data/$appPackageName/databases/$dbName";
@@ -113,6 +112,8 @@ class DBHandler {
   //   Database? db = await instance.database;
   //   return await db!.query(callLogTable, orderBy: "$dateTime DESC");
   // }
+
+  // get phone call log
   Future<List<Map<String, dynamic>>> getCallLogs() async {
     Database? db = await instance.database;
     if (db == null) {
@@ -121,10 +122,9 @@ class DBHandler {
     }
 
     final logs = await db.query(callLogTable, orderBy: "$dateTime DESC");
-    log("Call Logs: $logs");  // Debugging line
+    log("Call Logs: $logs"); // Debugging line
     return logs;
   }
-
 
   // Insert a new call history
   insertACallHistory(Map<String, dynamic> row) async {

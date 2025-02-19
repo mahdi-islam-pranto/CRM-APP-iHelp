@@ -710,6 +710,7 @@ class _CallUIState extends State<CallUI> {
 
   @override
   void initState() {
+    overlayPopUp();
     // for incoming
     // Check if it's an incoming call
     if (Voip24hSdkMobile.callModule.getCallId() != null) {
@@ -1104,6 +1105,13 @@ class _CallUIState extends State<CallUI> {
     });
   }
 
+
+Future<void> callLog() async {
+
+    await DBHandler.instance.insertANewRecord({});
+}
+
+
   Future<void> storeCallLogDetails(String duration) async {
     String callType = "Outgoing";
 
@@ -1255,6 +1263,8 @@ class _CallUIState extends State<CallUI> {
     try {
       await overlayChannel.invokeMethod("overlayPopUp",
           {"phoneNumber": widget.phoneNumber, "callerName": widget.callerName});
+
+      log("overlayPopUp::::::::::::::::");
     } catch (e) {
       log("OverlayPopUp call errors : ${e.toString()}");
     }

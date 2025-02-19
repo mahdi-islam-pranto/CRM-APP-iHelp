@@ -69,7 +69,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
             type: BottomNavigationBarType.fixed,
             backgroundColor: Colors.white,
             selectedItemColor: Colors.blue,
-            unselectedItemColor: Colors.black,
+            unselectedItemColor: Colors.black54,
             currentIndex: mycurrentIndex,
             onTap: (index) {
               setState(() {

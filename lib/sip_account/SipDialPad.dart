@@ -22,6 +22,7 @@ class SipDialPad extends StatefulWidget {
 }
 
 class _SipDialPadState extends State<SipDialPad> {
+
   TextEditingController digitsController = TextEditingController();
 
   TextEditingController searchController = TextEditingController();
@@ -386,6 +387,7 @@ class _SipDialPadState extends State<SipDialPad> {
                   leading: photo != null
                       ? CircleAvatar(radius: 45, child: Image.memory(photo))
                       : CircleAvatar(
+                    backgroundColor:Colors.blue.shade200,
                           radius: 45,
                           child: Text(
                             name[0],

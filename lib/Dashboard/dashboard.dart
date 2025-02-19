@@ -472,7 +472,7 @@ class _NewDashboardState extends State<NewDashboard> {
                           3,
                           (index) => Container(
                             width: 8.0,
-                            height: 8.0,
+                            height: 10.0,
                             margin: const EdgeInsets.symmetric(
                               vertical: 10.0,
                               horizontal: 4.0,

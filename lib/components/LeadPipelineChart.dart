@@ -13,7 +13,7 @@ class LeadPipelineChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 300, // Adjust height as needed
+      height: 240, // Adjust height as needed
       child: Column(
         children: [
           Expanded(
