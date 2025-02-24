@@ -44,9 +44,9 @@ class _LeadListScreenState extends State<LeadListScreen> {
   @override
   void initState() {
     super.initState();
+    filteredLeadList = totalLeadList;
     getLeadList(page);
 
-    // Add listener to search controller
     _searchController.addListener(() {
       setState(() {
         searchQuery = _searchController.text;
@@ -80,54 +80,65 @@ class _LeadListScreenState extends State<LeadListScreen> {
 
     if (!isLoadingMore) setState(() => isLoadingMore = true);
 
-    final response = await http.post(
-      Uri.parse(ApiUrls.leadListUrl),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'user_id': '$userId',
-      },
-      body: {
-        'start_date': '',
-        'end_date': '',
-        'user_id_search': userId,
-        'session_user_id': "",
-        'lead_pipeline_id': '',
-        'lead_source_id': '',
-        'searchData': '',
-        'is_type': '0',
-        'page': '$page', // Pass the current page number
-        'per_page': '$pageSize', // Pass the page size
-      },
-    );
+    try {
+      final response = await http.post(
+        Uri.parse(ApiUrls.leadListUrl),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'user_id': '$userId',
+        },
+        body: {
+          'start_date': '',
+          'end_date': '',
+          'user_id_search': userId,
+          'session_user_id': userId,
+          'lead_pipeline_id': '',
+          'lead_source_id': '',
+          'searchData': '',
+          'is_type': '0',
+          'page': '$page',
+          'per_page': '$pageSize',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body.toString());
-      List<dynamic> leadJsonList = data['data'];
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        // Check if data exists and is not null
+        if (data != null && data['data'] != null) {
+          List<dynamic> leadJsonList = data['data'];
 
-      setState(() {
-        isLoading = false;
-        isLoadingMore = false;
-        if (leadJsonList.isNotEmpty) {
-          for (var json in leadJsonList) {
-            LeadListModel lead = LeadListModel.fromJson(json);
-            if (!leadIds.contains(lead.id)) {
-              leadIds.add(lead.id!);
-              totalLeadList.add(lead);
+          setState(() {
+            isLoading = false;
+            isLoadingMore = false;
+
+            if (leadJsonList.isNotEmpty) {
+              for (var json in leadJsonList) {
+                LeadListModel lead = LeadListModel.fromJson(json);
+                if (!leadIds.contains(lead.id)) {
+                  leadIds.add(lead.id);
+                  totalLeadList.add(lead);
+                }
+              }
+              filteredLeadList = totalLeadList; // Initialize filtered list
+            } else {
+              hasMoreLeads = false;
             }
-          }
-          filterLeads(); // Filter leads after fetching
-        } else {
-          hasMoreLeads = false; // No more leads to load
+          });
         }
-      });
-    } else {
-      // Handle error
+      } else {
+        setState(() {
+          isLoading = false;
+          isLoadingMore = false;
+          hasMoreLeads = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching leads: $e');
       setState(() {
         isLoading = false;
         isLoadingMore = false;
         hasMoreLeads = false;
       });
-      // You can also show an error message if needed
     }
   }
 
@@ -395,7 +406,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     LeadDetailsTabs(
-                                                        leadId: lead.id!)));
+                                                        leadId: lead.id)));
                                       },
                                     ),
                                   ),

@@ -51,7 +51,7 @@ class _LeadOverviewState extends State<LeadOverview> {
         'start_date': '',
         'end_date': '',
         'user_id_search': userId,
-        'session_user_id': "",
+        'session_user_id': userId,
         'lead_pipeline_id': '',
         'lead_source_id': '',
         'searchData': '',
