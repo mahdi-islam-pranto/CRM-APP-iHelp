@@ -108,11 +108,11 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
       "phone_number": _contactNumber.text,
       "next_followup_date": dateTimeController.text,
       "description": _description.text,
-      "associate_user_id": Associate.associateId ?? "",
+      "associate_user_id": Associate.selectedAssociateIds.join(',') ?? "",
     };
 
     print('Sending request with body: ${jsonEncode(body)}');
-    print('Associate ID being sent: ${Associate.associateId}');
+    print('Associate ID being sent: ${Associate.selectedAssociateIds}');
 
     var response = await http.post(
       Uri.parse(url),
@@ -205,13 +205,16 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
       ).show();
     } else {
       customProgress.hideDialog();
+
       await showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: const Column(
             children: [
               Text("Error", style: TextStyle(color: Colors.red)),
-              Text("Please select Owner and Follow Up Type",
+              // show server error
+
+              Text("Failed to create follow up",
                   style: TextStyle(color: Colors.red, fontSize: 13)),
             ],
           ),
@@ -286,11 +289,20 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                           Flexible(
                             flex: 1,
                             child: dropDownRow(
-                                "Associate",
-                                LeadAssociateDropDown(
-                                  onDeviceTokenReceived:
-                                      associateHandelDeviceToken,
-                                )),
+                              "Associate",
+                              MultiLeadAssociateDropDown(
+                                onDeviceTokensReceived:
+                                    (List<String> assiciateDeviceToken) {
+                                  // Handle the list of device tokens here
+                                  print(
+                                      'Selected device tokens: $assiciateDeviceToken');
+                                },
+                                initialValues: [
+                                  'Sk Nayeem',
+                                  'Pranto'
+                                ], // Optional
+                              ),
+                            ),
                           ),
                         ],
                       ),

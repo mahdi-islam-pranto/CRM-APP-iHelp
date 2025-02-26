@@ -105,7 +105,7 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
       "phone_number": _contactNumber.text,
       "next_followup_date": dateTimeController.text,
       "description": _description.text,
-      "associate_user_id": Associate.associateId.toString(),
+      "associate_user_id": Associate.selectedAssociateIds.join(','),
     };
 
     print('Sending request with body: ${jsonEncode(body)}');
@@ -307,11 +307,20 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
                           Flexible(
                             flex: 1,
                             child: dropDownRow(
-                                "Associate",
-                                LeadAssociateDropDown(
-                                  onDeviceTokenReceived:
-                                      associateHandelDeviceToken,
-                                )),
+                              "Associate",
+                              MultiLeadAssociateDropDown(
+                                onDeviceTokensReceived:
+                                    (List<String> assiciateDeviceToken) {
+                                  // Handle the list of device tokens here
+                                  print(
+                                      'Selected device tokens: $assiciateDeviceToken');
+                                },
+                                initialValues: [
+                                  'Sk Nayeem',
+                                  'Pranto'
+                                ], // Optional
+                              ),
+                            ),
                           ),
                         ],
                       ),
