@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:untitled1/widget/sip_call_button.dart';
+import 'package:url_launcher/url_launcher.dart' as launcher;
+
 
 class ContactInformationCard extends StatelessWidget {
   final String phoneNumber;
@@ -40,11 +42,45 @@ class ContactInformationCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // Phone Number with SIP Call Button
-          SipCallButton(
-            phoneNumber: phoneNumber.isNotEmpty ? phoneNumber : 'N/A',
-            callerName: callerName,
+          // calling
+
+          Row(
+            children: [
+              InkWell(
+                onTap: () async {
+                  if (phoneNumber != 'No Phone No.') {
+                    final Uri phoneUri = Uri(
+                      scheme: 'tel',
+                      path:phoneNumber,
+                    );
+                    try {
+                      if (await launcher.canLaunchUrl(phoneUri)) {
+                        await launcher.launchUrl(phoneUri);
+                      } else {
+                        print('Could not launch $phoneUri');
+                      }
+                    } catch (e) {
+                      print('Error launching phone app: $e');
+                    }
+                  }
+                },
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Color.fromRGBO(
+                      229, 248, 235, 1.0),
+                  child: Icon(Icons.call, size: 18, color: Colors.green),
+                ),
+              ),
+              SizedBox(width: 5,),
+              // Phone Number with SIP Call Button
+              SipCallButton(
+                phoneNumber: phoneNumber.isNotEmpty ? phoneNumber : 'N/A',
+                callerName: callerName,
+              ),
+            ],
           ),
+
+
           const SizedBox(height: 12),
 
           // Email
@@ -71,3 +107,4 @@ class ContactInformationCard extends StatelessWidget {
     );
   }
 }
+

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled1/resourses/app_colors.dart';
 import '../Dashboard/bottom_navigation_page.dart';
 import '../Models/taskListModel.dart';
 import 'taskCreateForm.dart';
@@ -93,7 +94,7 @@ class _PendingTaskListScreenState extends State<PendingTaskListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: formBackgroundColor,
       floatingActionButton: AnimatedFloatingActionButton(
         fabButtons: <Widget>[
           _createTask(),
@@ -105,37 +106,42 @@ class _PendingTaskListScreenState extends State<PendingTaskListScreen> {
       ),
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, size: 18),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            size: 18,
+            color: Colors.blue,
+          ),
           onPressed: () {
             showDialog(
               context: context,
               barrierDismissible: true,
               builder: (BuildContext context) => const BottomNavigationPage(),
-
             );
           },
         ),
         backgroundColor: Colors.white,
         systemOverlayStyle:
             const SystemUiOverlayStyle(statusBarColor: Colors.white),
-        title: Container(
-          height: 35,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(
-            color: Colors.white70,
-            borderRadius: BorderRadius.circular(5),
-          ),
-          child: const Text('All Pending Tasks'),
+        title: Center(
+          child: Center(child: const Text('All Pending Tasks')),
         ),
         actions: [
-          IconButton(
-            onPressed: () {
-              setState(() {
-                searchBar = !searchBar;
-              });
-              // print(searchBar);
-            },
-            icon: const Icon(Icons.search_outlined, color: Colors.black87),
+          Padding(
+            padding: const EdgeInsets.only(right: 13.0),
+            child: CircleAvatar(
+              radius: 18,
+              backgroundColor:
+                  Color.fromRGBO(199, 223, 253, 0.4470588235294118),
+              child: IconButton(
+                onPressed: () {
+                  setState(() {
+                    searchBar = !searchBar;
+                  });
+                  // print(searchBar);
+                },
+                icon: const Icon(Icons.search_outlined, color: Colors.black87),
+              ),
+            ),
           ),
         ],
       ),

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/API/api_url.dart';
+import 'package:untitled1/Lead/lead_sip_call_button.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import 'package:untitled1/screens/leadDetailsTabs.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +14,7 @@ import 'package:untitled1/widget/sip_call_button.dart';
 import '../Dashboard/bottom_navigation_page.dart';
 import '../Lead/leadCreateform.dart';
 import '../Models/LeadListModel.dart';
+import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 
 class LeadListScreen extends StatefulWidget {
@@ -32,7 +34,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
   final int pageSize = 10; //// Number of items to load per page
 
   final GlobalKey<AnimatedFloatingActionButtonState> key =
-      GlobalKey<AnimatedFloatingActionButtonState>();
+  GlobalKey<AnimatedFloatingActionButtonState>();
 
   List<LeadListModel> totalLeadList = [];
 
@@ -51,6 +53,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
   void initState() {
     super.initState();
     getLeadList(page);
+    print('total lead list:${totalLeadList}');
 
     // Add listener to search controller
     _searchController.addListener(() {
@@ -95,7 +98,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
         'start_date': '',
         'end_date': '',
         'user_id_search': userId,
-        'session_user_id': "",
+        'session_user_id': userId,
         'lead_pipeline_id': '',
         'lead_source_id': '',
         'searchData': '',
@@ -145,7 +148,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
   }
 
   final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController(initialRefresh: false);
 
   Future<void> refreshData() async {
     // Simulating an API request or data refresh
@@ -229,7 +232,7 @@ class _LeadListScreenState extends State<LeadListScreen> {
         automaticallyImplyLeading: true,
         actions: [
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.only(right: 13.0),
             child: CircleAvatar(
               radius: 18,
               backgroundColor: Colors.blue.shade50,
@@ -251,108 +254,228 @@ class _LeadListScreenState extends State<LeadListScreen> {
       ),
       body: isLoading
           ? Center(
-              child: LoadingAnimationWidget.staggeredDotsWave(
-                color: Colors.blue,
-                size: 50,
-              ),
-            )
+        child: LoadingAnimationWidget.staggeredDotsWave(
+          color: Colors.blue,
+          size: 50,
+        ),
+      )
           : totalLeadList.isEmpty
-              ? Center(
-                  child: Text(
-                    'No leads available.',
-                    style: TextStyle(fontSize: 18.sp, color: Colors.grey),
-                  ),
-                )
-              : NotificationListener<ScrollNotification>(
-                  onNotification: (ScrollNotification scrollInfo) {
-                    if (scrollInfo.metrics.pixels ==
-                            scrollInfo.metrics.maxScrollExtent &&
-                        !isLoadingMore &&
-                        hasMoreLeads) {
-                      // Ensuring we only load more if there are more leads available
-                      _loadMoreLeads();
-                    }
-                    return true;
-                  },
-                  child: SmartRefresher(
-                    onLoading: _onLoading,
-                    enablePullDown: true,
-                    enablePullUp: true,
-                    header: const WaterDropHeader(
-                      waterDropColor: Colors.blue,
+          ? Center(
+        child: Text(
+          'No leads available.',
+          style: TextStyle(fontSize: 18.sp, color: Colors.grey),
+        ),
+      )
+          : NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification scrollInfo) {
+          if (scrollInfo.metrics.pixels ==
+              scrollInfo.metrics.maxScrollExtent &&
+              !isLoadingMore &&
+              hasMoreLeads) {
+            // Ensuring we only load more if there are more leads available
+            _loadMoreLeads();
+          }
+          return true;
+        },
+        child: SmartRefresher(
+          onLoading: _onLoading,
+          enablePullDown: true,
+          enablePullUp: true,
+          header: const WaterDropHeader(
+            waterDropColor: Colors.blue,
+          ),
+          onRefresh: refreshData,
+          controller: _refreshController,
+          child: Column(children: [
+            // search bar
+            if (searchBar == true)
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  left: 20,
+                  right: 20,
+                  bottom: 10,
+                ),
+                child: TextField(
+                  controller: _searchController,
+                  cursorColor: Colors.blue,
+                  decoration: InputDecoration(
+                    labelText: 'Search',
+                    labelStyle: const TextStyle(
+                      fontSize: 14,
                     ),
-                    onRefresh: refreshData,
-                    controller: _refreshController,
-                    child: Column(children: [
-                      // search bar
-                      if (searchBar == true)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 10,
-                            left: 20,
-                            right: 20,
-                            bottom: 10,
-                          ),
-                          child: TextField(
-                            controller: _searchController,
-                            cursorColor: Colors.blue,
-                            decoration: InputDecoration(
-                              labelText: 'Search',
-                              labelStyle: const TextStyle(
-                                fontSize: 14,
-                              ),
-                              suffixIcon: IconButton(
-                                icon: const Icon(Icons.clear),
-                                onPressed: () {
-                                  setState(() {
-                                    _searchController.clear();
-                                  });
-                                },
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[200],
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 10.0, horizontal: 15.0),
-                              floatingLabelStyle:
-                                  const TextStyle(color: Colors.grey),
-                              prefixIcon: const Icon(Icons.search),
-                            ),
-                          ),
-                        ),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        setState(() {
+                          _searchController.clear();
+                        });
+                      },
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 15.0),
+                    floatingLabelStyle:
+                    const TextStyle(color: Colors.grey),
+                    prefixIcon: const Icon(Icons.search),
+                  ),
+                ),
+              ),
 
-                      // lead data
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: filteredLeadList.length,
-                          itemBuilder: (context, index) {
-                            LeadListModel lead = filteredLeadList[index];
-                            return Column(
+            // lead data
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredLeadList.length,
+                itemBuilder: (context, index) {
+                  LeadListModel lead = filteredLeadList[index];
+                  return Column(
+                    children: [
+                      // LeadCard(
+                      //   lead: lead,
+                      //   context: context,
+                      // ),
+
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 5),
+                        child: Card(
+                          color: formBackgroundColor,
+                          // color: Color.fromRGBO(
+                          //     253, 250, 250, 1.0),
+                          elevation: 0.1,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            side: BorderSide(
+                                color: Color.fromRGBO(
+                                    222, 233, 255, 1.0)),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
                               children: [
-                                // LeadCard(
-                                //   lead: lead,
-                                //   context: context,
-                                // ),
-
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 5),
-                                  child: Card(
-                                    color: formBackgroundColor,
-                                    // color: Color.fromRGBO(
-                                    //     253, 250, 250, 1.0),
-                                    elevation: 0.5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12.0),
-                                      side: BorderSide(
-                                          color: Color.fromRGBO(
-                                              253, 250, 250, 1.0)),
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment
+                                      .spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        lead.companyName ?? "",
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight:
+                                          FontWeight.w600,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
                                     ),
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(12.0),
+                                    Container(
+                                      padding: const EdgeInsets
+                                          .symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue.shade50,
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            20),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize:
+                                        MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            Icons.money_outlined,
+                                            size: 16,
+                                            color: Colors
+                                                .blue.shade700,
+                                          ),
+                                          const SizedBox(width: 6),
+                                          Text(
+                                            lead.leadPipelineName
+                                                ?.name ??
+                                                "",
+                                            style: TextStyle(
+                                              fontSize: 13,
+                                              color: Colors
+                                                  .blue.shade700,
+                                              fontWeight:
+                                              FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.person,
+                                      size: 16,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      lead.assignName?.name ?? "",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Pushes items to both ends
+                                  children: [
+                                    Row( // Wraps the call button and SIP button together
+                                      children: [
+                                        InkWell(
+                                          onTap: () async {
+                                            if (lead.phoneNumber != 'No Phone No.') {
+                                              final Uri phoneUri = Uri(
+                                                scheme: 'tel',
+                                                path: lead.phoneNumber,
+                                              );
+                                              try {
+                                                if (await launcher.canLaunchUrl(phoneUri)) {
+                                                  await launcher.launchUrl(phoneUri);
+                                                } else {
+                                                  print('Could not launch $phoneUri');
+                                                }
+                                              } catch (e) {
+                                                print('Error launching phone app: $e');
+                                              }
+                                            }
+                                          },
+                                          child: CircleAvatar(
+                                            radius: 18,
+                                            backgroundColor: Color.fromRGBO(
+                                                229, 248, 235, 1.0),
+                                            child: Icon(Icons.call, size: 18, color: Colors.green),
+                                          ),
+                                        ),
+                                        SizedBox(width: 5),
+                                        LeadSipCallButton(
+                                          phoneNumber: lead.phoneNumber.toString(),
+                                          callerName: lead.companyName.toString(),
+                                        ),
+                                      ],
+                                    ),
+
+                                    // Arrow icon moved to the right
+                                    InkWell(
                                       onTap: () {
                                         Navigator.push(
                                           context,
@@ -363,133 +486,44 @@ class _LeadListScreenState extends State<LeadListScreen> {
                                           ),
                                         );
                                       },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                    lead.companyName ?? "",
-                                                    style: const TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: Colors.black87,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 6,
-                                                  ),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.blue.shade50,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      Icon(
-                                                        Icons.money_outlined,
-                                                        size: 16,
-                                                        color: Colors
-                                                            .blue.shade700,
-                                                      ),
-                                                      const SizedBox(width: 6),
-                                                      Text(
-                                                        lead.leadPipelineName
-                                                                ?.name ??
-                                                            "",
-                                                        style: TextStyle(
-                                                          fontSize: 13,
-                                                          color: Colors
-                                                              .blue.shade700,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 16),
-                                            Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.person,
-                                                  size: 16,
-                                                  color: Colors.grey.shade600,
-                                                ),
-                                                const SizedBox(width: 8),
-                                                Text(
-                                                  lead.assignName?.name ?? "",
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey.shade700,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 16),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                SipCallButton(
-                                                  phoneNumber: lead.phoneNumber
-                                                      .toString(),
-                                                  callerName: lead.companyName
-                                                      .toString(),
-                                                ),
-                                                Icon(
-                                                  Icons.arrow_forward_ios,
-                                                  size: 16,
-                                                  color: Colors.blue.shade400,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                      child: CircleAvatar(
+                                        backgroundColor: Color.fromRGBO(207, 234, 243, 0.4470588235294118),
+                                        child: Icon(
+                                          Icons.arrow_forward_ios,
+                                          size: 16,
+                                          color: Colors.blue.shade400,
                                         ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-
-                                if (index == filteredLeadList.length - 1 &&
-                                    isLoadingMore)
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 20.0),
-                                    child: Center(
-                                      child: LoadingAnimationWidget
-                                          .staggeredDotsWave(
-                                        color: Colors.blue,
-                                        size: 30,
-                                      ),
-                                    ),
-                                  ),
                               ],
-                            );
-                          },
+                            ),
+                          ),
                         ),
                       ),
-                    ]),
-                  ),
-                ),
+
+                      if (index == filteredLeadList.length - 1 &&
+                          isLoadingMore)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 20.0),
+                          child: Center(
+                            child: LoadingAnimationWidget
+                                .staggeredDotsWave(
+                              color: Colors.blue,
+                              size: 30,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ]),
+        ),
+      ),
     );
   }
 

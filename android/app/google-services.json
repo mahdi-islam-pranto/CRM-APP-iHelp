@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "526368163219",
     "project_id": "ihelpcrm",
-    "storage_bucket": "ihelpcrm.appspot.com"
+    "storage_bucket": "ihelpcrm.firebasestorage.app"
   },
   "client": [
     {

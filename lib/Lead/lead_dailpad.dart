@@ -1,29 +1,26 @@
-///new code good work
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:untitled1/database/DBHandler.dart';
+import 'dart:ui';
 import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:marquee/marquee.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:untitled1/Contacts/ContactsDetails.dart';
-import 'package:untitled1/FollowUP/FollowUPListScreen.dart';
-import 'package:untitled1/database/DBHandler.dart';
+import 'package:untitled1/screens/totalLeadList.dart';
 import 'package:untitled1/sip_account/CallUI.dart';
 import 'package:untitled1/sip_account/SipAccountStatus.dart';
 import 'package:untitled1/sip_account/call_logs/CallLogDetails.dart';
 import 'package:untitled1/sip_account/call_logs/CallLogsModel.dart';
 
-class Followupsipdialpad extends StatefulWidget {
-  const Followupsipdialpad({
-    Key? key,
-  }) : super(key: key);
+
+class LeadDailpad extends StatefulWidget {
+  const LeadDailpad({super.key});
 
   @override
-  State<Followupsipdialpad> createState() => _FollowupsipdialpadState();
+  State<LeadDailpad> createState() => _LeadDailpadState();
 }
 
-class _FollowupsipdialpadState extends State<Followupsipdialpad> {
-
+class _LeadDailpadState extends State<LeadDailpad> {
   TextEditingController digitsController = TextEditingController();
 
   TextEditingController searchController = TextEditingController();
@@ -63,7 +60,7 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
         return AlertDialog(
           title: const Text("Allow Permission"),
           content:
-              const Text("Please allow Contact permission to view contacts"),
+          const Text("Please allow Contact permission to view contacts"),
           actions: [
             TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -92,7 +89,7 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
     setState(() {
       filterContactList = contactList
           .where((contact) =>
-              (contact.displayName ?? "").toLowerCase().contains(searchTerm))
+          (contact.displayName ?? "").toLowerCase().contains(searchTerm))
           .toList();
     });
   }
@@ -107,6 +104,7 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
 
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +121,7 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-          // drawer: DrawerMenu(),
+        // drawer: DrawerMenu(),
           appBar: AppBar(
             elevation: 0,
             leadingWidth: 65,
@@ -141,7 +139,7 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => FollowUpList(),
+                          builder: (context) => LeadListScreen(),
                         ));
                   },
                   icon: const Icon(
@@ -177,74 +175,74 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
                 margin: const EdgeInsets.only(right: 16),
                 child: SipAccountStatus.sipAccountStatus
                     ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(4),
-                                  color: Colors.green.shade500,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.green.withOpacity(0.3),
-                                      blurRadius: 4,
-                                      spreadRadius: 1,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              SizedBox(
-                                width: 50,
-                                child: Marquee(
-                                  text: SipAccountStatus.extension,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 13,
-                                    color: Colors.green.shade700,
-                                  ),
-                                  scrollAxis: Axis.horizontal,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  blankSpace: 20.0,
-                                  velocity: 30.0,
-                                  pauseAfterRound: const Duration(seconds: 1),
-                                  accelerationDuration:
-                                      const Duration(seconds: 1),
-                                  accelerationCurve: Curves.easeInOutCubic,
-                                  decelerationDuration:
-                                      const Duration(milliseconds: 500),
-                                  decelerationCurve: Curves.easeOut,
-                                ),
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          width: 8,
+                          height: 8,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                            color: Colors.green.shade500,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.green.withOpacity(0.3),
+                                blurRadius: 4,
+                                spreadRadius: 1,
                               ),
                             ],
                           ),
-                        ],
-                      )
-                    : Container(
-                        width: 10,
-                        height: 10,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey.shade200,
-                          border: Border.all(
-                            color: Colors.grey.shade300,
-                            width: 1,
-                          ),
                         ),
-                        child: Center(
-                          child: Container(
-                            width: 8,
-                            height: 8,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: Colors.grey.shade400,
+                        const SizedBox(width: 8),
+                        SizedBox(
+                          width: 50,
+                          child: Marquee(
+                            text: SipAccountStatus.extension,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                              color: Colors.green.shade700,
                             ),
+                            scrollAxis: Axis.horizontal,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            blankSpace: 20.0,
+                            velocity: 30.0,
+                            pauseAfterRound: const Duration(seconds: 1),
+                            accelerationDuration:
+                            const Duration(seconds: 1),
+                            accelerationCurve: Curves.easeInOutCubic,
+                            decelerationDuration:
+                            const Duration(milliseconds: 500),
+                            decelerationCurve: Curves.easeOut,
                           ),
                         ),
+                      ],
+                    ),
+                  ],
+                )
+                    : Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.grey.shade200,
+                    border: Border.all(
+                      color: Colors.grey.shade300,
+                      width: 1,
+                    ),
+                  ),
+                  child: Center(
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: Colors.grey.shade400,
                       ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -565,7 +563,7 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
 
   Widget searchContacts() {
     return TextField(
-        // controller: searchController,
+      // controller: searchController,
         maxLines: 1,
         decoration: const InputDecoration(
             hintText: "Search contacts ...",
@@ -602,7 +600,7 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
                 CallLogsModel callLogsModel =
-                    CallLogsModel.fromMap(snapshot.data[index]);
+                CallLogsModel.fromMap(snapshot.data[index]);
 
                 if (callLogsModel.date == null) {
                   return null;
@@ -631,8 +629,8 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
                     cursorCurrentIndex = 0;
 
                     for (int i = 0;
-                        i < callLogsModel.phoneNumber.toString().trim().length;
-                        i++) {
+                    i < callLogsModel.phoneNumber.toString().trim().length;
+                    i++) {
                       numberDigits
                           .add(callLogsModel.phoneNumber.toString().trim()[i]);
                       setDigitInList();
@@ -655,13 +653,13 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
                                 // Name
                                 Text(
                                   callLogsModel.name
+                                      .toString()
+                                      .trim()
+                                      .isEmpty ||
+                                      RegExp(r'^[0-9]+$').hasMatch(
+                                          callLogsModel.name
                                               .toString()
-                                              .trim()
-                                              .isEmpty ||
-                                          RegExp(r'^[0-9]+$').hasMatch(
-                                              callLogsModel.name
-                                                  .toString()
-                                                  .trim())
+                                              .trim())
                                       ? 'Unknown'
                                       : callLogsModel.name.toString().trim(),
                                   style: const TextStyle(
@@ -725,9 +723,9 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
                                                           .name
                                                           .toString(),
                                                       contactNumber:
-                                                          callLogsModel
-                                                              .phoneNumber
-                                                              .toString())));
+                                                      callLogsModel
+                                                          .phoneNumber
+                                                          .toString())));
                                     })
                               ],
                             )
@@ -773,14 +771,14 @@ class _FollowupsipdialpadState extends State<Followupsipdialpad> {
                   leading: photo != null
                       ? CircleAvatar(radius: 45, child: Image.memory(photo))
                       : CircleAvatar(
-                          backgroundColor:
-                              Color.fromRGBO(118, 137, 246, 0.4470588235294118),
-                          radius: 45,
-                          child: Text(
-                            name[0],
-                            style: const TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold),
-                          )),
+                      backgroundColor:
+                      Color.fromRGBO(118, 137, 246, 0.4470588235294118),
+                      radius: 45,
+                      child: Text(
+                        name[0],
+                        style: const TextStyle(
+                            fontSize: 30, fontWeight: FontWeight.bold),
+                      )),
                   onTap: () {
                     Navigator.push(
                         context,

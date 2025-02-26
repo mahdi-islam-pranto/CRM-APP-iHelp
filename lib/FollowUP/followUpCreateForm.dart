@@ -108,11 +108,11 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
       "phone_number": _contactNumber.text,
       "next_followup_date": dateTimeController.text,
       "description": _description.text,
-      "associate_user_id": Associate.selectedAssociateIds ?? "",
+      "associate_user_id": Associate.selectedAssociateIds.join(','), // Correct format
     };
 
+
     print('Sending request with body: ${jsonEncode(body)}');
-    print('Associate ID being sent: ${Associate.selectedAssociateIds}');
 
     var response = await http.post(
       Uri.parse(url),
@@ -123,12 +123,11 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
       body: jsonEncode(body),
     );
 
-    print('Request Headers: ${response.request?.headers}');
-    print('Request URL: ${response.request?.url}');
     print('Response Status: ${response.statusCode}');
 
+    customProgress.hideDialog();
+
     if (response.statusCode == 200) {
-      customProgress.hideDialog();
       _companyName.clear();
       _subject.clear();
       _description.clear();
@@ -137,29 +136,26 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
 
       // Reset dropdowns to their initial state
       setState(() {
-        FollowupType.followUpType =
-            null; // Assuming this is the dropdown variable
-        Owner.ownerId = null; // Assuming this is the dropdown
+        FollowupType.followUpType = null;
+        Owner.ownerId = null;
       });
 
       print('Response Body: ${response.body}');
 
-      // send notification
-      // send notification
+      // Send notification
       if (selectedDeviceToken.isNotEmpty) {
         SendNotificationService.sendNotificationUsingApi(
-            token: selectedDeviceToken,
-            title: "New Follow Up Created",
-            body: "You are assigned to a new follow up! Please check",
-            data: {
-              'screen': 'followup',
-            });
+          token: selectedDeviceToken,
+          title: "New Follow Up Created",
+          body: "You are assigned to a new follow up! Please check",
+          data: {'screen': 'followup'},
+        );
         print("selected device token: $selectedDeviceToken");
       } else {
         print("Device token is empty");
       }
 
-      // save notification to Firebase Firestore database
+      // Save notification to Firebase Firestore
       await FirebaseFirestore.instance
           .collection('notifications')
           .doc(userId)
@@ -169,7 +165,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
         'title': "New Follow Up Created ",
         'body': "You are assigned to a new follow up! Please check",
         'isRead': false,
-        'creted_at': DateTime.now(),
+        'created_at': DateTime.now(),
       });
 
       await AwesomeDialog(
@@ -178,7 +174,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
         animType: AnimType.topSlide,
         showCloseIcon: true,
         title: "Success",
-        desc: "Your follow up created successfully",
+        desc: "Your follow-up was created successfully",
         customHeader: Container(
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
@@ -197,34 +193,46 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
         },
         btnOkOnPress: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const FollowUpList(),
-              ));
+            context,
+            MaterialPageRoute(builder: (context) => const FollowUpList()),
+          );
         },
       ).show();
     } else {
-      customProgress.hideDialog();
-      await showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Column(
-            children: [
-              Text("Error", style: TextStyle(color: Colors.red)),
-              Text("Please select Owner and Follow Up Type",
-                  style: TextStyle(color: Colors.red, fontSize: 13)),
+      // Parse response and show error message
+      try {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+        String errorMessage = responseData['data']['message'] ?? "An error occurred";
+        List<dynamic> errors = responseData['data']['errors'] ?? [];
+
+        String fullErrorMessage = errorMessage;
+        if (errors.isNotEmpty) {
+          fullErrorMessage += "\n- ${errors.join("\n- ")}";
+        }
+
+        print("API Error: $fullErrorMessage");
+
+        await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Error", style: TextStyle(color: Colors.red)),
+            content: Text(fullErrorMessage, style: const TextStyle(fontSize: 14)),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Ok'),
+              ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Ok'),
-            ),
-          ],
-        ),
-      );
+        );
+      } catch (e) {
+        print("Error parsing response: $e");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Something went wrong. Please try again later.'),
+        ));
+      }
     }
   }
 
@@ -257,7 +265,8 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
             padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.025),
 
-// Responsive Form Container
+            // Responsive Form Container
+
             height: MediaQuery.of(context).size.height * 0.85,
             width: MediaQuery.of(context).size.width * 1,
             child: Form(
@@ -272,44 +281,32 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                       const SizedBox(height: 10),
                       formField("Subject", _subject, 'Please enter subject'),
                       const SizedBox(height: 10),
+                      dropDownRow(
+                          "Owner",
+                          LeadOwnerDropDown(
+                            userId: currentUserId,
+                            onDeviceTokenReceived: handleDeviceToken,
+                          )),
+                      const SizedBox(height: 12),
+
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Flexible(
-                            flex: 1,
-                            child: dropDownRow(
-                                "Owner",
-                                LeadOwnerDropDown(
-                                  userId: currentUserId,
-                                  onDeviceTokenReceived: handleDeviceToken,
-                                )),
-                          ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.025),
-                          Flexible(
-                            flex: 1,
-                            child: MultiLeadAssociateDropDown(
-                              onDeviceTokensReceived:
-                                  (List<String> associateHandelDeviceToken) {
-                                // Handle the list of device tokens here
-                                print(
-                                    'Selected Associate tokens: $associateHandelDeviceToken');
-                              },
-                              initialValues: [], // Optional
-                            ),
+                          const Text(
+                            "Associate",
+                            style: TextStyle(fontSize: 17),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-
                       // Multiple drop down
                       MultiLeadAssociateDropDown(
-                        onDeviceTokensReceived: (List<String> deviceTokens) {
+                        onDeviceTokensReceived:
+                            (List<String> assiciateDeviceToken) {
                           // Handle the list of device tokens here
-                          print('Selected device tokens: $deviceTokens');
+                          print(
+                              'Selected device tokens: $assiciateDeviceToken');
                         },
-                        initialValues: ['John Doe', 'Jane Smith'], // Optional
+                        initialValues: ['Sk Nayeem', 'Pranto'], // Optional
                       ),
                       const SizedBox(height: 12),
 

@@ -10,6 +10,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:untitled1/firebase_options.dart';
 import 'dependency_injection.dart';
 import 'splash_screen.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -38,6 +40,8 @@ void main() async {
   HttpOverrides.global = MyHttpOverrides();
 
   try {
+    requestPermissions();
+
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
@@ -55,6 +59,14 @@ void main() async {
   runApp(const MyApp());
   DependencyInjection.init();
 }
+
+Future<void> requestPermissions() async {
+  print('request::::::: ${Permission.contacts}');
+  await Permission.contacts.request();
+  await Permission.systemAlertWindow.request();
+}
+
+
 
 Future<void> _firebaseMassageingBackgroundHandeler(
     RemoteMessage massage) async {

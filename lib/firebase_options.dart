@@ -46,7 +46,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '526368163219',
     projectId: 'ihelpcrm',
     authDomain: 'ihelpcrm.firebaseapp.com',
-    storageBucket: 'ihelpcrm.appspot.com',
+    storageBucket: 'ihelpcrm.firebasestorage.app',
     measurementId: 'G-W6J02N8BF7',
   );
 
@@ -55,7 +55,7 @@ class DefaultFirebaseOptions {
     appId: '1:526368163219:android:6be3ffd861d9ad46831466',
     messagingSenderId: '526368163219',
     projectId: 'ihelpcrm',
-    storageBucket: 'ihelpcrm.appspot.com',
+    storageBucket: 'ihelpcrm.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     appId: '1:526368163219:ios:a9a801bbed056b35831466',
     messagingSenderId: '526368163219',
     projectId: 'ihelpcrm',
-    storageBucket: 'ihelpcrm.appspot.com',
+    storageBucket: 'ihelpcrm.firebasestorage.app',
     iosBundleId: 'com.example.untitled1',
   );
 
@@ -72,7 +72,7 @@ class DefaultFirebaseOptions {
     appId: '1:526368163219:ios:a9a801bbed056b35831466',
     messagingSenderId: '526368163219',
     projectId: 'ihelpcrm',
-    storageBucket: 'ihelpcrm.appspot.com',
+    storageBucket: 'ihelpcrm.firebasestorage.app',
     iosBundleId: 'com.example.untitled1',
   );
 
@@ -82,7 +82,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '526368163219',
     projectId: 'ihelpcrm',
     authDomain: 'ihelpcrm.firebaseapp.com',
-    storageBucket: 'ihelpcrm.appspot.com',
+    storageBucket: 'ihelpcrm.firebasestorage.app',
     measurementId: 'G-55QSL22Y81',
   );
+
 }

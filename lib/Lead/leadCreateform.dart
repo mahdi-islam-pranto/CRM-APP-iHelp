@@ -35,7 +35,7 @@ class _LeadCreateFormState extends State<LeadCreateForm> {
           backgroundColor: Colors.white,
           // toolbarHeight: 112.62,
           title: const Text(
-            "CREATE  LEAD",
+            "Create Lead",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           centerTitle: true,

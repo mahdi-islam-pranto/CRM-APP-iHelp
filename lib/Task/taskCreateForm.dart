@@ -290,6 +290,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       "subject": _subject.text,
       "start_time": startDateTimeController.text,
       "end_time": endDateTimeController.text,
+      "location": _currentLocation.text,
       "reminder_time": "",
       "description": _description.text,
       "associate_user_id": "",
@@ -431,7 +432,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
             ),
             // toolbarHeight: 80,
             title: const Text(
-              "CREATE NEW TASK",
+              "Create New Task",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             centerTitle: true,

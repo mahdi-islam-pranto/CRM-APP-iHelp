@@ -5,11 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:untitled1/FollowUP/followup_sip_call_button.dart';
 import 'package:untitled1/widget/sip_call_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../Models/followUpModel.dart';
 import '../resourses/app_colors.dart';
-
+import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'followUpUpdate.dart';
 
 // follow up details page
@@ -217,9 +218,33 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                         ),
                                         child: Row(
                                           children: [
-                                          //  Icon(Icons.call, color: Colors.green.shade700, size: 20), // Call icon
+                                            InkWell(
+
+                                              onTap: () async {
+                                                if (followUpDetails!.phoneNumber != 'No Phone No.') {
+                                                  final Uri phoneUri = Uri(
+                                                    scheme: 'tel',
+                                                    path:followUpDetails!.phoneNumber,
+                                                  );
+                                                  try {
+                                                    if (await launcher.canLaunchUrl(phoneUri)) {
+                                                      await launcher.launchUrl(phoneUri);
+                                                    } else {
+                                                      print('Could not launch $phoneUri');
+                                                    }
+                                                  } catch (e) {
+                                                    print('Error launching phone app: $e');
+                                                  }
+                                                }
+                                              },
+                                              child: CircleAvatar(
+                                                  radius: 18,
+                                                  backgroundColor: Color.fromRGBO(
+                                                      229, 248, 235, 1.0),
+                                                  child: Icon(Icons.call, size: 18, color: Colors.green)),
+                                            ),
                                             const SizedBox(width: 8),
-                                            SipCallButton(
+                                            FollowupSipCallButton(
                                               phoneNumber: followUpDetails!.phoneNumber.toString().isNotEmpty
                                                   ? followUpDetails!.phoneNumber.toString()
                                                   : "No Phone No.",
@@ -227,6 +252,15 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
                                                   ?.companyName?.companyName ??
                                                   "N/A",
                                             ),
+
+                                            // SipCallButton(
+                                            //   phoneNumber: followUpDetails!.phoneNumber.toString().isNotEmpty
+                                            //       ? followUpDetails!.phoneNumber.toString()
+                                            //       : "No Phone No.",
+                                            //   callerName: followUpDetails
+                                            //       ?.companyName?.companyName ??
+                                            //       "N/A",
+                                            // ),
                                           ],
                                         ),
                                       ),

@@ -6,6 +6,7 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:marquee/marquee.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:untitled1/Contacts/ContactsDetails.dart';
+import 'package:untitled1/Dashboard/bottom_navigation_page.dart';
 import 'CallUI.dart';
 import 'SipAccountStatus.dart';
 import 'call_logs/CallLogDetails.dart';
@@ -49,29 +50,58 @@ class _SipDialPadState extends State<SipDialPad> {
 
   List<Contact> filterContactList = [];
 
+
   @override
   void initState() {
     super.initState();
-    getContacts();
     searchController.addListener(filterContacts);
+    _requestPermissions(); // Request permissions first
+  }
+
+// Ensure permissions are granted before accessing contacts
+  Future<void> _requestPermissions() async {
+    await Permission.contacts.request();
+    await Permission.storage.request();
+    await Permission.phone.request();
+    await Permission.microphone.request();
+    await Permission.systemAlertWindow.request();
+    await Permission.ignoreBatteryOptimizations.request();
+
+    // Check if permission is granted before calling getContacts()
+    if (await Permission.contacts.isGranted) {
+      getContacts();
+    } else {
+      showAlertDialog(); // Show alert if denied
+    }
   }
 
   Future<void> getContacts() async {
-    if (await Permission.contacts.request().isGranted) {
-      List<Contact> fetchedContacts = (await getPhoneContacts())
-          .cast<Contact>(); // Explicitly cast to List<Contact>
+    if (await Permission.contacts.isGranted) {
+      try {
+        List<Contact> fetchedContacts = (await getPhoneContacts()).cast<Contact>();
 
-      setState(() {
-        contactList = fetchedContacts;
-        filterContactList = fetchedContacts;
-      });
+        setState(() {
+          contactList = fetchedContacts;
+          filterContactList = fetchedContacts;
+        });
+      } catch (e) {
+        debugPrint("Error fetching contacts: $e");
+      }
     } else {
-      setState(() {
-        isLoading = false;
-      });
-      showAlertDialog();
+      showAlertDialog(); // Ensure this runs if permission is denied later
     }
   }
+
+// Call this when the "My Contacts" button is clicked
+  void onMyContactsButtonPressed() async {
+    if (await Permission.contacts.isGranted) {
+      getContacts();
+    } else {
+      _requestPermissions();
+    }
+  }
+
+
 
   void showAlertDialog() {
     showDialog(
@@ -118,13 +148,6 @@ class _SipDialPadState extends State<SipDialPad> {
 
   @override
   Widget build(BuildContext context) {
-    // if (widget.phoneNumber.isNotEmpty) {
-    //
-    //   for (int i = 0; i < widget.phoneNumber.length; i++) {
-    //     numberDigits.add(widget.phoneNumber[i]);
-    //     setDigitInList();
-    //   }
-    // }
 
     return DefaultTabController(
       length: 2,
@@ -142,8 +165,7 @@ class _SipDialPadState extends State<SipDialPad> {
                 ),
                 child: IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
-                  },
+                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavigationPage(),));               },
                   icon: const Icon(
                     Icons.chevron_left,
                     size: 28,
