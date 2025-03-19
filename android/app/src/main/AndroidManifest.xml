@@ -3,8 +3,13 @@
         <uses-permission android:name="android.permission.INTERNET"/>
         <uses-permission android:name="android.permission.READ_CONTACTS" />  
         <uses-permission android:name="android.permission.WRITE_CONTACTS" /> 
-
-        
+        <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+        <uses-permission android:name="android.permission.READ_CALL_LOG" />
+        <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
+        <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+        <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+        <!-- For Android 12+ (API level 31+) -->
+        <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
         <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
@@ -17,6 +22,14 @@
         
         android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher">
+        
+        <!-- Overlay Service -->
+        <service
+            android:name=".OverlayService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="phoneCall" />
+            
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -72,7 +85,17 @@
                <action android:name="android.intent.action.NEW_OUTGOING_CALL"/>
                <action android:name="android.intent.action.CALL_PHONE"/>
                <action android:name="icrm_call_action" />
+           </intent-filter>
+       </receiver>
 
+       <!-- Call State Receiver -->
+       <receiver
+           android:name=".CallStateReceiver"
+           android:enabled="true"
+           android:exported="true">
+           <intent-filter>
+               <action android:name="android.intent.action.PHONE_STATE" />
+               <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
            </intent-filter>
        </receiver>
 
