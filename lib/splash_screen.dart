@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -57,6 +58,11 @@ class _SplashScreenState extends State<SplashScreen> {
               size: 50,
             ), // Spinner animation
           ),
+          Positioned(
+            top: 40,
+            right: 20,
+            child: _buildTestButton(),
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: _buildInventor(),
@@ -79,6 +85,19 @@ class _SplashScreenState extends State<SplashScreen> {
         loginStatus = false;
       });
     }
+  }
+
+  Widget _buildTestButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Get.toNamed('/call_detection_test');
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      child: const Text('Test Call Detection'),
+    );
   }
 
   Widget _buildInventor() {
