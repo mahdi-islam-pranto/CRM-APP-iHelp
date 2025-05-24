@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -65,6 +66,87 @@ class LeadCreatePage extends StatelessWidget {
   }
 }
 
+// Placeholder for Task Create Page
+class TaskCreatePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final args = Get.arguments as Map<String, dynamic>?;
+    final leadId = args?['leadId'] ?? 0;
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Create Task')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Create Task for Lead ID: $leadId',
+                style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => Get.back(),
+              child: Text('Back'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Placeholder for Follow-Up Create Page
+class FollowUpCreatePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final args = Get.arguments as Map<String, dynamic>?;
+    final leadId = args?['leadId'] ?? 0;
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Create Follow-Up')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Create Follow-Up for Lead ID: $leadId',
+                style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => Get.back(),
+              child: Text('Back'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Placeholder for Lead Pipeline Update Page
+class LeadPipelineUpdatePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final args = Get.arguments as Map<String, dynamic>?;
+    final leadId = args?['leadId'] ?? 0;
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Update Pipeline')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Update Pipeline for Lead ID: $leadId',
+                style: TextStyle(fontSize: 18)),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => Get.back(),
+              child: Text('Back'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
@@ -78,6 +160,9 @@ class MyHttpOverrides extends HttpOverrides {
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 void main() async {
   // await Firebase.initializeApp(
@@ -139,6 +224,18 @@ class MyApp extends StatelessWidget {
             name: '/lead/create',
             page: () => LeadCreatePage(),
           ),
+          GetPage(
+            name: '/tasks/create',
+            page: () => TaskCreatePage(),
+          ),
+          GetPage(
+            name: '/followups/create',
+            page: () => FollowUpCreatePage(),
+          ),
+          GetPage(
+            name: '/lead/update-pipeline',
+            page: () => LeadPipelineUpdatePage(),
+          ),
         ],
         onInit: () {
           // Handle deep linking from the overlay
@@ -166,6 +263,20 @@ class MyApp extends StatelessWidget {
         } else if (action == 'add_lead' && intent.containsKey('phone_number')) {
           final phoneNumber = intent['phone_number'] as String;
           Get.toNamed('/lead/create', arguments: {'phoneNumber': phoneNumber});
+        } else if (action == 'create_task' && intent.containsKey('lead_id')) {
+          final leadId = intent['lead_id'] as int;
+          // Navigate to the task creation screen with the lead ID
+          Get.toNamed('/tasks/create', arguments: {'leadId': leadId});
+        } else if (action == 'create_followup' &&
+            intent.containsKey('lead_id')) {
+          final leadId = intent['lead_id'] as int;
+          // Navigate to the follow-up creation screen with the lead ID
+          Get.toNamed('/followups/create', arguments: {'leadId': leadId});
+        } else if (action == 'update_pipeline' &&
+            intent.containsKey('lead_id')) {
+          final leadId = intent['lead_id'] as int;
+          // Navigate to the pipeline update screen with the lead ID
+          Get.toNamed('/lead/update-pipeline', arguments: {'leadId': leadId});
         }
       }
     } catch (e) {

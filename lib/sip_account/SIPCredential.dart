@@ -1,54 +1,54 @@
+/// very good working
+// import 'package:awesome_dialog/awesome_dialog.dart';
+
 // import 'package:flutter/material.dart';
 // import 'package:flutter/services.dart';
-// import 'package:flutter_animated_button/flutter_animated_button.dart';
-// import 'package:isalescrm/progress_indicator/CustomProgressIndicator.dart';
-// import 'package:isalescrm/sip_account/SipAccountSetting.dart';
-// import 'package:isalescrm/sip_account/SipAccountStatus.dart';
 // import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
-// import '../alert_dialog/CustomAlertDialg.dart';
-// import '../constants/Constants.dart';
+// import 'package:untitled1/sip_account/SipDialPad.dart';
+// import '../components/CustomAlertDialog.dart';
+// import '../progress_indicator/CustomProgressIndicator.dart';
 // import 'SIPConfiguration.dart';
-//
-// /*
-//   Activity name : SIPCredential
-//   Project name : iSalesCRM Mobile App
-//   Developer    : Eng. Sk Nayeem Ur Rahman
-//   Designation : Senior Mobile App Developer at iHelpBD Dhaka, Bangladesh.
-//   Email : nayeemdeveloperbd@gmail.com
-// */
+// import 'SipAccountStatus.dart';
 //
 // class SIPCredential extends StatefulWidget {
 //   const SIPCredential({Key? key}) : super(key: key);
 //
 //   @override
-//   State<SIPCredential> createState() => _SIPCredentialState();
+//   State<SIPCredential> createState() => SIPCredentialState();
 // }
-// class _SIPCredentialState extends State<SIPCredential> {
-//   TextEditingController sipUserID = TextEditingController();
-//   TextEditingController sipServer = TextEditingController();
+//
+// // Make the state class public by renaming it
+// class SIPCredentialState extends State<SIPCredential> {
+//   TextEditingController sipID = TextEditingController();
+//   TextEditingController sipDomain =
+//   TextEditingController(text: "114.130.69.205:25067");
 //   TextEditingController sipPassword = TextEditingController();
+//   String serverMessage = '';
 //
 //   @override
 //   void initState() {
-//     // TODO: implement initState
 //     super.initState();
+//     SIPConfiguration.messageStream.listen((message) {
+//       setState(() {
+//         serverMessage = message;
+//       });
+//     });
 //   }
-//   //GradientAppBar gradientAppBar = GradientAppBar();
+//
+//   @override
+//   void dispose() {
+//     SIPConfiguration.dispose();
+//     super.dispose();
+//   }
+//
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         backgroundColor: Colors.cyan,
-//         // flexibleSpace: Container(
-//         //   decoration: const BoxDecoration(
-//         //     gradient: LinearGradient(
-//         //         begin: Alignment.centerLeft,
-//         //         end: Alignment.centerRight,
-//         //         colors: [Colors.teal,Colors.blue,Colors.blue,Colors.teal]),
-//         //   ),
-//         // ),
+//         backgroundColor: Colors.blue,
 //         systemOverlayStyle:
-//             const SystemUiOverlayStyle(statusBarColor: primaryColor),
+//         const SystemUiOverlayStyle(statusBarColor: Colors.blue,
+//         ),
 //         title: const Text("SIP Credential"),
 //         centerTitle: true,
 //       ),
@@ -57,74 +57,20 @@
 //         margin: const EdgeInsets.all(10),
 //         child: ListView(
 //           children: [
-//             const SizedBox(
-//               height: 30,
-//             ),
-//
-//             // SIP User ID
+//             const SizedBox(height: 30),
 //             Card(
-//               elevation: 2,
+//               elevation: 0.5,
 //               child: TextField(
-//                    controller: sipUserID,
-//                    maxLines: 1,
-//                    decoration: const InputDecoration(
+//                   controller: sipID,
+//                   maxLines: 1,
+//                   decoration: const InputDecoration(
 //                       border: OutlineInputBorder(),
 //                       labelText: "SIP User ID",
 //                       hintText: "096xxxxxxxx")),
 //             ),
-//
-//             // New Changed Text Filed  //nayeem
-//
-//             // shape: RoundedRectangleBorder( //<-- 1. SEE HERE
-//             //   side: BorderSide(
-//             //     color: Colors.blue,
-//             //     width: 0.5,
-//             //   ),
-//             //   borderRadius: BorderRadius.circular(15.0),
-//             // ),
-//
-//             // child: TextField(
-//             //   controller: sipUserID,
-//             //   maxLines: 1,
-//             //   decoration: InputDecoration(
-//             //     enabledBorder: OutlineInputBorder(
-//             //       borderSide:
-//             //       BorderSide(
-//             //      color: Colors.blue,
-//             //      width: 0.5,
-//             //    ), //<-- SEE HERE
-//             //       borderRadius: BorderRadius.circular(10.0),
-//             //     ),
-//
-//             //       labelText: "SIP User ID",
-//             //       hintText: "096xxxxxxxx"
-//             //   ),
-//             // ),
-//             //
-//
-//             const SizedBox(
-//               height: 20,
-//             ),
-//
-//             //SIP Server
+//             const SizedBox(height: 20),
 //             Card(
-//               elevation: 2,
-//               child: TextField(
-//                   controller: sipServer,
-//                   maxLines: 1,
-//                   decoration: const InputDecoration(
-//                       border: OutlineInputBorder(),
-//                       labelText: "SIP Server",
-//                       hintText: "sip host")),
-//             ),
-//
-//             const SizedBox(
-//               height: 20,
-//             ),
-//
-//             //SIP Account Password
-//             Card(
-//               elevation: 2,
+//               elevation: 0.5,
 //               child: TextField(
 //                   controller: sipPassword,
 //                   obscureText: true,
@@ -134,15 +80,18 @@
 //                       labelText: "Password",
 //                       hintText: "eg. @e#%wsfh")),
 //             ),
-//
-//             //Save SIP account
-//
-//             const SizedBox(
-//               height: 45,
+//             const SizedBox(height: 20),
+//             Card(
+//               elevation: 0.5,
+//               child: TextField(
+//                   controller: sipDomain,
+//                   maxLines: 1,
+//                   decoration: const InputDecoration(
+//                       border: OutlineInputBorder(),
+//                       labelText: "SIP Server",
+//                       hintText: "sip host")),
 //             ),
-//
-//             //Animated Button //Changed design     Nayeem Developer : Phone : 01733364274
-//
+//             const SizedBox(height: 45),
 //             Center(
 //               child: Card(
 //                 elevation: 3,
@@ -151,42 +100,31 @@
 //                 ),
 //                 color: Colors.blue,
 //                 child: AnimatedButton(
+//                   color: Colors.blue,
 //                   width: 150,
 //                   text: 'Save',
-//                   isReverse: true,
-//                   selectedTextColor: Colors.blue,
-//                   transitionType: TransitionType.LEFT_TO_RIGHT,
-//                   // textStyle: submitTextStyle,
-//                   // backgroundColor: Colors.green,
-//                   //  backgroundColor: Color.fromRGBO(55, 155, 155, 1.0),
-//                   backgroundColor:
-//                       Color.fromRGBO(106, 129, 224, 0.4470588235294118),
-//                   borderRadius: 15,
-//                   borderWidth: 2,
-//
-//                   onPress: () async {
-//                     if (sipUserID.text.isEmpty) {
+//                   pressEvent: () async {
+//                     if (sipID.text.isEmpty) {
 //                       CustomAlertDialog.showAlert(
 //                           "Sip User ID field is required!", context);
 //                       return;
 //                     }
-//                     if (sipServer.text.isEmpty) {
+//                     if (sipDomain.text.isEmpty) {
 //                       CustomAlertDialog.showAlert(
 //                           "Sip server field is required!", context);
 //                       return;
 //                     }
-//
 //                     if (sipPassword.text.isEmpty) {
 //                       CustomAlertDialog.showAlert(
 //                           "Password field is required!", context);
 //                       return;
 //                     }
 //
-//                     SIPConfiguration.config(
-//                         sipUserID.text, sipServer.text, sipPassword.text, true);
+//                     SIPConfiguration.config(sipID.text, sipDomain.text,
+//                         sipPassword.text, true, context);
 //
 //                     CustomProgressIndicator progress =
-//                         CustomProgressIndicator(context);
+//                     CustomProgressIndicator(context);
 //                     progress.showDialog("Please wait..",
 //                         SimpleFontelicoProgressDialogType.threelines);
 //
@@ -194,70 +132,16 @@
 //                       progress.hideDialog();
 //                       checkAccountStatus(SipAccountStatus.sipAccountStatus);
 //                     });
+//
+//                     // // navigate to sip account setting page
+//                     // Navigator.pushReplacement(
+//                     //     context,
+//                     //     MaterialPageRoute(
+//                     //         builder: (context) => const SipAccountSetting()));
 //                   },
 //                 ),
 //               ),
 //             ),
-//
-//             //  SizedBox(height: 10,),
-//             //
-//             // Column(
-//             //    children: <Widget>[
-//             //     AnimatedButton(
-//             //         width: 150,
-//             //         text: 'Animated',
-//             //         isReverse: true,
-//             //         selectedTextColor: Colors.blue,
-//             //         transitionType: TransitionType.LEFT_TO_RIGHT,
-//             //         // textStyle: submitTextStyle,
-//             //         backgroundColor: Colors.blueAccent,
-//             //         borderColor: Colors.white,
-//             //         borderRadius: 15,
-//             //         borderWidth: 1,
-//             //
-//             //         onPress: (){
-//             //
-//             //       })
-//             //    ],
-//             //  ),
-//
-//             // Mazed vai
-//             // ElevatedButton(
-//             //
-//             //    style: TextButton.styleFrom(backgroundColor: Colors.white, foregroundColor: Colors.blue,elevation: 3),
-//             //    child: const SizedBox(child: Center(child: Text("Save",style: TextStyle(fontSize: 18),))),
-//             //    onPressed: () async {
-//             //
-//             //      //SIPConfiguration.config("09643207254","59.152.98.66:5060", "zQBaqA5mCnKdqa5w",SIPCredentialStatus);
-//             //     // SIPConfiguration.config("9999","103.204.81.13:5060", "ihelp1234",sipAccountStatus);
-//             //
-//             //
-//             //      if(sipUserID.text.isEmpty){
-//             //        CustomAlertDialog.showAlert("Sip User ID field is required!",context);
-//             //        return;
-//             //      }
-//             //      if(sipServer.text.isEmpty){
-//             //        CustomAlertDialog.showAlert("Sip server field is required!",context);
-//             //        return;
-//             //      }
-//             //
-//             //      if(sipPassword.text.isEmpty){
-//             //        CustomAlertDialog.showAlert("Password field is required!",context);
-//             //        return;
-//             //      }
-//             //
-//             //      SIPConfiguration.config(sipUserID.text, sipServer.text, sipPassword.text,true);
-//             //
-//             //      CustomProgressIndicator progress = CustomProgressIndicator(context);
-//             //      progress.showDialog("Please wait..", SimpleFontelicoProgressDialogType.threelines);
-//             //
-//             //      Future.delayed(const Duration(seconds: 4),(){
-//             //        progress.hideDialog();
-//             //        checkAccountStatus(SipAccountStatus.sipAccountStatus);
-//             //      });
-//             //
-//             //    },
-//             //  ),
 //           ],
 //         ),
 //       ),
@@ -266,16 +150,35 @@
 //
 //   void checkAccountStatus(bool isAccountRegistered) {
 //     if (isAccountRegistered) {
-//       Navigator.of(context).pop();
-//       Navigator.pushReplacement(context,
-//           MaterialPageRoute(builder: (context) => const SipAccountSetting()));
+//       showDialog(
+//         context: context,
+//         builder: (context) => AlertDialog(
+//           title: const Text(
+//             "Registation Sucessfully",
+//             style: TextStyle(color: Colors.green, fontSize: 20),
+//           ),
+//           content: Text(serverMessage,
+//               style: const TextStyle(fontSize: 16, color: Colors.green)),
+//           actions: <Widget>[
+//             TextButton(
+//               onPressed: () {
+//                 Navigator.pushReplacement(
+//                     context,
+//                     MaterialPageRoute(
+//                         builder: (context) => const SipDialPad()));
+//               },
+//               child: const Text('Ok'),
+//             ),
+//           ],
+//         ),
+//       );
 //     } else {
 //       showDialog(
 //         context: context,
 //         builder: (context) => AlertDialog(
 //           title: const Text("Server message"),
-//           content: const Text("Invalid Sip credential",
-//               style: TextStyle(fontSize: 16, color: Colors.redAccent)),
+//           content: Text(serverMessage,
+//               style: const TextStyle(fontSize: 16, color: Colors.redAccent)),
 //           actions: <Widget>[
 //             TextButton(
 //               onPressed: () {
@@ -289,3 +192,345 @@
 //     }
 //   }
 // }
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
+import 'package:untitled1/resourses/app_colors.dart';
+import '../components/CustomAlertDialog.dart';
+
+import '../components/CustomProgress.dart';
+import 'SIPConfiguration.dart';
+import 'SipAccountStatus.dart';
+import 'SipDialPad.dart';
+
+class SIPCredential extends StatefulWidget {
+  const SIPCredential({Key? key}) : super(key: key);
+
+  @override
+  State<SIPCredential> createState() => _SIPCredentialState();
+}
+
+class _SIPCredentialState extends State<SIPCredential> {
+  final TextEditingController sipID = TextEditingController();
+
+  final TextEditingController sipDomain =
+      TextEditingController(text: "114.130.69.217:25067");
+  final TextEditingController sipPassword = TextEditingController();
+  String serverMessage = '';
+  bool _isPasswordVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    SIPConfiguration.messageStream.listen((message) {
+      setState(() {
+        serverMessage = message;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    SIPConfiguration.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: formBackgroundColor,
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.chevron_left,
+              size: 25,
+              color: Colors.blue,
+            )),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+        title: const Text(
+          "SIP Credentials",
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              _buildHeaderText(),
+              const SizedBox(height: 40),
+              _buildInputField(
+                controller: sipID,
+                label: "SIP User ID",
+                hint: "Enter your SIP ID (e.g., 096xxxxxxxx)",
+                icon: Icons.person_outline,
+              ),
+              const SizedBox(height: 20),
+              _buildPasswordField(),
+              const SizedBox(height: 20),
+              _buildInputField(
+                controller: sipDomain,
+                label: "SIP Server",
+                hint: "Enter server address",
+                icon: Icons.dns_outlined,
+              ),
+              const SizedBox(height: 40),
+              _buildSaveButton(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeaderText() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Text(
+            "Welcome!",
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            "Please enter your SIP credentials to continue",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black54,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required IconData icon,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 10,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.all(20),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          labelText: label,
+          hintText: hint,
+          hintStyle: const TextStyle(color: Colors.black26),
+          labelStyle: const TextStyle(color: Colors.black54),
+          prefixIcon: Icon(icon, color: Colors.blue),
+          filled: true,
+          fillColor: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPasswordField() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 10,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: sipPassword,
+        obscureText: !_isPasswordVisible,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.all(20),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          labelText: "Password",
+          hintText: "Enter your password",
+          hintStyle: const TextStyle(color: Colors.black26),
+          labelStyle: const TextStyle(color: Colors.black54),
+          prefixIcon: const Icon(Icons.lock_outline, color: Colors.blue),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+              color: Colors.black54,
+            ),
+            onPressed: () {
+              setState(() {
+                _isPasswordVisible = !_isPasswordVisible;
+              });
+            },
+          ),
+          filled: true,
+          fillColor: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSaveButton() {
+    return Container(
+      width: double.infinity,
+      height: 55,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        gradient: const LinearGradient(
+          colors: [Colors.blue, Colors.blueAccent],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.3),
+            spreadRadius: 1,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: MaterialButton(
+        onPressed: _handleSave,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Text(
+          "Save Credentials",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _handleSave() async {
+    if (sipID.text.isEmpty) {
+      CustomAlertDialog.showAlert("SIP User ID field is required!", context);
+      return;
+    }
+    if (sipDomain.text.isEmpty) {
+      CustomAlertDialog.showAlert("SIP server field is required!", context);
+      return;
+    }
+    if (sipPassword.text.isEmpty) {
+      CustomAlertDialog.showAlert("Password field is required!", context);
+      return;
+    }
+
+    SIPConfiguration.config(
+      sipID.text,
+      sipDomain.text,
+      sipPassword.text,
+      true,
+      context,
+    );
+
+    CustomProgress progress = CustomProgress(context);
+    progress.showDialog(
+      "Please wait...",
+      SimpleFontelicoProgressDialogType.threelines,
+    );
+
+    Future.delayed(const Duration(seconds: 4), () {
+      progress.hideDialog();
+      checkAccountStatus(SipAccountStatus.sipAccountStatus);
+    });
+  }
+
+  void checkAccountStatus(bool isAccountRegistered) {
+    if (isAccountRegistered) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: const Text(
+            "Registration Successful",
+            style: TextStyle(color: Colors.green, fontSize: 20),
+          ),
+          content: Text(
+            serverMessage,
+            style: const TextStyle(fontSize: 16, color: Colors.green),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SipDialPad()),
+                );
+              },
+              child: const Text('Continue'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: const Text(
+            "Registration Failed",
+            style: TextStyle(color: Colors.red, fontSize: 20),
+          ),
+          content: Text(
+            serverMessage,
+            style: const TextStyle(fontSize: 16, color: Colors.redAccent),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Try Again'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+}

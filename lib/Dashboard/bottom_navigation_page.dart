@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../FollowUP/FollowUPListScreen.dart';
 
@@ -17,6 +18,58 @@ class BottomNavigationPage extends StatefulWidget {
 }
 
 class _BottomNavigationPageState extends State<BottomNavigationPage> {
+  // init
+
+  @override
+  void initState() {
+    super.initState();
+    _requestPermissions();
+  }
+
+  // handle permission
+  Future<void> _requestPermissions() async {
+    await Permission.contacts.request();
+    await Permission.storage.request();
+    await Permission.phone.request();
+    await Permission.microphone.request();
+    await Permission.systemAlertWindow.request();
+    await Permission.ignoreBatteryOptimizations.request();
+
+    // Check if permission is granted before calling getContacts()
+    if (await Permission.contacts.isGranted) {
+    } else {
+      showAlertDialog(); // Show alert if denied
+    }
+  }
+
+// Call this when the "My Contacts" button is clicked
+  void onMyContactsButtonPressed() async {
+    if (await Permission.contacts.isGranted) {
+    } else {
+      _requestPermissions();
+    }
+  }
+
+  void showAlertDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Allow Permission"),
+          content:
+              const Text("Please allow Contact permission to view contacts"),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel")),
+            TextButton(
+                onPressed: () => openAppSettings(), child: const Text("OK")),
+          ],
+        );
+      },
+    );
+  }
+
   int mycurrentIndex = 2;
   PageController _pageController = PageController(initialPage: 2);
 

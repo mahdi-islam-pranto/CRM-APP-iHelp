@@ -375,9 +375,9 @@ class CallDetectionService extends GetxController {
       print('  - Phone: ${matchingLead.phoneNumber}');
       print('  - Company: ${matchingLead.companyName}');
 
-      // Pass the lead information to the native side for the overlay
+      // Show the overlay for the matching lead
       try {
-        await _channel.invokeMethod('updateOverlayWithLead', {
+        await _channel.invokeMethod('showOverlayForLead', {
           'phoneNumber': normalizedNumber,
           'leadName': matchingLead.companyName ?? 'Unknown Company',
           'leadId': matchingLead.id,
@@ -401,9 +401,9 @@ class CallDetectionService extends GetxController {
             {'type': 'view_details', 'label': 'View Details', 'icon': 'info'}
           ]
         });
-        print('Sent lead information to native side for overlay');
+        print('Sent lead information to native side and showed overlay');
       } catch (e) {
-        print('Error updating overlay with lead: $e');
+        print('Error showing overlay for lead: $e');
       }
 
       // Show popup with lead information
@@ -420,21 +420,12 @@ class CallDetectionService extends GetxController {
         }
       }
 
-      // Inform native side that no matching lead was found
-      try {
-        await _channel.invokeMethod('updateOverlayWithLead', {
-          'phoneNumber': normalizedNumber,
-          'leadName': 'Unknown Number',
-          'leadId': -1,
-          'hasMatchingLead': false
-        });
-        print('Informed native side that no matching lead was found');
-      } catch (e) {
-        print('Error updating overlay: $e');
-      }
+      // Don't show any overlay for unmatched numbers
+      print(
+          'No matching lead found for number: $normalizedNumber - skipping overlay');
 
-      // Show a generic popup for any call
-      _showGenericPopup(normalizedNumber);
+      // Removed overlay update for unknown contacts
+      // Removed call to _showGenericPopup()
     }
   }
 
@@ -465,6 +456,16 @@ class CallDetectionService extends GetxController {
     await loadLeads();
   }
 
+  // Dismiss the overlay
+  Future<void> dismissOverlay() async {
+    try {
+      await _channel.invokeMethod('dismissOverlay');
+      print('Overlay dismissed successfully');
+    } catch (e) {
+      print('Error dismissing overlay: $e');
+    }
+  }
+
   // Dispose resources
   @override
   void onClose() {
@@ -483,7 +484,7 @@ class CallDetectionService extends GetxController {
       if (matchingLead != null) {
         try {
           // Only show the overlay when there's a matching lead
-          await _channel.invokeMethod('updateOverlayWithLead', {
+          await _channel.invokeMethod('showOverlayForLead', {
             'phoneNumber': normalizedNumber,
             'leadName': matchingLead.companyName ?? 'Unknown Company',
             'leadId': matchingLead.id,
@@ -511,7 +512,7 @@ class CallDetectionService extends GetxController {
           // Show Flutter popup with lead information
           _showLeadPopup(matchingLead);
         } catch (e) {
-          print('Error updating overlay with lead: $e');
+          print('Error showing overlay for lead: $e');
         }
       } else {
         // No matching lead found - don't show any popup

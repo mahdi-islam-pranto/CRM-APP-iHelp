@@ -45,6 +45,44 @@
                 android:textSize="14sp"
                 android:textColor="#666666" />
 
+            <LinearLayout
+                android:id="@+id/pipelineSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status:"
+                    android:textSize="12sp"
+                    android:textColor="#666666" />
+                
+                <TextView
+                    android:id="@+id/textViewPipeline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="N/A"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="#4285F4"
+                    android:layout_marginStart="4dp" />
+
+                <Button
+                    android:id="@+id/buttonUpdatePipeline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:text="Update"
+                    android:textSize="10sp"
+                    android:textColor="#FFFFFF"
+                    android:background="#4285F4"
+                    android:layout_marginStart="8dp"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp" />
+            </LinearLayout>
         </LinearLayout>
 
         <Button
@@ -80,6 +118,33 @@
             android:text="View Details"
             android:textColor="#FFFFFF"
             android:backgroundTint="#2196F3" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/buttonCreateTask"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Create Task"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#FF9800" />
+
+        <Button
+            android:id="@+id/buttonFollowUp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Follow-up"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#9C27B0" />
 
     </LinearLayout>
 
