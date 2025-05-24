@@ -6,6 +6,7 @@ import '../FollowUP/leadFollowUpCreate.dart';
 import '../Models/LeadListModel.dart';
 import '../screens/leadDetailsTabs.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:intl/intl.dart';
 
 class SystemOverlayWidget extends StatelessWidget {
   final LeadListModel lead;
@@ -102,6 +103,77 @@ class SystemOverlayWidget extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 16),
+
+          // Assigned User Section
+          Row(
+            children: [
+              Icon(Icons.person_outline, size: 20, color: Colors.grey[600]),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Assigned To',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    Text(
+                      lead.assignName?.name ?? 'N/A',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              TextButton.icon(
+                onPressed: () {
+                  // TODO: Implement pipeline update
+                },
+                icon: const Icon(Icons.edit, size: 16),
+                label: const Text('Update'),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  minimumSize: Size.zero,
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 16),
+
+          // Created Time Section
+          Row(
+            children: [
+              Icon(Icons.access_time, size: 20, color: Colors.grey[600]),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Created',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    Text(
+                      lead.leadPipelineName?.createdAt != null
+                          ? DateFormat.yMd().add_jm().format(
+                              DateTime.parse(lead.leadPipelineName!.createdAt!))
+                          : 'N/A',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
           const SizedBox(height: 16),
 
           // Action Buttons Grid

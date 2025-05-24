@@ -19,7 +19,7 @@ class CallStateReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(TAG, "onReceive: ${intent.action}")
-        
+
         // Handle different intent actions
         when (intent.action) {
             TelephonyManager.ACTION_PHONE_STATE_CHANGED -> handlePhoneStateChanged(intent, context)
@@ -27,11 +27,11 @@ class CallStateReceiver : BroadcastReceiver() {
             else -> Log.d(TAG, "Ignoring action: ${intent.action}")
         }
     }
-    
+
     private fun handlePhoneStateChanged(intent: Intent, context: Context) {
         val state = intent.getStringExtra(TelephonyManager.EXTRA_STATE)
         val phoneNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER) ?: ""
-        
+
         Log.d(TAG, "Phone state changed: $state, number: ${if (phoneNumber.isNotEmpty()) phoneNumber else "unknown"}")
 
         when (state) {
@@ -41,26 +41,23 @@ class CallStateReceiver : BroadcastReceiver() {
                 if (lastState == TelephonyManager.CALL_STATE_OFFHOOK) {
                     // This was a call that ended
                     Log.d(TAG, "Call ended with number: $lastPhoneNumber")
-                    
+
                     // If we don't have a phone number, use a default for testing
                     val numberToUse = if (lastPhoneNumber.isNullOrEmpty()) {
                         "01645467222" // Default test number
                     } else {
                         lastPhoneNumber!!
                     }
-                    
+
                     // Normalize the phone number to handle country codes
                     val normalizedNumber = normalizePhoneNumber(numberToUse)
                     Log.d(TAG, "Normalized number for notification: $normalizedNumber (original: $numberToUse)")
-                    
+
                     Log.d(TAG, "Notifying Flutter about call end with number: $normalizedNumber")
-                    
-                    // First notify Flutter to find a matching lead
+
+                    // Only notify Flutter to find a matching lead
+                    // Flutter will decide whether to show the overlay based on lead matching
                     callEndListener?.invoke(normalizedNumber)
-                    
-                    // Then show the overlay with the phone number
-                    // Flutter will update the UI if a matching lead is found
-                    showOverlay(context, normalizedNumber)
                 }
                 lastState = TelephonyManager.CALL_STATE_IDLE
             }
@@ -87,7 +84,7 @@ class CallStateReceiver : BroadcastReceiver() {
             }
         }
     }
-    
+
     private fun handleOutgoingCall(intent: Intent) {
         val phoneNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER)
         if (phoneNumber != null && phoneNumber.isNotEmpty()) {
@@ -99,7 +96,7 @@ class CallStateReceiver : BroadcastReceiver() {
             Log.d(TAG, "Outgoing call with unknown number")
         }
     }
-    
+
     private fun showOverlay(context: Context, phoneNumber: String) {
         // Check if we have the overlay permission
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
@@ -107,7 +104,7 @@ class CallStateReceiver : BroadcastReceiver() {
             Toast.makeText(context, "Cannot show overlay - permission not granted", Toast.LENGTH_LONG).show()
             return
         }
-        
+
         try {
             // Start the overlay service
             val intent = Intent(context, OverlayService::class.java).apply {
@@ -115,9 +112,9 @@ class CallStateReceiver : BroadcastReceiver() {
                 putExtra("phoneNumber", phoneNumber)
                 putExtra("leadName", "Call from $phoneNumber")
             }
-            
+
             Log.d(TAG, "Starting overlay service with number: $phoneNumber")
-            
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     // For Android 12+ (API 31+), we need to specify the foreground service type
@@ -134,7 +131,7 @@ class CallStateReceiver : BroadcastReceiver() {
                 context.startService(intent)
                 Log.d(TAG, "Started regular service (Android 7 and below)")
             }
-            
+
             Log.d(TAG, "Started overlay service")
         } catch (e: Exception) {
             Log.e(TAG, "Error starting overlay service: ${e.message}")
@@ -142,12 +139,12 @@ class CallStateReceiver : BroadcastReceiver() {
             Toast.makeText(context, "Error showing popup: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
-    
+
     // Normalize phone number by removing country code if present
     private fun normalizePhoneNumber(phoneNumber: String): String {
         // Remove any non-digit characters except +
         val digitsOnly = phoneNumber.replace(Regex("[^0-9+]"), "")
-        
+
         // If the number starts with a country code like +88, remove it
         return when {
             digitsOnly.startsWith("+88") -> {
@@ -166,4 +163,4 @@ class CallStateReceiver : BroadcastReceiver() {
             else -> digitsOnly
         }
     }
-} 
+}

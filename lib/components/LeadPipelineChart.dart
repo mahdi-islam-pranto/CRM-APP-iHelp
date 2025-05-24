@@ -1,5 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:untitled1/components/DashboardFollowUps.dart';
 
 import '../Models/leadPipeline.dart';
 
@@ -13,7 +15,7 @@ class LeadPipelineChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 300, // Adjust height as needed
+      height: 260, // Adjust height as needed
       child: Column(
         children: [
           Expanded(

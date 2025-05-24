@@ -1,20 +1,17 @@
 import 'dart:convert';
-
 import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:untitled1/API/api_url.dart';
-
 import 'package:untitled1/FollowUP/followUpOverview.dart';
+
 import 'package:url_launcher/url_launcher.dart' as launcher;
-
 import '../Dashboard/bottom_navigation_page.dart';
-
+import 'FollowUpSipCallButton.dart';
 import 'followUpCreateForm.dart';
 import 'package:http/http.dart' as http;
 
@@ -218,14 +215,12 @@ class _FollowUpListState extends State<FollowUpList> {
             // go back
             // Navigator.pop(context);
             // go to dashboard
-            showAnimatedDialog(
+            showDialog(
               context: context,
               barrierDismissible: true,
               builder: (BuildContext context) {
                 return const BottomNavigationPage();
               },
-              curve: Curves.fastOutSlowIn,
-              duration: const Duration(milliseconds: 700),
             );
           },
         ),
@@ -246,9 +241,17 @@ class _FollowUpListState extends State<FollowUpList> {
                 searchBar = !searchBar;
               });
             },
-            icon: const Icon(
-              Icons.search_outlined,
-              color: Colors.black87,
+            icon: CircleAvatar(
+              radius: 18,
+              backgroundColor:
+                  Color.fromRGBO(188, 235, 251, 0.4470588235294118),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(
+                  Icons.search_outlined,
+                  color: Colors.black87,
+                ),
+              ),
             ),
           ),
         ],
@@ -342,7 +345,7 @@ class _FollowUpListState extends State<FollowUpList> {
                                       horizontal: 16.0, vertical: 4.0),
                                   child: Card(
                                     color: Colors.white,
-                                    elevation: 2,
+                                    elevation: 1,
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(15)),
@@ -418,12 +421,83 @@ class _FollowUpListState extends State<FollowUpList> {
                                                           'No Subject'),
                                                   const SizedBox(height: 8),
                                                   // phone number
-                                                  _buildPhoneRow(
-                                                      Icons.phone,
-                                                      filteredFollowUpList[
-                                                                  index][
-                                                              'phone_number'] ??
-                                                          'No Phone No.'),
+                                                  // _buildPhoneRow(
+                                                  //   index,
+                                                  //     Icons.phone,
+                                                  //     filteredFollowUpList[
+                                                  //     index][
+                                                  //     'phone_number'] ??
+                                                  //         'No Phone No.'),
+
+                                                  /// phone call GSM + SIP
+
+                                                  Row(
+                                                    children: [
+                                                      InkWell(
+                                                        onTap: () async {
+                                                          if (followUpList[
+                                                                      index][
+                                                                  'phone_number'] !=
+                                                              'No Phone No.') {
+                                                            final Uri phoneUri =
+                                                                Uri(
+                                                              scheme: 'tel',
+                                                              path: followUpList[
+                                                                      index][
+                                                                  'phone_number'],
+                                                            );
+                                                            try {
+                                                              if (await launcher
+                                                                  .canLaunchUrl(
+                                                                      phoneUri)) {
+                                                                await launcher
+                                                                    .launchUrl(
+                                                                        phoneUri);
+                                                              } else {
+                                                                print(
+                                                                    'Could not launch $phoneUri');
+                                                              }
+                                                            } catch (e) {
+                                                              print(
+                                                                  'Error launching phone app: $e');
+                                                            }
+                                                          }
+                                                        },
+                                                        child: CircleAvatar(
+                                                            radius: 18,
+                                                            backgroundColor:
+                                                                Color.fromRGBO(
+                                                                    229,
+                                                                    248,
+                                                                    235,
+                                                                    1.0),
+                                                            child: Icon(
+                                                                Icons.call,
+                                                                size: 18,
+                                                                color: Colors
+                                                                    .green)),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 5,
+                                                      ),
+                                                      FollowupSipCallButton(
+                                                        phoneNumber: followUpList[
+                                                                        index][
+                                                                    'phone_number']
+                                                                ?.toString() ??
+                                                            'No Phone No.',
+                                                        callerName: followUpList[
+                                                                            index]
+                                                                        [
+                                                                        'company_name']
+                                                                    ?[
+                                                                    'company_name']
+                                                                ?.toString() ??
+                                                            'Unknown',
+                                                      ),
+                                                    ],
+                                                  ),
+
                                                   const SizedBox(height: 8),
                                                   _buildInfoRow(
                                                       Icons.person,
@@ -464,15 +538,6 @@ class _FollowUpListState extends State<FollowUpList> {
                                     ),
                                   ),
                                 ),
-                                // divider
-
-                                // const Divider(
-                                //   height: 3,
-                                //   thickness: 0.2,
-                                //   indent:
-                                //       20, // empty space to the leading edge of divider.
-                                //   endIndent: 20,
-                                // ),
                               ],
                             );
                           },
@@ -501,7 +566,7 @@ class _FollowUpListState extends State<FollowUpList> {
   }
 
   // phone number row
-  Widget _buildPhoneRow(IconData icon, String phone) {
+  Widget _buildPhoneRow(int index, IconData icon, String phone) {
     return GestureDetector(
       onTap: () async {
         if (phone != 'No Phone No.') {
@@ -522,15 +587,29 @@ class _FollowUpListState extends State<FollowUpList> {
       },
       child: Row(
         children: [
-          Icon(icon, size: 16, color: Colors.grey[600]),
-          const SizedBox(width: 8),
-          Text(
-            phone,
-            style: const TextStyle(
-              color: Colors.blue,
-              decoration: TextDecoration.underline,
+          InkWell(
+            onTap: () {
+              print(followUpList[index]);
+            },
+            child: CircleAvatar(
+                radius: 18,
+                backgroundColor: Color.fromRGBO(229, 248, 235, 1.0),
+                child: Icon(icon, size: 18, color: Colors.green)),
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          Expanded(
+            child: FollowupSipCallButton(
+              phoneNumber: followUpList[index]['phone_number']?.toString() ??
+                  'No Phone No.',
+              callerName: followUpList[index]['company_name']?['company_name']
+                      ?.toString() ??
+                  'Unknown',
             ),
           ),
+
+          // Text(followUpList[index]['company_name']?.toString() ?? 'Unknown',)
         ],
       ),
     );

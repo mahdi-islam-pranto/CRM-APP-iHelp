@@ -10,6 +10,7 @@ import 'package:untitled1/resourses/resourses.dart';
 import 'Auth/login_page.dart';
 import 'Dashboard/bottom_navigation_page.dart';
 import 'resourses/app_colors.dart';
+import 'sip_account/SIPConfiguration.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -21,9 +22,30 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   bool loginStatus = false;
 
+  // chaching status Sip
+  void checkSipAccountStatus() async {
+    try {
+      var ref = await SharedPreferences.getInstance();
+
+      String? sipID = ref.getString("sipID");
+      String? sipDomain = ref.getString("sipDomain");
+      String? sipPassword = ref.getString("sipPassword");
+
+      if (sipID != null && sipDomain != null && sipPassword != null) {
+        SIPConfiguration.config(sipID, sipDomain, sipPassword, true, context);
+        print("checking SIP account sucessfully save");
+
+        // SIPConfiguration.config(sipID, sipDomain, sipPassword, true, context);
+      }
+    } catch (e) {
+      print("Error checking SIP account status: $e");
+    }
+  }
+
   @override
   void initState() {
     isLogin();
+    checkSipAccountStatus();
     super.initState();
   }
 

@@ -1,63 +1,62 @@
+//good working associate  dropdown menu
 // import 'dart:convert';
-
 // import 'package:flutter/material.dart';
-
 // import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:http/http.dart' as http;
 // import 'package:untitled1/resourses/app_colors.dart';
-
+//
 // import '../resourses/resourses.dart';
-
+//
 // class Associate {
 //   static int? associateId;
 // }
-
+//
 // class LeadAssociateDropDown extends StatefulWidget {
 //   final Function(String) onDeviceTokenReceived;
 //   final String? initialValue;
-
+//
 //   const LeadAssociateDropDown({
 //     Key? key,
 //     required this.onDeviceTokenReceived,
 //     this.initialValue,
 //   }) : super(key: key);
-
+//
 //   @override
 //   State<LeadAssociateDropDown> createState() => _LeadAssociateDropDownState();
 // }
-
+//
 // class _LeadAssociateDropDownState extends State<LeadAssociateDropDown> {
 //   // instance of associate
 //   // Associate associate = Associate();
-
+//
 //   List<dynamic> _pipelineList = [];
 //   String? _selectedPipelineName;
 //   int? _selectedPipelineId;
 //   String? _selectedDeviceId;
-
+//
 //   @override
 //   void initState() {
 //     super.initState();
 //     fetchLeadAssociateData();
 //   }
-
+//
 //   Future<void> fetchLeadAssociateData() async {
 //     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 //     String? token = sharedPreferences.getString("token");
-
+//
 //     final response = await http.get(
 //       Uri.parse('https://crm.ihelpbd.com/api/crm-user'),
 //       headers: {
 //         'Authorization': 'Bearer $token',
 //       },
 //     );
-
+//
 //     if (response.statusCode == 200) {
 //       final responseData = json.decode(response.body);
 //       setState(() {
 //         _pipelineList = responseData['data'];
 //         // Associate.associateId = responseData['data'][0]['id'];
-
+//
 //         if (widget.initialValue != null) {
 //           final initialOwner = _pipelineList.firstWhere(
 //             (owner) => owner['name'] == widget.initialValue,
@@ -72,24 +71,23 @@
 //       print('Failed to fetch Owner');
 //     }
 //   }
-
+//
 //   void _onPipelineSelected(dynamic selectedPipeline) {
 //     setState(() {
 //       _selectedPipelineName = selectedPipeline['name'];
 //       _selectedPipelineId = selectedPipeline['id'];
 //       _selectedDeviceId = selectedPipeline['device_id']; // Extract device_id
-
+//
 //       Associate.associateId = _selectedPipelineId;
-
 //       print("Selected name: $_selectedPipelineName");
 //       print("Selected device_id: $_selectedDeviceId");
-
+//
 //       widget.onDeviceTokenReceived(_selectedDeviceId ?? '');
 //     });
-
+//
 //     print('Selected associate ID (static): ${Associate.associateId}');
 //   }
-
+//
 //   @override
 //   Widget build(BuildContext context) {
 //     return _pipelineList.isNotEmpty
@@ -321,6 +319,7 @@ class MultiSelectDropdown extends StatelessWidget {
 
 class MultiSelectDialog extends StatefulWidget {
   final List<dynamic> items;
+
   final List<dynamic> initialSelectedItems;
 
   const MultiSelectDialog({

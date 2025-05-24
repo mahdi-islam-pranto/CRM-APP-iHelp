@@ -12,9 +12,7 @@ import '../Lead/LeadOwnerDropdown.dart';
 import '../NotificationService/sendNotification.dart';
 import '../components/CustomProgress.dart';
 import '../components/Dropdowns/companyNameDropDown.dart';
-
 import 'followUpType.dart';
-import 'leadFollowUpList.dart';
 
 class LeadFollowUpCreate extends StatefulWidget {
   final int leadId;
@@ -105,9 +103,9 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
       "phone_number": _contactNumber.text,
       "next_followup_date": dateTimeController.text,
       "description": _description.text,
-      "associate_user_id": Associate.selectedAssociateIds.join(','),
+      "associate_user_id":
+          Associate.selectedAssociateIds.join(','), // Correct format
     };
-
     print('Sending request with body: ${jsonEncode(body)}');
 
     var response = await http.post(
@@ -254,12 +252,16 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
             backgroundColor: Colors.white,
             // toolbarHeight: 80,
             title: const Text(
-              "CREATE  FOLLOW  UP",
+              "Create Follow Up",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, size: 18),
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                size: 18,
+                color: Colors.blue,
+              ),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -289,41 +291,72 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
                       const SizedBox(height: 10),
                       formField("Subject", _subject, 'Please enter subject'),
                       const SizedBox(height: 10),
+
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   crossAxisAlignment: CrossAxisAlignment.center,
+                      //   children: [
+                      //     Flexible(
+                      //       flex: 1,
+                      //       child: dropDownRow(
+                      //           "Owner",
+                      //           LeadOwnerDropDown(
+                      //             userId: currentUserId,
+                      //             onDeviceTokenReceived: handleDeviceToken,
+                      //           )),
+                      //     ),
+                      //     SizedBox(
+                      //         width: MediaQuery.of(context).size.width * 0.025),
+                      //     Flexible(
+                      //       flex: 1,
+                      //       child:MultiLeadAssociateDropDown(
+                      //         onDeviceTokensReceived: (List<String> associateHandelDeviceToken) {
+                      //           // Handle the list of device tokens here
+                      //           print('Selected device tokens: $associateHandelDeviceToken');
+                      //         },
+                      //         initialValues: ['', ''], // Optional
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+
+                      dropDownRow(
+                          "Owner",
+                          LeadOwnerDropDown(
+                            userId: currentUserId,
+                            onDeviceTokenReceived: handleDeviceToken,
+                          )),
+
+                      // MultiLeadAssociateDropDown(
+                      //   onDeviceTokensReceived: (List<String> associateHandelDeviceToken) {
+                      //     // Handle the list of device tokens here
+                      //     print('Selected device tokens: $associateHandelDeviceToken');
+                      //   },
+                      //   initialValues: ['', ''], // Optional
+                      // ),
+
+                      const SizedBox(height: 10),
+
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Flexible(
-                            flex: 1,
-                            child: dropDownRow(
-                                "Owner",
-                                LeadOwnerDropDown(
-                                  userId: currentUserId,
-                                  onDeviceTokenReceived: handleDeviceToken,
-                                )),
-                          ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.025),
-                          Flexible(
-                            flex: 1,
-                            child: dropDownRow(
-                              "Associate",
-                              MultiLeadAssociateDropDown(
-                                onDeviceTokensReceived:
-                                    (List<String> assiciateDeviceToken) {
-                                  // Handle the list of device tokens here
-                                  print(
-                                      'Selected device tokens: $assiciateDeviceToken');
-                                },
-                                initialValues: [
-                                  'Sk Nayeem',
-                                  'Pranto'
-                                ], // Optional
-                              ),
-                            ),
+                          const Text(
+                            "Associate",
+                            style: TextStyle(fontSize: 17),
                           ),
                         ],
                       ),
+
+                      MultiLeadAssociateDropDown(
+                        onDeviceTokensReceived:
+                            (List<String> assiciateDeviceToken) {
+                          // Handle the list of device tokens here
+                          print(
+                              'Selected device tokens: $assiciateDeviceToken');
+                        },
+                        initialValues: ['Sk Nayeem', 'Pranto'], // Optional
+                      ),
+
                       const SizedBox(height: 12),
                       dropDownRow(
                           "Follow Up Type", const FollowUpTypeDropdown()),
@@ -393,29 +426,6 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
       ),
     );
   }
-
-// dropdown widget
-  // Widget dropDownRow(String label, Widget dropDown) {
-  //   return Padding(
-  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
-  //     child: Row(
-  //       children: [
-  //         Expanded(
-  //           flex: 1,
-  //           child: Text(label,
-  //               style:
-  //                   const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-  //         ),
-  //         // Wrapping the dropdown in Expanded to avoid overflow
-
-  //         Expanded(
-  //           flex: 3,
-  //           child: dropDown,
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget dropDownRow(String label, Widget dropDown) {
     return Column(
@@ -603,7 +613,7 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
         /// cancle button
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 52),
+            minimumSize: Size(MediaQuery.of(context).size.width * 0.3, 52),
             maximumSize: Size(MediaQuery.of(context).size.width * 0.45, 52),
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
@@ -620,6 +630,69 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
           ),
         ),
         SizedBox(width: MediaQuery.of(context).size.width * 0.065),
+        // ElevatedButton(
+        //   onPressed: () {
+        //     if (_formKey.currentState?.validate() == true) {
+        //       if (Owner.ownerId == null) {
+        //         ScaffoldMessenger.of(context).showSnackBar(
+        //           SnackBar(
+        //             dismissDirection: DismissDirection.endToStart,
+        //             elevation: 2,
+        //             backgroundColor: Colors.red,
+        //             behavior: SnackBarBehavior.floating, // Makes it floating
+        //             shape: RoundedRectangleBorder(
+        //               // Adds border radius
+        //               borderRadius: BorderRadius.circular(12),
+        //             ),
+        //             margin:
+        //                 const EdgeInsets.all(10), // Margin around the SnackBar
+        //             content: const Text(
+        //               'Please Select Owner',
+        //               style:
+        //                   TextStyle(color: Colors.white), // Custom text style
+        //             ),
+        //           ),
+        //         );
+        //         return;
+        //       }
+        //       if (FollowupType.followUpType == null) {
+        //         ScaffoldMessenger.of(context).showSnackBar(
+        //           SnackBar(
+        //             elevation: 2,
+        //             backgroundColor: Colors.red,
+        //             behavior: SnackBarBehavior.floating, // Makes it floating
+        //             shape: RoundedRectangleBorder(
+        //               // Adds border radius
+        //               borderRadius: BorderRadius.circular(12),
+        //             ),
+        //             margin:
+        //                 const EdgeInsets.all(10), // Margin around the SnackBar
+        //             content: const Text(
+        //               'Please Select Follow Up Type',
+        //               style:
+        //                   TextStyle(color: Colors.white), // Custom text style
+        //             ),
+        //           ),
+        //         );
+        //         return;
+        //       }
+        //       sendDataToServer();
+        //     }
+        //   },
+        //   style: ElevatedButton.styleFrom(
+        //     minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 52),
+        //     maximumSize: Size(MediaQuery.of(context).size.width * 0.45, 52),
+        //     backgroundColor: buttonColor,
+        //
+        //     // backgroundColor: const Color(0xFF007AFF),
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(8),
+        //     ),
+        //   ),
+        //   child: const Text("Create",
+        //       style: TextStyle(color: Colors.white, fontSize: 16)),
+        // ),
+
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState?.validate() == true) {
@@ -629,17 +702,14 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
                     dismissDirection: DismissDirection.endToStart,
                     elevation: 2,
                     backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating, // Makes it floating
+                    behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
-                      // Adds border radius
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    margin:
-                        const EdgeInsets.all(10), // Margin around the SnackBar
+                    margin: const EdgeInsets.all(10),
                     content: const Text(
                       'Please Select Owner',
-                      style:
-                          TextStyle(color: Colors.white), // Custom text style
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 );
@@ -650,17 +720,14 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
                   SnackBar(
                     elevation: 2,
                     backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating, // Makes it floating
+                    behavior: SnackBarBehavior.floating,
                     shape: RoundedRectangleBorder(
-                      // Adds border radius
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    margin:
-                        const EdgeInsets.all(10), // Margin around the SnackBar
+                    margin: const EdgeInsets.all(2),
                     content: const Text(
                       'Please Select Follow Up Type',
-                      style:
-                          TextStyle(color: Colors.white), // Custom text style
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 );
@@ -670,17 +737,19 @@ class _LeadFollowUpCreateState extends State<LeadFollowUpCreate> {
             }
           },
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 52),
+            minimumSize: Size(MediaQuery.of(context).size.width * 0.3, 52),
             maximumSize: Size(MediaQuery.of(context).size.width * 0.45, 52),
             backgroundColor: buttonColor,
-
-            // backgroundColor: const Color(0xFF007AFF),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 20, vertical: 15), // Ensures consistent padding
           ),
-          child: const Text("Create",
-              style: TextStyle(color: Colors.white, fontSize: 16)),
+          child: const Text(
+            "Create",
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
         ),
       ],
     );

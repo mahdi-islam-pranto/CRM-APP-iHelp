@@ -4,8 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:url_launcher/url_launcher.dart';
 import '../Models/LeadListModel.dart';
+import '../components/ContactInformationCard.dart';
 
 class LeadOverview extends StatefulWidget {
   final int leadId;
@@ -178,53 +180,15 @@ class _LeadOverviewState extends State<LeadOverview> {
                                         height: 60,
                                         color: Colors.blue,
                                       ),
+
+                                      // contact information
                                       Expanded(
-                                        child: ListTile(
-                                          title: Text(
-                                            "Contact Information",
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge,
-                                          ),
-                                          subtitle: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const SizedBox(height: 10),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  urlLauncher(
-                                                      "tel:${leadDetails?.phoneNumber}");
-                                                },
-                                                child: RichText(
-                                                  text: TextSpan(
-                                                    text: "Phone: ",
-                                                    style: TextStyle(
-                                                      color: Colors.grey[700],
-                                                    ),
-                                                    children: [
-                                                      TextSpan(
-                                                        text: leadDetails
-                                                                ?.phoneNumber ??
-                                                            'N/A',
-                                                        style: const TextStyle(
-                                                          color: Colors.blue,
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Text(
-                                                "Email: ${leadDetails?.email ?? 'N/A'}",
-                                                style: TextStyle(
-                                                    color: Colors.grey[700]),
-                                              ),
-                                            ],
-                                          ),
+                                        child: ContactInformationCard(
+                                          phoneNumber:
+                                              leadDetails?.phoneNumber ?? 'N/A',
+                                          callerName:
+                                              leadDetails?.companyName ?? 'N/A',
+                                          email: leadDetails?.email ?? 'N/A',
                                         ),
                                       ),
                                     ],
@@ -332,74 +296,6 @@ class _LeadOverviewState extends State<LeadOverview> {
                             ),
                           ),
                         ),
-
-                        // Bottom Buttons
-                        // Padding(
-                        //   padding: const EdgeInsets.symmetric(
-                        //     horizontal: 15,
-                        //     vertical: 10,
-                        //   ),
-                        //   child: Row(
-                        //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        //     children: [
-                        //       ElevatedButton(
-                        //         style: ElevatedButton.styleFrom(
-                        //           backgroundColor: Colors.redAccent,
-                        //           padding: EdgeInsets.symmetric(
-                        //             vertical:
-                        //                 MediaQuery.of(context).size.height *
-                        //                     0.018,
-                        //             horizontal:
-                        //                 MediaQuery.of(context).size.width *
-                        //                     0.08,
-                        //           ),
-                        //           shape: RoundedRectangleBorder(
-                        //             borderRadius: BorderRadius.circular(
-                        //               MediaQuery.of(context).size.width * 0.03,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //         onPressed: () {
-                        //           Navigator.pop(context);
-                        //         },
-                        //         child: const Text(
-                        //           "DELETE LEAD",
-                        //           style: TextStyle(
-                        //             color: Colors.white,
-                        //             fontSize: 16,
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       const SizedBox(width: 11),
-                        //       ElevatedButton(
-                        //         style: ElevatedButton.styleFrom(
-                        //           backgroundColor: buttonColor,
-                        //           padding: EdgeInsets.symmetric(
-                        //             vertical:
-                        //                 MediaQuery.of(context).size.height *
-                        //                     0.018,
-                        //             horizontal:
-                        //                 MediaQuery.of(context).size.width *
-                        //                     0.08,
-                        //           ),
-                        //           shape: RoundedRectangleBorder(
-                        //             borderRadius: BorderRadius.circular(
-                        //               MediaQuery.of(context).size.width * 0.03,
-                        //             ),
-                        //           ),
-                        //         ),
-                        //         onPressed: () {},
-                        //         child: const Text(
-                        //           "EDIT LEAD",
-                        //           style: TextStyle(
-                        //             color: Colors.white,
-                        //             fontSize: 16,
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),

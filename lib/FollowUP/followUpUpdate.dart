@@ -127,9 +127,23 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
     });
   }
 
-  void associateHandelDeviceToken(String assiciateDeviceToken) {
+  // void associateHandelDeviceToken(String assiciateDeviceToken) {
+  //   setState(() {
+  //     associateSelectedDeviceToken = assiciateDeviceToken;
+  //     print("selected Associate device / multiple device token:$associateSelectedDeviceToken");
+  //
+  //   });
+  // }
+
+  void associateHandleDeviceToken(List<String> associateDeviceTokens) {
     setState(() {
-      associateSelectedDeviceToken = assiciateDeviceToken;
+      if (associateDeviceTokens.isNotEmpty) {
+        associateSelectedDeviceToken =
+            associateDeviceTokens.join(", "); // Store tokens
+      } else {
+        associateSelectedDeviceToken = "No token received"; // Debugging case
+      }
+      print("✅ Final Selected Associate Tokens: $associateSelectedDeviceToken");
     });
   }
 
@@ -175,8 +189,7 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
       "phone_number": _contactNumber.text,
       "next_followup_date": dateTimeController.text,
       "description": _description.text,
-      "associate_user_id":
-          Associates.Associate.selectedAssociateIds.join(',') ?? "",
+      "associate_user_id": Associates.Associate.selectedAssociateIds.toString(),
       "followup_status": _selectedStatus.toString(),
       "creator_user_id": userId,
     };
@@ -262,12 +275,16 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
             backgroundColor: Colors.white,
             // toolbarHeight: 80,
             title: const Text(
-              "UPDATE  FOLLOW  UP",
+              "Update Follow Up",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             centerTitle: true,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, size: 18),
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                size: 18,
+                color: Colors.blue,
+              ),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -350,43 +367,37 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
                       const SizedBox(height: 10),
                       formField("Subject", _subject, 'Please enter subject'),
                       const SizedBox(height: 10),
+
+                      dropDownRow(
+                          "Owner",
+                          LeadOwnerDropDown(
+                            initialValue:
+                                widget.followUpDetails.assignName?.name,
+                            onDeviceTokenReceived: handleDeviceToken,
+                          )),
+
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Flexible(
-                            flex: 1,
-                            child: dropDownRow(
-                                "Owner",
-                                LeadOwnerDropDown(
-                                  initialValue:
-                                      widget.followUpDetails.assignName?.name,
-                                  onDeviceTokenReceived: handleDeviceToken,
-                                )),
-                          ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.025),
-                          Flexible(
-                            flex: 1,
-                            child: dropDownRow(
-                              "Associate",
-                              MultiLeadAssociateDropDown(
-                                onDeviceTokensReceived:
-                                    (List<String> assiciateDeviceToken) {
-                                  // Handle the list of device tokens here
-                                  print(
-                                      'Selected device tokens: $assiciateDeviceToken');
-                                },
-                                initialValues: [
-                                  'Sk Nayeem',
-                                  'Pranto'
-                                ], // Optional
-                              ),
-                            ),
+                          const Text(
+                            "Associate",
+                            style: TextStyle(fontSize: 17),
                           ),
                         ],
                       ),
+
+                      MultiLeadAssociateDropDown(
+                        onDeviceTokensReceived: (List<String> tokens) {
+                          print(
+                              "🟡 Received from Dropdown: $tokens"); // Debug print
+                          associateHandleDeviceToken(
+                              tokens); // Call the function
+                        },
+                        initialValues: ['Sk Nayeem', 'Pranto'], // Optional
+                      ),
+
                       const SizedBox(height: 12),
+
                       dropDownRow(
                           "Follow Up Type",
                           FollowUpTypeDropdown(
@@ -655,8 +666,10 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
         /// cancle button
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-            minimumSize: const Size(164, 52),
-            maximumSize: const Size(181, 52),
+            minimumSize: Size(MediaQuery.of(context).size.width * 0.3, 52),
+            maximumSize: Size(MediaQuery.of(context).size.width * 0.45, 52),
+            // minimumSize: const Size(164, 52),
+            // maximumSize: const Size(181, 52),
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               side: const BorderSide(color: Colors.blue, width: 2),
@@ -671,7 +684,7 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
             style: TextStyle(color: Colors.blue, fontSize: 16),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 15),
         ElevatedButton(
           onPressed: () {
             // if (selectedDeviceToken.isNotEmpty) {
@@ -744,10 +757,11 @@ class _FollowUpUpdateState extends State<FollowUpUpdate> {
             }
           },
           style: ElevatedButton.styleFrom(
-            minimumSize: Size(MediaQuery.of(context).size.width * 0.4, 52),
-            maximumSize: Size(MediaQuery.of(context).size.width * 0.45, 52),
-            backgroundColor: buttonColor,
+            minimumSize: Size(MediaQuery.of(context).size.width * 0.3, 52),
 
+            maximumSize: Size(MediaQuery.of(context).size.width * 0.45, 52),
+
+            backgroundColor: buttonColor,
             // backgroundColor: const Color(0xFF007AFF),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
