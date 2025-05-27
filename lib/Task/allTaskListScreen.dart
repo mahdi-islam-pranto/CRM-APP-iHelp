@@ -98,14 +98,14 @@ class _TaskListScreenState extends State<TaskListScreen> {
         'start_date': '2024-01-01',
         'end_date': '2034-11-01',
         'user_id': userId,
-        'session_user_id': '',
+        'session_user_id': userId,
         'status': '',
         'next_task_start_time': '',
         'lead_id': '',
         'task_type_id': '',
       },
     );
-
+    print("Task API status code ${response.statusCode}");
     if (response.statusCode == 200) {
       var data = jsonDecode(response.body);
       // print("########Response task data: $data");

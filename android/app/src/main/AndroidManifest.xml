@@ -1,8 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
         <uses-permission android:name="android.permission.INTERNET"/>
-        <uses-permission android:name="android.permission.READ_CONTACTS" />  
-        <uses-permission android:name="android.permission.WRITE_CONTACTS" /> 
+        <uses-permission android:name="android.permission.READ_CONTACTS" />
+        <uses-permission android:name="android.permission.WRITE_CONTACTS" />
         <uses-permission android:name="android.permission.READ_PHONE_STATE" />
         <uses-permission android:name="android.permission.READ_CALL_LOG" />
         <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
@@ -11,6 +11,14 @@
         <!-- For Android 12+ (API level 31+) -->
         <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
         <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
+        <!-- Background execution permissions -->
+        <uses-permission android:name="android.permission.WAKE_LOCK" />
+        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+        <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+        <!-- For Android 13+ (API level 33+) -->
+        <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
         <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
         <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
         <uses-permission android:name="android.permission.VIBRATE" />
@@ -22,17 +30,38 @@
         android:label="iCRM"
         android:name="${applicationName}"
         android:usesCleartextTraffic="true"
-        
+        android:requestLegacyExternalStorage="true"
+        android:allowBackup="true"
+        android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/ic_launcher">
-        
+
         <!-- Overlay Service -->
         <service
             android:name=".OverlayService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="phoneCall" />
-            
+            android:foregroundServiceType="phoneCall"
+            android:stopWithTask="false" />
+
+        <!-- Background Call Detection Service -->
+        <service
+            android:name=".CallDetectionBackgroundService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="phoneCall"
+            android:stopWithTask="false" />
+
+        <!-- Phone State Listener Service for persistent call detection -->
+        <service
+            android:name=".PhoneStateListenerService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="phoneCall"
+            android:stopWithTask="false" />
+
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -91,14 +120,29 @@
            </intent-filter>
        </receiver>
 
-       <!-- Call State Receiver -->
+       <!-- Call State Receiver for system-wide call detection -->
        <receiver
            android:name=".CallStateReceiver"
            android:enabled="true"
-           android:exported="true">
-           <intent-filter>
+           android:exported="true"
+           android:directBootAware="true">
+           <intent-filter android:priority="1000">
                <action android:name="android.intent.action.PHONE_STATE" />
                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+           </intent-filter>
+       </receiver>
+
+       <!-- Boot Receiver to ensure call detection works after reboot -->
+       <receiver
+           android:name=".BootReceiver"
+           android:enabled="true"
+           android:exported="true"
+           android:directBootAware="true">
+           <intent-filter android:priority="1000">
+               <action android:name="android.intent.action.BOOT_COMPLETED" />
+               <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+               <action android:name="android.intent.action.PACKAGE_REPLACED" />
+               <data android:scheme="package" />
            </intent-filter>
        </receiver>
 

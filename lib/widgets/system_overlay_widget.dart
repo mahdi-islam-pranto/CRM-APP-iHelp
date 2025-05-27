@@ -164,7 +164,7 @@ class SystemOverlayWidget extends StatelessWidget {
                     Text(
                       lead.leadPipelineName?.createdAt != null
                           ? DateFormat.yMd().add_jm().format(
-                              DateTime.parse(lead.leadPipelineName!.createdAt!))
+                              DateTime.parse(lead.leadPipelineName!.createdAt))
                           : 'N/A',
                       style: const TextStyle(fontSize: 14),
                     ),

@@ -48,7 +48,7 @@ class _DashboardTasksState extends State<DashboardTasks> {
         'start_date': startDate, // var statDate
         'end_date': endDate,
         'user_id': userId,
-        'session_user_id': '',
+        'session_user_id': userId,
         'status': '',
         'next_task_start_time': '',
         'lead_id': '',

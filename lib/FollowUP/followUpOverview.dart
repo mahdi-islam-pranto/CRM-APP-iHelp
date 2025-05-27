@@ -50,7 +50,7 @@ class _FollowUpOverviewState extends State<FollowUpOverview> {
         'start_date': '',
         'end_date': '',
         'user_id': userId,
-        'session_user_id': "",
+        'session_user_id': userId,
         'followup_type_id': '',
         'status': '',
         'lead_id': '',

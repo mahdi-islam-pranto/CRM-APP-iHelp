@@ -281,7 +281,7 @@ class _LeadOverviewState extends State<LeadOverview> {
                                                     color: Colors.grey[700]),
                                               ),
                                               Text(
-                                                "Associates: ${leadDetails?.associates?.isNotEmpty == true ? leadDetails!.associates!.map((e) => e.name).join(", ") : "N/A"}",
+                                                "Associates: ${leadDetails?.associates.isNotEmpty == true ? leadDetails!.associates.map((e) => e['name'] ?? 'Unknown').join(", ") : "N/A"}",
                                                 style: TextStyle(
                                                     color: Colors.grey[700]),
                                               ),
