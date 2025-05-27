@@ -7,6 +7,7 @@ import 'package:untitled1/NotificationService/notificationPage.dart';
 import 'package:untitled1/Task/allTaskListScreen.dart';
 import 'package:untitled1/Task/taskCreateForm.dart';
 import 'package:untitled1/screens/totalLeadList.dart';
+import 'package:untitled1/screens/settings_page.dart';
 import 'package:untitled1/sip_account/SIPCredential.dart';
 import '../sip_account/SipDialPad.dart';
 
@@ -267,6 +268,56 @@ class MenuPage extends StatelessWidget {
                             ),
                           ),
                         ),
+
+                        const SizedBox(height: 16),
+                        // Settings
+                        // Settings
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SettingsPage()));
+                            },
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.19,
+                              width: MediaQuery.of(context).size.width * 0.435,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                color: const Color.fromARGB(50, 158, 158, 158),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      height: 62,
+                                      width: 61,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(14),
+                                        color: const Color.fromARGB(
+                                            200, 96, 96, 96),
+                                      ),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.settings,
+                                          color: Colors.white,
+                                          size: 35,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    const Text("Settings",
+                                        style: TextStyle(fontSize: 14))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
 
@@ -514,6 +565,7 @@ class MenuPage extends StatelessWidget {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 16),
                       ],
                     )
                   ],

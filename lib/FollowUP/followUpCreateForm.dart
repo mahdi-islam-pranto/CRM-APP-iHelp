@@ -283,7 +283,7 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      dropDownRow("Company Name", CompanyNameDropdown()),
+                      dropDownRow("Company Name", const CompanyNameDropdown()),
                       const SizedBox(height: 10),
                       formField("Subject", _subject, 'Please enter subject'),
                       const SizedBox(height: 10),
@@ -295,10 +295,10 @@ class _FollowUpCreateState extends State<FollowUpCreate> {
                           )),
                       const SizedBox(height: 12),
 
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const Text(
+                          Text(
                             "Associate",
                             style: TextStyle(fontSize: 17),
                           ),

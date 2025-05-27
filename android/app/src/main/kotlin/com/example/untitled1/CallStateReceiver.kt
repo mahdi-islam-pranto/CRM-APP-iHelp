@@ -8,6 +8,8 @@ import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.Toast
+import android.os.PowerManager
+import android.content.ComponentName
 
 class CallStateReceiver : BroadcastReceiver() {
     companion object {
@@ -18,14 +20,46 @@ class CallStateReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        Log.d(TAG, "onReceive: ${intent.action}")
+        Log.d(TAG, "=== CallStateReceiver.onReceive TRIGGERED ===")
+        Log.d(TAG, "Action: ${intent.action}")
+        Log.d(TAG, "Package: ${context.packageName}")
+        Log.d(TAG, "Process: ${android.os.Process.myPid()}")
 
-        // Handle different intent actions
-        when (intent.action) {
-            TelephonyManager.ACTION_PHONE_STATE_CHANGED -> handlePhoneStateChanged(intent, context)
-            Intent.ACTION_NEW_OUTGOING_CALL -> handleOutgoingCall(intent)
-            else -> Log.d(TAG, "Ignoring action: ${intent.action}")
+        // Acquire wake lock to ensure processing completes even if device is sleeping
+        val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val wakeLock = powerManager.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "CallStateReceiver::onReceive"
+        )
+
+        try {
+            wakeLock.acquire(10000) // Hold wake lock for up to 10 seconds
+            Log.d(TAG, "Wake lock acquired")
+
+            // Handle different intent actions
+            when (intent.action) {
+                TelephonyManager.ACTION_PHONE_STATE_CHANGED -> {
+                    Log.d(TAG, "Handling PHONE_STATE_CHANGED")
+                    handlePhoneStateChanged(intent, context)
+                }
+                Intent.ACTION_NEW_OUTGOING_CALL -> {
+                    Log.d(TAG, "Handling NEW_OUTGOING_CALL")
+                    handleOutgoingCall(intent)
+                }
+                else -> {
+                    Log.w(TAG, "Ignoring unknown action: ${intent.action}")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in onReceive: ${e.message}")
+            e.printStackTrace()
+        } finally {
+            if (wakeLock.isHeld) {
+                wakeLock.release()
+                Log.d(TAG, "Wake lock released")
+            }
         }
+        Log.d(TAG, "=== CallStateReceiver.onReceive COMPLETED ===")
     }
 
     private fun handlePhoneStateChanged(intent: Intent, context: Context) {
@@ -53,11 +87,20 @@ class CallStateReceiver : BroadcastReceiver() {
                     val normalizedNumber = normalizePhoneNumber(numberToUse)
                     Log.d(TAG, "Normalized number for notification: $normalizedNumber (original: $numberToUse)")
 
-                    Log.d(TAG, "Notifying Flutter about call end with number: $normalizedNumber")
+                    Log.d(TAG, "Processing call end with number: $normalizedNumber")
 
-                    // Only notify Flutter to find a matching lead
-                    // Flutter will decide whether to show the overlay based on lead matching
-                    callEndListener?.invoke(normalizedNumber)
+                    // Always start background service to handle call detection
+                    // This ensures it works whether app is running, background, or killed
+                    startBackgroundService(context, normalizedNumber)
+
+                    // Also try to notify Flutter if available (for when app is running)
+                    try {
+                        callEndListener?.invoke(normalizedNumber)
+                        Log.d(TAG, "Successfully notified Flutter about call end")
+                    } catch (e: Exception) {
+                        Log.d(TAG, "Flutter not available or error notifying: ${e.message}")
+                        // This is expected when app is in background/killed
+                    }
                 }
                 lastState = TelephonyManager.CALL_STATE_IDLE
             }
@@ -137,6 +180,30 @@ class CallStateReceiver : BroadcastReceiver() {
             Log.e(TAG, "Error starting overlay service: ${e.message}")
             e.printStackTrace()
             Toast.makeText(context, "Error showing popup: ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    // Start background service when Flutter is not available
+    private fun startBackgroundService(context: Context, phoneNumber: String) {
+        Log.d(TAG, "Starting background service for call detection")
+
+        try {
+            // Start a background service that will handle the call detection
+            val serviceIntent = Intent(context, CallDetectionBackgroundService::class.java).apply {
+                putExtra("phoneNumber", phoneNumber)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(serviceIntent)
+                Log.d(TAG, "Started foreground background service")
+            } else {
+                context.startService(serviceIntent)
+                Log.d(TAG, "Started background service")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error starting background service: ${e.message}")
+            e.printStackTrace()
         }
     }
 

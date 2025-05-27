@@ -44,6 +44,19 @@ class CallDetectionService extends GetxController {
       await requestOverlayPermission();
     }
 
+    // Request battery optimization exemption for background execution
+    await requestBatteryOptimizationExemption();
+
+    // Request auto-start permission (for some manufacturers) - only if not already requested
+    await requestAutoStartPermissionIfNeeded();
+
+    // Show user notification about background operation - only once
+    await showBackgroundOperationNotificationIfNeeded();
+
+    // Start persistent phone state listener service for background call detection
+    // This ensures the service runs even when app is closed
+    await startPhoneStateListener();
+
     // Load leads
     await loadLeads();
 
@@ -463,6 +476,131 @@ class CallDetectionService extends GetxController {
       print('Overlay dismissed successfully');
     } catch (e) {
       print('Error dismissing overlay: $e');
+    }
+  }
+
+  // Request battery optimization exemption
+  Future<void> requestBatteryOptimizationExemption() async {
+    try {
+      await _channel.invokeMethod('requestBatteryOptimization');
+      print('Battery optimization exemption requested');
+    } catch (e) {
+      print('Error requesting battery optimization exemption: $e');
+    }
+  }
+
+  // Request auto-start permission (for some manufacturers like Xiaomi, Huawei)
+  Future<void> requestAutoStartPermission() async {
+    try {
+      await _channel.invokeMethod('requestAutoStartPermission');
+      print('Auto-start permission requested');
+    } catch (e) {
+      print('Error requesting auto-start permission: $e');
+    }
+  }
+
+  // Show user notification about background operation
+  Future<void> showBackgroundOperationNotification() async {
+    try {
+      await _channel.invokeMethod('showBackgroundOperationNotification');
+      print('Background operation notification shown');
+    } catch (e) {
+      print('Error showing background operation notification: $e');
+    }
+  }
+
+  // Request auto-start permission only if not already requested
+  Future<void> requestAutoStartPermissionIfNeeded() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final hasRequestedAutoStart =
+          prefs.getBool('has_requested_auto_start') ?? false;
+
+      if (!hasRequestedAutoStart) {
+        await requestAutoStartPermission();
+        // Mark as requested so we don't ask again
+        await prefs.setBool('has_requested_auto_start', true);
+        print('Auto-start permission requested for the first time');
+      } else {
+        print('Auto-start permission already requested, skipping');
+      }
+    } catch (e) {
+      print('Error checking auto-start permission status: $e');
+    }
+  }
+
+  // Show background operation notification only if not already shown
+  Future<void> showBackgroundOperationNotificationIfNeeded() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final hasShownNotification =
+          prefs.getBool('has_shown_background_notification') ?? false;
+
+      if (!hasShownNotification) {
+        await showBackgroundOperationNotification();
+        // Mark as shown so we don't show again
+        await prefs.setBool('has_shown_background_notification', true);
+        print('Background operation notification shown for the first time');
+      } else {
+        print('Background operation notification already shown, skipping');
+      }
+    } catch (e) {
+      print('Error checking background notification status: $e');
+    }
+  }
+
+  // Test background service directly
+  Future<void> testBackgroundService(String phoneNumber) async {
+    try {
+      await _channel
+          .invokeMethod('testBackgroundService', {'phoneNumber': phoneNumber});
+      print('Background service test triggered for: $phoneNumber');
+    } catch (e) {
+      print('Error testing background service: $e');
+    }
+  }
+
+  // Test CallStateReceiver directly
+  Future<void> testCallStateReceiver(String phoneNumber) async {
+    try {
+      await _channel
+          .invokeMethod('testCallStateReceiver', {'phoneNumber': phoneNumber});
+      print('CallStateReceiver test triggered for: $phoneNumber');
+    } catch (e) {
+      print('Error testing CallStateReceiver: $e');
+    }
+  }
+
+  // Start persistent phone state listener service
+  Future<void> startPhoneStateListener() async {
+    try {
+      await _channel.invokeMethod('startPhoneStateListener');
+      print('Phone state listener service started');
+    } catch (e) {
+      print('Error starting phone state listener service: $e');
+    }
+  }
+
+  // Stop persistent phone state listener service
+  Future<void> stopPhoneStateListener() async {
+    try {
+      await _channel.invokeMethod('stopPhoneStateListener');
+      print('Phone state listener service stopped');
+    } catch (e) {
+      print('Error stopping phone state listener service: $e');
+    }
+  }
+
+  // Check if phone state listener service is running
+  Future<bool> checkPhoneStateListenerStatus() async {
+    try {
+      final isRunning =
+          await _channel.invokeMethod('checkPhoneStateListenerStatus') as bool;
+      print('Phone state listener service running: $isRunning');
+      return isRunning;
+    } catch (e) {
+      print('Error checking phone state listener service status: $e');
+      return false;
     }
   }
 

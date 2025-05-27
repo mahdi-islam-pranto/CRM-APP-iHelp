@@ -142,6 +142,114 @@ class _CallDetectionTestPageState extends State<CallDetectionTestPage> {
     );
   }
 
+  Future<void> _testBackgroundService() async {
+    final phoneNumber = _phoneController.text.trim();
+    if (phoneNumber.isEmpty) {
+      setState(() {
+        _status = 'Please enter a phone number';
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _status = 'Testing background service with number: $phoneNumber';
+    });
+
+    try {
+      await _callDetectionService.testBackgroundService(phoneNumber);
+      setState(() {
+        _status = 'Background service test completed. Check logs and overlay.';
+      });
+    } catch (e) {
+      setState(() {
+        _status = 'Error testing background service: $e';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _testCallStateReceiver() async {
+    final phoneNumber = _phoneController.text.trim();
+    if (phoneNumber.isEmpty) {
+      setState(() {
+        _status = 'Please enter a phone number';
+      });
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _status = 'Testing CallStateReceiver with number: $phoneNumber';
+    });
+
+    try {
+      await _callDetectionService.testCallStateReceiver(phoneNumber);
+      setState(() {
+        _status = 'CallStateReceiver test completed. Check logs and overlay.';
+      });
+    } catch (e) {
+      setState(() {
+        _status = 'Error testing CallStateReceiver: $e';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _startPhoneStateListener() async {
+    setState(() {
+      _isLoading = true;
+      _status = 'Starting phone state listener service...';
+    });
+
+    try {
+      await _callDetectionService.startPhoneStateListener();
+      setState(() {
+        _status =
+            'Phone state listener service started successfully. Now try making a real call.';
+      });
+    } catch (e) {
+      setState(() {
+        _status = 'Error starting phone state listener service: $e';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _checkPhoneListenerStatus() async {
+    setState(() {
+      _isLoading = true;
+      _status = 'Checking phone state listener service status...';
+    });
+
+    try {
+      final isRunning =
+          await _callDetectionService.checkPhoneStateListenerStatus();
+      setState(() {
+        _status =
+            'Phone state listener service is ${isRunning ? 'RUNNING' : 'NOT RUNNING'}.\n'
+            '${isRunning ? 'Service is active and monitoring calls.' : 'Service needs to be started.'}';
+      });
+    } catch (e) {
+      setState(() {
+        _status = 'Error checking service status: $e';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   Future<void> _requestOverlayPermission() async {
     setState(() {
       _isLoading = true;
@@ -244,6 +352,34 @@ class _CallDetectionTestPageState extends State<CallDetectionTestPage> {
                       ),
                       child: const Text('Request Overlay Permission'),
                     ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed:
+                                _isLoading ? null : _startPhoneStateListener,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: const Text('Start Phone Listener'),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed:
+                                _isLoading ? null : _checkPhoneListenerStatus,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.indigo,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: const Text('Check Service Status'),
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -290,6 +426,34 @@ class _CallDetectionTestPageState extends State<CallDetectionTestPage> {
                               foregroundColor: Colors.white,
                             ),
                             child: const Text('Test Simple Popup'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed:
+                                _isLoading ? null : _testBackgroundService,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.purple,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: const Text('Test Background Service'),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed:
+                                _isLoading ? null : _testCallStateReceiver,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: const Text('Test Call Receiver'),
                           ),
                         ),
                       ],

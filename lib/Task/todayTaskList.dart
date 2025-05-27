@@ -52,7 +52,7 @@ class _TodayTaskListScreenState extends State<TodayTaskListScreen> {
         'start_date': startDate,
         'end_date': endDate,
         'user_id': userId,
-        'session_user_id': '',
+        'session_user_id': userId,
         'status': '',
         'next_task_start_time': '',
         'lead_id': '',

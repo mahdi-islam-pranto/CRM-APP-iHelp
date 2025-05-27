@@ -1,17 +1,25 @@
 package com.example.untitled1
 
 import android.Manifest
+import android.app.ActivityManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
+import android.os.PowerManager
 import android.provider.Settings
 import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -27,13 +35,15 @@ class MainActivity: FlutterActivity() {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
+        // Initialize release configuration
+        ReleaseConfig.initialize(this)
+        ReleaseConfig.logRelease("MainActivity configureFlutterEngine - Release mode initialized")
+
         // Request permissions
         requestPermissions()
 
-        // Register call state receiver
-        val intentFilter = IntentFilter(TelephonyManager.ACTION_PHONE_STATE_CHANGED)
-        intentFilter.addAction(Intent.ACTION_NEW_OUTGOING_CALL)
-        registerReceiver(callStateReceiver, intentFilter)
+        // Note: CallStateReceiver is registered in AndroidManifest.xml for system-wide broadcasts
+        // We only set up the Flutter callback here
 
         // Set up method channel
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
@@ -112,6 +122,135 @@ class MainActivity: FlutterActivity() {
                     } catch (e: Exception) {
                         Log.e(TAG, "Error dismissing overlay: ${e.message}")
                         result.error("ERROR", "Failed to dismiss overlay", e.message)
+                    }
+                }
+                "requestBatteryOptimization" -> {
+                    Log.d(TAG, "Requesting battery optimization exemption")
+                    try {
+                        requestBatteryOptimizationExemption()
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error requesting battery optimization exemption: ${e.message}")
+                        result.error("ERROR", "Failed to request battery optimization exemption", e.message)
+                    }
+                }
+                "requestAutoStartPermission" -> {
+                    Log.d(TAG, "Requesting auto-start permission")
+                    try {
+                        requestAutoStartPermission()
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error requesting auto-start permission: ${e.message}")
+                        result.error("ERROR", "Failed to request auto-start permission", e.message)
+                    }
+                }
+                "showBackgroundOperationNotification" -> {
+                    Log.d(TAG, "Showing background operation notification")
+                    try {
+                        showBackgroundOperationNotification()
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error showing background operation notification: ${e.message}")
+                        result.error("ERROR", "Failed to show background operation notification", e.message)
+                    }
+                }
+                "testBackgroundService" -> {
+                    Log.d(TAG, "Testing background service")
+                    try {
+                        val phoneNumber = call.argument<String>("phoneNumber") ?: "01645467222"
+
+                        // Start the background service directly
+                        val serviceIntent = Intent(this, CallDetectionBackgroundService::class.java).apply {
+                            putExtra("phoneNumber", phoneNumber)
+                        }
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            startForegroundService(serviceIntent)
+                            Log.d(TAG, "Started foreground background service for testing")
+                        } else {
+                            startService(serviceIntent)
+                            Log.d(TAG, "Started background service for testing")
+                        }
+
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error testing background service: ${e.message}")
+                        result.error("ERROR", "Failed to test background service", e.message)
+                    }
+                }
+                "testCallStateReceiver" -> {
+                    Log.d(TAG, "Testing CallStateReceiver directly")
+                    try {
+                        val phoneNumber = call.argument<String>("phoneNumber") ?: "01645467222"
+
+                        // Create a mock phone state intent
+                        val mockIntent = Intent(TelephonyManager.ACTION_PHONE_STATE_CHANGED).apply {
+                            putExtra(TelephonyManager.EXTRA_STATE, TelephonyManager.EXTRA_STATE_IDLE)
+                            putExtra(TelephonyManager.EXTRA_INCOMING_NUMBER, phoneNumber)
+                        }
+
+                        // Set up the receiver state to simulate a call ending
+                        CallStateReceiver.lastState = TelephonyManager.CALL_STATE_OFFHOOK
+                        CallStateReceiver.lastPhoneNumber = phoneNumber
+
+                        // Trigger the receiver directly
+                        val receiver = CallStateReceiver()
+                        receiver.onReceive(this, mockIntent)
+
+                        Log.d(TAG, "CallStateReceiver test completed")
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error testing CallStateReceiver: ${e.message}")
+                        result.error("ERROR", "Failed to test CallStateReceiver", e.message)
+                    }
+                }
+                "startPhoneStateListener" -> {
+                    Log.d(TAG, "Starting phone state listener service")
+                    try {
+                        // Check if service is already running
+                        if (isServiceRunning(PhoneStateListenerService::class.java)) {
+                            Log.d(TAG, "Phone state listener service is already running")
+                            result.success(true)
+                            return@setMethodCallHandler
+                        }
+
+                        val serviceIntent = Intent(this, PhoneStateListenerService::class.java)
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            startForegroundService(serviceIntent)
+                            Log.d(TAG, "Started foreground phone state listener service")
+                        } else {
+                            startService(serviceIntent)
+                            Log.d(TAG, "Started phone state listener service")
+                        }
+
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error starting phone state listener service: ${e.message}")
+                        result.error("ERROR", "Failed to start phone state listener service", e.message)
+                    }
+                }
+                "stopPhoneStateListener" -> {
+                    Log.d(TAG, "Stopping phone state listener service")
+                    try {
+                        val serviceIntent = Intent(this, PhoneStateListenerService::class.java)
+                        stopService(serviceIntent)
+                        Log.d(TAG, "Stopped phone state listener service")
+                        result.success(true)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error stopping phone state listener service: ${e.message}")
+                        result.error("ERROR", "Failed to stop phone state listener service", e.message)
+                    }
+                }
+                "checkPhoneStateListenerStatus" -> {
+                    Log.d(TAG, "Checking phone state listener service status")
+                    try {
+                        val isRunning = isServiceRunning(PhoneStateListenerService::class.java)
+                        Log.d(TAG, "Phone state listener service running: $isRunning")
+                        result.success(isRunning)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error checking phone state listener service status: ${e.message}")
+                        result.error("ERROR", "Failed to check service status", e.message)
                     }
                 }
                 "getInitialIntent" -> {
@@ -298,13 +437,160 @@ class MainActivity: FlutterActivity() {
         }
     }
 
+    private fun requestBatteryOptimizationExemption() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+            val packageName = packageName
+
+            if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
+                Log.d(TAG, "Requesting battery optimization exemption")
+                val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                    data = Uri.parse("package:$packageName")
+                }
+                try {
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error starting battery optimization settings: ${e.message}")
+                    // Fallback to general battery optimization settings
+                    try {
+                        val fallbackIntent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                        startActivity(fallbackIntent)
+                    } catch (e2: Exception) {
+                        Log.e(TAG, "Error starting fallback battery optimization settings: ${e2.message}")
+                    }
+                }
+            } else {
+                Log.d(TAG, "App is already exempted from battery optimization")
+            }
+        }
+    }
+
+    private fun requestAutoStartPermission() {
+        try {
+            Log.d(TAG, "Attempting to request auto-start permission")
+
+            // Different manufacturers have different auto-start settings
+            val manufacturer = Build.MANUFACTURER.lowercase()
+            val intent = when {
+                manufacturer.contains("xiaomi") -> {
+                    Intent().apply {
+                        component = ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity")
+                    }
+                }
+                manufacturer.contains("huawei") -> {
+                    Intent().apply {
+                        component = ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity")
+                    }
+                }
+                manufacturer.contains("oppo") -> {
+                    Intent().apply {
+                        component = ComponentName("com.coloros.safecenter", "com.coloros.safecenter.permission.startup.StartupAppListActivity")
+                    }
+                }
+                manufacturer.contains("vivo") -> {
+                    Intent().apply {
+                        component = ComponentName("com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.BgStartUpManagerActivity")
+                    }
+                }
+                manufacturer.contains("samsung") -> {
+                    Intent().apply {
+                        component = ComponentName("com.samsung.android.lool", "com.samsung.android.sm.ui.battery.BatteryActivity")
+                    }
+                }
+                else -> {
+                    // Generic fallback - try to open app settings
+                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.parse("package:$packageName")
+                    }
+                }
+            }
+
+            try {
+                startActivity(intent)
+                Log.d(TAG, "Auto-start permission intent started for $manufacturer")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to start auto-start permission for $manufacturer: ${e.message}")
+                // Fallback to app settings
+                try {
+                    val fallbackIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.parse("package:$packageName")
+                    }
+                    startActivity(fallbackIntent)
+                    Log.d(TAG, "Opened app settings as fallback")
+                } catch (e2: Exception) {
+                    Log.e(TAG, "Failed to open app settings: ${e2.message}")
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error requesting auto-start permission: ${e.message}")
+        }
+    }
+
+    private fun showBackgroundOperationNotification() {
+        try {
+            Log.d(TAG, "Showing background operation notification")
+
+            // Create a notification to inform user about background operation
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val channelId = "background_operation_channel"
+
+            // Create notification channel for Android 8.0+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val channel = NotificationChannel(
+                    channelId,
+                    "Background Operation",
+                    NotificationManager.IMPORTANCE_DEFAULT
+                ).apply {
+                    description = "Notifications about app running in background"
+                    setShowBadge(false)
+                }
+                notificationManager.createNotificationChannel(channel)
+            }
+
+            // Create intent to open the app
+            val intent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            val pendingIntent = PendingIntent.getActivity(
+                this, 0, intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            val notification = NotificationCompat.Builder(this, channelId)
+                .setContentTitle("iCRM Background Service")
+                .setContentText("App is running in background to detect calls. Tap for settings.")
+                .setSmallIcon(android.R.drawable.ic_menu_info_details)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setCategory(NotificationCompat.CATEGORY_STATUS)
+                .build()
+
+            notificationManager.notify(999, notification)
+            Log.d(TAG, "Background operation notification shown")
+
+        } catch (e: Exception) {
+            Log.e(TAG, "Error showing background operation notification: ${e.message}")
+        }
+    }
+
+    private fun isServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                Log.d(TAG, "Service ${serviceClass.simpleName} is running")
+                return true
+            }
+        }
+        Log.d(TAG, "Service ${serviceClass.simpleName} is not running")
+        return false
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        try {
-            unregisterReceiver(callStateReceiver)
-        } catch (e: Exception) {
-            // Receiver not registered
-            Log.e(TAG, "Error unregistering receiver: ${e.message}")
-        }
+        // Note: CallStateReceiver is registered in manifest, so no need to unregister
+        // Just clear the Flutter callback
+        CallStateReceiver.callEndListener = null
     }
 }

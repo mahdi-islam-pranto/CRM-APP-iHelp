@@ -56,14 +56,30 @@ android {
 
     buildTypes {
         release {
+            // Enable minification but with careful proguard rules for system overlay
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so flutter run --release works.
             signingConfig signingConfigs.debug
 
-            
+            // Ensure native debugging symbols are included for crash reporting
+            ndk {
+                debugSymbolLevel 'SYMBOL_TABLE'
+            }
+
+            // Optimize for system overlay and background services
+            buildConfigField "boolean", "ENABLE_SYSTEM_OVERLAY", "true"
+            buildConfigField "boolean", "ENABLE_BACKGROUND_SERVICES", "true"
+        }
+
+        debug {
+            // Debug configuration for testing
+            minifyEnabled false
+            buildConfigField "boolean", "ENABLE_SYSTEM_OVERLAY", "true"
+            buildConfigField "boolean", "ENABLE_BACKGROUND_SERVICES", "true"
         }
     }
 }

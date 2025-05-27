@@ -12,6 +12,7 @@ import 'package:untitled1/components/Dropdowns/companyNameDropDown.dart';
 import 'package:untitled1/resourses/app_colors.dart';
 import '../FollowUP/followUpType.dart';
 import '../Lead/LeadOwnerDropdown.dart';
+import '../Lead/LeadAssociateDropdown.dart';
 import '../NotificationService/sendNotification.dart';
 import '../components/CustomProgress.dart';
 import '../components/Dropdowns/taskTypeDropdown.dart';
@@ -246,9 +247,15 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
     });
   }
 
-  void associateHandelDeviceToken(String assiciateDeviceToken) {
+  void associateHandleDeviceToken(List<String> associateDeviceTokens) {
     setState(() {
-      associateSelectedDeviceToken = assiciateDeviceToken;
+      if (associateDeviceTokens.isNotEmpty) {
+        associateSelectedDeviceToken =
+            associateDeviceTokens.join(", "); // Store tokens
+      } else {
+        associateSelectedDeviceToken = "No token received"; // Debugging case
+      }
+      print("✅ Final Selected Associate Tokens: $associateSelectedDeviceToken");
     });
   }
 
@@ -285,7 +292,7 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       "location": _currentLocation.text,
       "reminder_time": "",
       "description": _description.text,
-      "associate_user_id": "",
+      "associate_user_id": Associate.selectedAssociateIds.join(','),
     };
 
     print('Sending request with body: ${jsonEncode(body)}');
@@ -348,11 +355,29 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
       //   print("Device token is empty");
       // }
 
+      // Send notification to associates
+      if (associateSelectedDeviceToken.isNotEmpty &&
+          associateSelectedDeviceToken != "No token received") {
+        List<String> tokens = associateSelectedDeviceToken.split(", ");
+        for (String token in tokens) {
+          if (token.isNotEmpty) {
+            SendNotificationService.sendNotificationUsingApi(
+              token: token,
+              title: "New Task Created",
+              body: "You are assigned as associate to a new task! Please check",
+              data: {'screen': 'task'},
+            );
+          }
+        }
+        print("Associate notifications sent to: $associateSelectedDeviceToken");
+      }
+
       // Reset dropdowns to their initial state
       setState(() {
         FollowupType.followUpType =
             null; // Assuming this is the dropdown variable
         Owner.ownerId = null; // Assuming this is the dropdown
+        Associate.selectedAssociateIds.clear(); // Reset associate selection
       });
 
       print('Response Body: ${response.body}');
@@ -480,6 +505,31 @@ class _TaskCreateFormState extends State<TaskCreateForm> {
                             userId: currentUserId,
                             onDeviceTokenReceived: handleDeviceToken,
                           )),
+                      const SizedBox(height: 12),
+
+                      // Associate field
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Associate",
+                            style: TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.w500),
+                          ),
+                        ],
+                      ),
+
+                      /// multiple drop down for associates
+                      MultiLeadAssociateDropDown(
+                        onDeviceTokensReceived: (List<String> tokens) {
+                          print(
+                              "🟡 Received from Dropdown: $tokens"); // Debug print
+                          associateHandleDeviceToken(
+                              tokens); // Call the function
+                        },
+                        initialValues: const [], // Optional
+                      ),
+
                       const SizedBox(height: 12),
 
                       // start date & end date
